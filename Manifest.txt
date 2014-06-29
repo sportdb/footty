@@ -2,5 +2,7 @@ HISTORY.md
 Manifest.txt
 README.md
 Rakefile
+bin/ojogo
 lib/ojogo.rb
+lib/ojogo/client.rb
 lib/ojogo/version.rb
