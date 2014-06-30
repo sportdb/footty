@@ -5,6 +5,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'pp'
+require 'ostruct'
 
 
 ## 3rd party gems/libs
