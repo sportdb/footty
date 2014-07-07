@@ -1,3 +1,4 @@
+# encoding: utf-8
 
 module Ojogo
 
@@ -8,13 +9,20 @@ module Ojogo
     API_BASE = 'http://footballdb.herokuapp.com/api/v1'
 
     def initialize( opts={} )
-      @opts = opts
+      @opts   = opts
+      @worker = Fetcher::Worker.new
     end
 
 
     def get_todays_round
-      event_key = "world.2014"
+      event_key = 'world.2014'
       get( "event/#{event_key}/round/today" )
+    end
+
+    ## for testing lets you use /round/1 etc.
+    def get_round( num )
+      event_key = 'world.2014'
+      get( "event/#{event_key}/round/#{num}" )
     end
 
     ### todo/fix:
@@ -40,31 +48,17 @@ private
     end
 
     def get( path )
-      uri = URI.parse( "#{API_BASE}/#{path}" )
+      ## uri = URI.parse( "#{API_BASE}/#{path}" )
+      # fix: use is_a? URI in fetcher
+      uri_string = "#{API_BASE}/#{path}"
 
-      # new code: honor proxy env variable HTTP_PROXY
-      proxy = ENV['HTTP_PROXY']
-      proxy = ENV['http_proxy'] if proxy.nil?   # try possible lower/case env variable (for *nix systems) is this necessary??
-    
-      if proxy
-        proxy = URI.parse( proxy )
-        logger.debug "using net http proxy: proxy.host=#{proxy.host}, proxy.port=#{proxy.port}"
-        if proxy.user && proxy.password
-          logger.debug "  using credentials: proxy.user=#{proxy.user}, proxy.password=****"
-        else
-          logger.debug "  using no credentials"
-        end
-      else
-        logger.debug "using direct net http access; no proxy configured"
-        proxy = OpenStruct.new   # all fields return nil (e.g. proxy.host, etc.)
-      end
-
-      http_proxy = Net::HTTP::Proxy( proxy.host, proxy.port, proxy.user, proxy.password )
-
-      http = http_proxy.new( uri.host, uri.port )
-      response = http.request( Net::HTTP::Get.new( uri.request_uri ))
+      response = @worker.get_response( uri_string )
 
       if response.code == '200'
+        ##
+        ## todo/check:
+        ##  do we need to force utf-8 encoding?
+        ##   check for teams w/ non-ascii names
         hash = JSON.parse( response.body )
         ## pp hash
         hash

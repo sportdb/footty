@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 
 ## stdlibs
 
@@ -5,14 +7,13 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'pp'
-require 'ostruct'
 
 
 ## 3rd party gems/libs
 ## require 'props'
 
 require 'logutils'
-
+require 'fetcher'
 
 # our own code
 

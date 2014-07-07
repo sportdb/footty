@@ -6,3 +6,5 @@ bin/ojogo
 lib/ojogo.rb
 lib/ojogo/client.rb
 lib/ojogo/version.rb
+test/helper.rb
+test/test_client.rb
