@@ -1,14 +1,14 @@
 require 'hoe'
-require './lib/ojogo/version.rb'
+require './lib/footty/version.rb'
 
-Hoe.spec 'ojogo' do
+Hoe.spec 'footty' do
 
-  self.version = Ojogo::VERSION
+  self.version = Footty::VERSION
 
-  self.summary = 'ojogo - sport.db (incl. football.db) client - who is playing today?'
+  self.summary = 'footty - sport.db (incl. football.db) command line client for world cup (russia 2018) and more - who is playing today?'
   self.description = summary
 
-  self.urls = ['https://github.com/sportdb/ojogo.ruby']
+  self.urls = ['https://github.com/sportdb/footty']
 
   self.author = 'Gerald Bauer'
   self.email = 'opensport@googlegroups.com'
@@ -25,6 +25,6 @@ Hoe.spec 'ojogo' do
   self.licenses = ['Public Domain']
 
   self.spec_extras = {
-   :required_ruby_version => '>= 1.9.2'
+   :required_ruby_version => '>= 2.3'
   }
 end

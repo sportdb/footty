@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Ojogo
+module Footty
 
   class Client
 
@@ -71,4 +71,4 @@ private
   end # class Client
 
 
-end # module Ojogo
+end # module Footty

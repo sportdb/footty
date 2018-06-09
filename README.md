@@ -1,23 +1,24 @@
-# ojogo - sport.db (incl. football.db) command line client
+# footty - sport.db (incl. football.db) command line client for world cup (russia 2018) and more
 
-* home  :: [github.com/sportdb/ojogo.ruby](https://github.com/sportdb/ojogo.ruby)
-* bugs  :: [github.com/sportdb/ojogo.ruby/issues](https://github.com/sportdb/ojogo.ruby/issues)
-* gem   :: [rubygems.org/gems/ojogo](https://rubygems.org/gems/ojogo)
-* rdoc  :: [rubydoc.info/gems/ojogo](http://rubydoc.info/gems/ojogo)
-* forum :: [groups.google.com/group/opensport](https://groups.google.com/group/opensport)
+* home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
+* bugs  :: [github.com/sportdb/footty/issues](https://github.com/sportdb/footty/issues)
+* gem   :: [rubygems.org/gems/footty](https://rubygems.org/gems/footty)
+* rdoc  :: [rubydoc.info/gems/footty](http://rubydoc.info/gems/footty)
+* forum :: [opensport](http://groups.google.com/group/opensport)
+
+
 
 
 ## Usage - Who's playing today?
 
-The ojogo gem lets you query online sport.db (incl. football.db) HTTP JSON API services
+The footty gem lets you query online sport.db (incl. football.db) HTTP JSON API services
 for upcoming matches. For example,
 
-    $ ojogo              # Defaults to today's world cup 2014 matches
+    $ footty              # Defaults to today's world cup 2018 matches
 
-prints on Jun/29 2014:
+prints on Jun/14 2018:
 
-     Netherlands (NED) vs Mexico (MEX)
-     Costa Rica (CRC) vs Greece (GRE)
+     Russia (RUS) vs Saudi Arabia (KSA)   @ Luzhniki Stadium, Moscow
 
 That's it.
 
@@ -26,12 +27,12 @@ That's it.
 
 Just install the gem:
 
-    $ gem install ojogo
+    $ gem install footty
 
 
 ## License
 
-The `ojogo` scripts are dedicated to the public domain.
+The `footty` scripts are dedicated to the public domain.
 Use it as you please with no restrictions whatsoever.
 
 

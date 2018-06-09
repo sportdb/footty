@@ -2,9 +2,9 @@ HISTORY.md
 Manifest.txt
 README.md
 Rakefile
-bin/ojogo
-lib/ojogo.rb
-lib/ojogo/client.rb
-lib/ojogo/version.rb
+bin/footty
+lib/footty.rb
+lib/footty/client.rb
+lib/footty/version.rb
 test/helper.rb
 test/test_client.rb

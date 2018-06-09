@@ -6,7 +6,7 @@ require 'helper'
 class TestClient < MiniTest::Unit::TestCase
 
   def test_todays_games
-     client = Ojogo::Client.new
+     client = Footty::Client.new
      ary = client.get_todays_games()
      ## note: returns empty array if no games scheduled/playing today
      pp ary
@@ -15,7 +15,7 @@ class TestClient < MiniTest::Unit::TestCase
   end
 
   def test_world_2014_round_1
-    client = Ojogo::Client.new
+    client = Footty::Client.new
     h = client.get_round( 1 )
 
     ## pp h

@@ -1,3 +1,3 @@
-### 0.0.1 / 2014-06-29
+### 1.0.0 / 2018-06-09
 
-* Everything is new. First release.
+* Everything is new (again). First release.
