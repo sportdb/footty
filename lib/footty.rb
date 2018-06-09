@@ -31,10 +31,18 @@ module Footty
     "#{File.expand_path( File.dirname(File.dirname(__FILE__)) )}"
   end
 
+
+
+  def self.client
+    @@client ||= Client.new    ## use "singelton" / shared client
+  end
+
+
+
+
   def self.main
     puts banner # say hello
 
-    client = Client.new
     games = client.get_todays_games()
     ## pp games
 

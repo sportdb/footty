@@ -6,7 +6,7 @@ module Footty
 
     include LogUtils::Logging
 
-    API_BASE = 'http://footballdb.herokuapp.com/api/v1'
+    API_BASE = 'https://raw.githubusercontent.com/openfootball/world-cup.json/master/2018'
 
     def initialize( opts={} )
       @opts   = opts
@@ -14,37 +14,57 @@ module Footty
     end
 
 
-    def get_todays_round
-      event_key = 'world.2014'
-      get( "event/#{event_key}/round/today" )
+
+    ### todo/fix:
+    ##   cache ALL method - only do one request!!!!
+    ##   use get_schedule  or get_matches ??
+    ##   use get_worldcup !!!!!!
+
+    def get_worldcup
+      @worldcup ||= get( 'worldcup.json' )    ## use "memoized" / cached result
     end
+
+
+
 
     ## for testing lets you use /round/1 etc.
     def get_round( num )
-      event_key = 'world.2014'
-      get( "event/#{event_key}/round/#{num}" )
+      h = get_worldcup
+      matches = h[ 'rounds' ][ num-1 ]    ## note: rounds hash starts with zero (not 1)
+      matches
     end
+
 
     ### todo/fix:
     ##  add a new services for todays games only (not todays round w/ all games)
-    def get_todays_games
-      round_hash = get_todays_round()
-      games = select_todays_games( round_hash[ 'games' ] )
-      games
+    def get_todays_matches
+      hash = get_worldcup
+      matches = select_todays_matches( hash[ 'rounds' ] )
+      matches
     end
 
 private
-    def select_todays_games( all_games )
-      games = []
-      all_games.each do |game|
-        play_at = Date.parse( game['play_at'] )
-        if play_at == Date.today
-          games << game
-        else
-          ## puts " skipping game   play_at #{play_at}"
+
+   ## todo/fix:
+   ##   use julian date??
+   ##   sort by date
+   ##   - past games (yesterday, etc.)
+   ##   - todays games
+   ##   - future games (tomorrow, etc.)
+
+    def select_todays_matches( rounds )
+      matches = []
+      rounds.each do |round|
+        round['matches'].each do |match|
+          date = Date.parse( match['date'] )
+          if play_at == Date.today
+            matches << match
+          else
+            ## puts " skipping game   play_at #{play_at}"
+          end
         end
       end
-      games
+      matches
     end
 
     def get( path )
