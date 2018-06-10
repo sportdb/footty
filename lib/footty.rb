@@ -39,7 +39,7 @@ module Footty
     today = Date.today
 
     if ['yesterday', 'y', '-1'].include? what
-      matches = client.get_todays_matches( date: today )
+      matches = client.get_yesterdays_matches( date: today )
       if matches.empty?
          puts "** No matches played yesterday.\n"
       end
