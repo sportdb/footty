@@ -23,16 +23,16 @@ prints on Jun/14 2018:
 
 prints on Jun/15 2018:
 
-     #2 Fri Jun/15        Egypt (EGY) vs      Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
-     #3 Fri Jun/15     Portugal (POR) vs        Spain (ESP) Group B  @ Fisht Stadium, Sochi
-     #4 Fri Jun/15      Morocco (MAR) vs         Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
+    #2 Fri Jun/15        Egypt (EGY) vs      Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
+    #3 Fri Jun/15     Portugal (POR) vs        Spain (ESP) Group B  @ Fisht Stadium, Sochi
+    #4 Fri Jun/15      Morocco (MAR) vs         Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
 
 prints on Jun/16:
 
-     #5 Sat Jun/16       France (FRA) vs    Australia (AUS) Group C  @ Kazan Arena, Kazan
-     #6 Sat Jun/16         Peru (PER) vs      Denmark (DEN) Group C  @ Mordovia Arena, Saransk
-     #7 Sat Jun/16    Argentina (ARG) vs      Iceland (ISL) Group D  @ Spartak Stadium, Moscow
-     #8 Sat Jun/16      Croatia (CRO) vs      Nigeria (NGA) Group D  @ Kaliningrad Stadium, Kaliningrad
+    #5 Sat Jun/16       France (FRA) vs    Australia (AUS) Group C  @ Kazan Arena, Kazan
+    #6 Sat Jun/16         Peru (PER) vs      Denmark (DEN) Group C  @ Mordovia Arena, Saransk
+    #7 Sat Jun/16    Argentina (ARG) vs      Iceland (ISL) Group D  @ Spartak Stadium, Moscow
+    #8 Sat Jun/16      Croatia (CRO) vs      Nigeria (NGA) Group D  @ Kaliningrad Stadium, Kaliningrad
 
 and so on.
 Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
