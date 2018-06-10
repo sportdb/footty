@@ -15,14 +15,12 @@ module Footty
 
 
 
-    ### todo/fix:
-    ##   cache ALL method - only do one request!!!!
-    ##   use get_schedule  or get_matches ??
-    ##   use get_worldcup !!!!!!
-
+    ### note:
+    ##   cache ALL methods - only do one web request for worldcup match schedule & results
     def get_worldcup
       @worldcup ||= get( 'worldcup.json' )    ## use "memoized" / cached result
     end
+
 
 
 
@@ -35,32 +33,43 @@ module Footty
     end
 
 
-    ### todo/fix:
-    ##  add a new services for todays games only (not todays round w/ all games)
-    def get_todays_matches
-      hash = get_worldcup
-      matches = select_todays_matches( hash[ 'rounds' ] )
+    def get_todays_matches( date: Date.today )      get_matches_for( date ); end
+    def get_tomorrows_matches( date: Date.today )   get_matches_for( date+1 );  end
+    def get_yesterdays_matches( date: Date.today )  get_matches_for( date-1 );  end
+
+    def get_matches_for( date )
+      hash  = get_worldcup
+      matches = select_matches( hash[ 'rounds' ] ) { |match| date == Date.parse( match['date'] ) }
       matches
+    end
+
+
+    def get_upcoming_matches( date: Date.today )
+      ## note: includes todays matches for now
+      hash  = get_worldcup
+      matches = select_matches( hash[ 'rounds' ] ) { |match| date <= Date.parse( match['date'] ) }
+      matches
+    end
+
+    def get_past_matches( date: Date.today )
+      hash  = get_worldcup
+      matches = select_matches( hash[ 'rounds' ] ) { |match| date > Date.parse( match['date'] ) }
+      ## note reveserve matches (chronological order/last first)
+      matches.reverse
     end
 
 private
 
-   ## todo/fix:
-   ##   use julian date??
-   ##   sort by date
-   ##   - past games (yesterday, etc.)
-   ##   - todays games
-   ##   - future games (tomorrow, etc.)
-
-    def select_todays_matches( rounds )
+    def select_matches( rounds )
       matches = []
       rounds.each do |round|
         round['matches'].each do |match|
-          date = Date.parse( match['date'] )
-          if play_at == Date.today
+          if yield( match )
+            ## hack: add (outer) round to match
+            match['round'] = round['name']
             matches << match
           else
-            ## puts " skipping game   play_at #{play_at}"
+            ## puts " skipping game   play_date #{play_date}"
           end
         end
       end
