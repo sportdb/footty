@@ -86,19 +86,18 @@ module Footty
     today = Date.today
 
     matches.each do |match|
-      print "   "
-      print "\##{match['num']} "
+      print "   %5s" % "\##{match['num']} "
 
       date = Date.parse( match['date'] )
       print "#{date.strftime('%a %b/%d')} "      ## e.g. Thu Jun/14
       if date > today
          diff = (date - today).to_i
-         print "(in #{diff}d) "
+         print "%10s" % "(in #{diff}d) "
       end
 
-      print "%18s" % "#{match['team1']['name']} (#{match['team1']['code']})"
+      print "%20s" % "#{match['team1']['name']} (#{match['team1']['code']})"
       print " vs "
-      print "%18s" % "#{match['team2']['name']} (#{match['team2']['code']})"
+      print "%20s" % "#{match['team2']['name']} (#{match['team2']['code']})"
 
       if match['group']
         print " #{match['group']} "    ## group phase/stage
