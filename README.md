@@ -19,7 +19,8 @@ for upcoming or past matches. For example:
 
 prints on Jun/14 2018:
 
-    #1 Thu Jun/14       Russia (RUS) vs Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
+    #1 Thu Jun/14       Russia (RUS)  5-0  Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
+                     [Gazinsky 12' Cheryshev 43' Dzyuba 71' Cheryshev 90+1' Golovin 90+4']
 
 prints on Jun/15 2018:
 
