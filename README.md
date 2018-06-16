@@ -35,11 +35,11 @@ prints on Jun/15 2018:
 and the next day with `footy y`:
 
     #2 Fri Jun/15          Egypt (EGY) 0-1        Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
-                     [; Giménez 89']
+                     [-; Giménez 89']
     #3 Fri Jun/15       Portugal (POR) 3-3          Spain (ESP) Group B  @ Fisht Stadium, Sochi
                      [Ronaldo 4' (pen.) Ronaldo 44' Ronaldo 88'; Costa 24' Costa 55' Nacho 58']
     #4 Fri Jun/15        Morocco (MAR) 0-1           Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
-                     [; Bouhaddouz 90+5' (o.g.)]
+                     [-; Bouhaddouz 90+5' (o.g.)]
 
 prints on Jun/16:
 
