@@ -21,7 +21,7 @@ prints on Jun/14 2018:
 
     #1 Thu Jun/14       Russia (RUS)  vs  Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
 
-and the next day with `footy yesterday`:
+and the next day with `footty yesterday`:
 
     #1 Thu Jun/14       Russia (RUS)  5-0  Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
                      [Gazinsky 12' Cheryshev 43' Dzyuba 71' Cheryshev 90+1' Golovin 90+4']
@@ -71,6 +71,13 @@ Use `past` or `p` to print all past matches e.g.:
 
 
 That's it. Enjoy the beautiful game.
+
+
+
+
+## Trivia
+
+Why tty? tty stands for teletype (tty) writer and is the old traditional (short) name for the unix command line.
 
 
 ## Install
