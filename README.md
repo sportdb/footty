@@ -32,7 +32,7 @@ prints on Jun/15 2018:
     #3 Fri Jun/15       Portugal (POR)  vs          Spain (ESP) Group B  @ Fisht Stadium, Sochi
     #4 Fri Jun/15        Morocco (MAR)  vs           Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
 
-and the next day with `footy y`:
+and the next day with `footty y`:
 
     #2 Fri Jun/15          Egypt (EGY) 0-1        Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
                      [-; Giménez 89']
