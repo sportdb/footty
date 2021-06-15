@@ -1,58 +1,66 @@
-# encoding: utf-8
-
 module Footty
+
 
   class Client
 
     include LogUtils::Logging
 
-    API_BASE = 'https://raw.githubusercontent.com/openfootball/world-cup.json/master/2018'
 
-    def initialize( opts={} )
-      @opts   = opts
+    def initialize( league:, year: )
       @worker = Fetcher::Worker.new
+
+      @league = league
+      @year   = year
     end
 
 
+    APIS = {
+      worldcup: 'https://github.com/openfootball/worldcup.json/raw/master/$year$/worldcup.json',
+      euro:     'https://github.com/openfootball/euro.json/raw/master/$year$/euro.json'
+    }
 
     ### note:
-    ##   cache ALL methods - only do one web request for worldcup match schedule & results
-    def get_worldcup
-      @worldcup ||= get( 'worldcup.json' )    ## use "memoized" / cached result
-    end
+    ##   cache ALL methods - only do one web request for match schedule & results
+    def get_matches
+      @data ||= begin
+                  str = APIS[ @league.downcase.to_sym ]
+                  str = str.gsub( '$year$', @year.to_s )
 
+                  get( str )    ## use "memoized" / cached result
+                end
+    end
 
 
 
 
     ## for testing lets you use /round/1 etc.
-    def get_round( num )
-      h = get_worldcup
+    def round( num )
+      h = get_matches
       matches = h[ 'rounds' ][ num-1 ]    ## note: rounds hash starts with zero (not 1)
       matches
     end
 
 
-    def get_todays_matches( date: Date.today )      get_matches_for( date ); end
-    def get_tomorrows_matches( date: Date.today )   get_matches_for( date+1 );  end
-    def get_yesterdays_matches( date: Date.today )  get_matches_for( date-1 );  end
+    def todays_matches( date: Date.today )      matches_for( date ); end
+    def tomorrows_matches( date: Date.today )   matches_for( date+1 );  end
+    def yesterdays_matches( date: Date.today )  matches_for( date-1 );  end
 
-    def get_matches_for( date )
-      hash  = get_worldcup
+    def matches_for( date )
+      hash  = get_matches
       matches = select_matches( hash[ 'rounds' ] ) { |match| date == Date.parse( match['date'] ) }
       matches
     end
 
 
-    def get_upcoming_matches( date: Date.today )
+    def upcoming_matches( date: Date.today )
       ## note: includes todays matches for now
-      hash  = get_worldcup
+      hash  = get_matches
       matches = select_matches( hash[ 'rounds' ] ) { |match| date <= Date.parse( match['date'] ) }
       matches
     end
 
-    def get_past_matches( date: Date.today )
-      hash  = get_worldcup
+    def past_matches( date: Date.today )
+      hash  = get_matches
       matches = select_matches( hash[ 'rounds' ] ) { |match| date > Date.parse( match['date'] ) }
       ## note reveserve matches (chronological order/last first)
       matches.reverse
@@ -76,17 +84,14 @@ private
       matches
     end
 
-    def get( path )
-      ## uri = URI.parse( "#{API_BASE}/#{path}" )
-      # fix: use is_a? URI in fetcher
-      uri_string = "#{API_BASE}/#{path}"
 
-      response = @worker.get_response( uri_string )
+    def get( str )
+      response = @worker.get_response( str )
 
       if response.code == '200'
         ##
-        ## todo/check:
-        ##  do we need to force utf-8 encoding?
+        ## fix/fix/todo/check:
+        ##  do we need to force utf-8 encoding? yes!!!!
         ##   check for teams w/ non-ascii names
         hash = JSON.parse( response.body )
         ## pp hash
@@ -98,6 +103,4 @@ private
     end
 
   end # class Client
-
-
 end # module Footty

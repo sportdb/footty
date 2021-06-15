@@ -1,4 +1,4 @@
-HISTORY.md
+CHANGELOG.md
 Manifest.txt
 README.md
 Rakefile
@@ -7,4 +7,5 @@ lib/footty.rb
 lib/footty/client.rb
 lib/footty/version.rb
 test/helper.rb
-test/test_client.rb
+test/test_client_euro.rb
+test/test_client_worldcup.rb

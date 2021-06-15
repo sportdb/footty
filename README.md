@@ -1,4 +1,4 @@
-# footty - football.db command line client for world cup (russia 2018) and more
+# footty - football.db command line client for european ("euro") championship 2020 (in 2021) and more
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
 * bugs  :: [github.com/sportdb/footty/issues](https://github.com/sportdb/footty/issues)
@@ -15,38 +15,24 @@
 The footty command line tool lets you query the online football.db HTTP JSON API services
 for upcoming or past matches. For example:
 
-    $ footty              # Defaults to today's world cup 2018 matches
+    $ footty              # Defaults to today's euro 2020 (in 2021) matches
 
-prints on Jun/14 2018:
+prints on Jun/14 2021:
 
-    #1 Thu Jun/14       Russia (RUS)  vs  Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
+   #20 Mon Jun/14         Scotland (SCO)   vs   Czech Republic (CZE)   Group D / Matchday 1
+   #25 Mon Jun/14           Poland (POL)   vs   Slovakia (SVK)         Group E / Matchday 1
+   #26 Mon Jun/14            Spain (ESP)   vs   Sweden (SWE)           Group E / Matchday 1
 
 and the next day with `footty yesterday`:
 
-    #1 Thu Jun/14       Russia (RUS)  5-0  Saudi Arabia (KSA) Group A  @ Luzhniki Stadium, Moscow
-                     [Gazinsky 12' Cheryshev 43' Dzyuba 71' Cheryshev 90+1' Golovin 90+4']
+   #20 Mon Jun/14         Scotland (SCO) 0-2 (0-1) Czech Republic (CZE)   Group D / Matchday 1
+   #25 Mon Jun/14           Poland (POL) 1-2 (0-1) Slovakia (SVK)         Group E / Matchday 1
+   #26 Mon Jun/14            Spain (ESP) 0-0       Sweden (SWE)           Group E / Matchday 1
 
-prints on Jun/15 2018:
+prints on Jun/15 2021:
 
-    #2 Fri Jun/15          Egypt (EGY)  vs        Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
-    #3 Fri Jun/15       Portugal (POR)  vs          Spain (ESP) Group B  @ Fisht Stadium, Sochi
-    #4 Fri Jun/15        Morocco (MAR)  vs           Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
-
-and the next day with `footty y`:
-
-    #2 Fri Jun/15          Egypt (EGY) 0-1        Uruguay (URU) Group A  @ Ekaterinburg Arena, Ekaterinburg
-                     [-; Giménez 89']
-    #3 Fri Jun/15       Portugal (POR) 3-3          Spain (ESP) Group B  @ Fisht Stadium, Sochi
-                     [Ronaldo 4' (pen.) Ronaldo 44' Ronaldo 88'; Costa 24' Costa 55' Nacho 58']
-    #4 Fri Jun/15        Morocco (MAR) 0-1           Iran (IRN) Group B  @ Saint Petersburg Stadium, Saint Petersburg
-                     [-; Bouhaddouz 90+5' (o.g.)]
-
-prints on Jun/16:
-
-    #5 Sat Jun/16       France (FRA) vs    Australia (AUS) Group C  @ Kazan Arena, Kazan
-    #6 Sat Jun/16         Peru (PER) vs      Denmark (DEN) Group C  @ Mordovia Arena, Saransk
-    #7 Sat Jun/16    Argentina (ARG) vs      Iceland (ISL) Group D  @ Spartak Stadium, Moscow
-    #8 Sat Jun/16      Croatia (CRO) vs      Nigeria (NGA) Group D  @ Kaliningrad Stadium, Kaliningrad
+   #31 Tue Jun/15          Hungary (HUN)    vs    Portugal (POR)         Group F / Matchday 1
+   #32 Tue Jun/15           France (FRA)    vs    Germany (GER)          Group F / Matchday 1
 
 and so on.
 Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
