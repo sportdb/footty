@@ -19,20 +19,20 @@ for upcoming or past matches. For example:
 
 prints on Jun/14 2021:
 
-   #20 Mon Jun/14         Scotland (SCO)   vs   Czech Republic (CZE)   Group D / Matchday 1
-   #25 Mon Jun/14           Poland (POL)   vs   Slovakia (SVK)         Group E / Matchday 1
-   #26 Mon Jun/14            Spain (ESP)   vs   Sweden (SWE)           Group E / Matchday 1
+    #20 Mon Jun/14         Scotland (SCO)   vs   Czech Republic (CZE)   Group D / Matchday 1
+    #25 Mon Jun/14           Poland (POL)   vs   Slovakia (SVK)         Group E / Matchday 1
+    #26 Mon Jun/14            Spain (ESP)   vs   Sweden (SWE)           Group E / Matchday 1
 
 and the next day with `footty yesterday`:
 
-   #20 Mon Jun/14         Scotland (SCO) 0-2 (0-1) Czech Republic (CZE)   Group D / Matchday 1
-   #25 Mon Jun/14           Poland (POL) 1-2 (0-1) Slovakia (SVK)         Group E / Matchday 1
-   #26 Mon Jun/14            Spain (ESP) 0-0       Sweden (SWE)           Group E / Matchday 1
+    #20 Mon Jun/14         Scotland (SCO) 0-2 (0-1) Czech Republic (CZE)   Group D / Matchday 1
+    #25 Mon Jun/14           Poland (POL) 1-2 (0-1) Slovakia (SVK)         Group E / Matchday 1
+    #26 Mon Jun/14            Spain (ESP) 0-0       Sweden (SWE)           Group E / Matchday 1
 
 prints on Jun/15 2021:
 
-   #31 Tue Jun/15          Hungary (HUN)    vs    Portugal (POR)         Group F / Matchday 1
-   #32 Tue Jun/15           France (FRA)    vs    Germany (GER)          Group F / Matchday 1
+    #31 Tue Jun/15          Hungary (HUN)    vs    Portugal (POR)         Group F / Matchday 1
+    #32 Tue Jun/15           France (FRA)    vs    Germany (GER)          Group F / Matchday 1
 
 and so on.
 Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
