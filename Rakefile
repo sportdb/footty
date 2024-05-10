@@ -5,7 +5,7 @@ Hoe.spec 'footty' do
 
   self.version = Footty::VERSION
 
-  self.summary = 'footty - football.db command line client for european "euro" championship 2020 (in 2021) and more - who is playing today?'
+  self.summary = 'footty - football.db command line client for european "euro" championship 2024 and more - who is playing today?'
   self.description = summary
 
   self.urls = { home: 'https://github.com/sportdb/footty' }

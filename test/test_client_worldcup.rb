@@ -6,7 +6,7 @@ require 'helper'
 
 
 
-class TestClientWorldCup < MiniTest::Test
+class TestClientWorldCup < Minitest::Test
 
   def setup
     @client = Footty::Client.new( league: 'worldcup', year: 2018 )

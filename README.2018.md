@@ -1,11 +1,6 @@
-# Notes
+# World Cup 2018 
 
-
-
-
-## Old World Cup 2018 README
-
-Usage - Who's playing today?
+## Usage - Who's playing today?
 
 The footty command line tool lets you query the online football.db HTTP JSON API services
 for upcoming or past matches. For example:

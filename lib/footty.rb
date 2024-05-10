@@ -22,7 +22,7 @@ module Footty
 
   def self.client
     ## note: hard code tournament / league for now
-    @client ||= Client.new( league: 'euro', year: 2020 )    ## use "singelton" / shared client
+    @client ||= Client.new( league: 'euro', year: 2024 )    ## use "singelton" / shared client
   end
 
 
@@ -64,7 +64,8 @@ module Footty
           puts "** No matches scheduled today.\n"
 
           ## note: was world cup 2018 - end date -- Date.new( 2018, 7, 11 )
-          if Date.today > Date.new( 2021, 7, 11 )   ## tournament is over, look back
+          ## note: was euro 2020 (in 2021) - end date -- Date.new( 2021, 7, 11 )
+          if Date.today > Date.new( 2024, 7, 14 )     ## tournament is over, look back
             puts "Past matches:"
             matches = client.past_matches
           else  ## world cup is upcoming /in-progress,look forward

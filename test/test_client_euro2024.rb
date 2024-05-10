@@ -1,28 +1,28 @@
 ###
 #  to run use
-#     ruby -I ./lib -I ./test test/test_client_euro.rb
+#     ruby -I ./lib -I ./test test/test_client_euro2024.rb
 
 require 'helper'
 
 
 
-class TestClientEuro < MiniTest::Test
+class TestClientEuro2024 < Minitest::Test
 
   def setup
-    @client = Footty::Client.new( league: 'euro', year: 2020 )
+    @client = Footty::Client.new( league: 'euro', year: 2024 )
   end
 
 
   def test_getters
-    today = Date.new( 2021, 6, 15 )
+    today = Date.new( 2024, 6, 15 )
 
     todays     = @client.todays_matches( date: today )
     pp todays
-    assert_equal 2,     todays.size
+    assert_equal 3,     todays.size
 
     yesterdays = @client.yesterdays_matches( date: today )
     pp yesterdays
-    assert_equal 3,     yesterdays.size
+    assert_equal 1,     yesterdays.size
 
     tomorrows  = @client.tomorrows_matches( date: today )
     pp tomorrows
@@ -36,8 +36,8 @@ class TestClientEuro < MiniTest::Test
   end
 
 
-  def test_todays_matches_2021_6_15
-     today = Date.new( 2021, 6, 15 )
+  def test_todays_matches_2024_6_15
+     today = Date.new( 2024, 6, 15 )
      ary = @client.todays_matches( date: today )
      pp ary
 =begin
@@ -55,17 +55,17 @@ class TestClientEuro < MiniTest::Test
 =end
 
      assert_equal Array, ary.class     ## for now just check return type (e.g. assume Array for parsed JSON data)
-     assert_equal 2,     ary.size
+     assert_equal 3,     ary.size
      assert_equal 'HUN',        ary[0]['team1']['code']
-     assert_equal 'POR',        ary[0]['team2']['code']
+     assert_equal 'SUI',        ary[0]['team2']['code']
      assert_equal 'Matchday 1', ary[0]['round']
      # assert_equal 5,            ary[0]['score1']
      # assert_equal 0,            ary[0]['score2']
   end
 
 
-  def test_todays_matches_2021_6_10
-     today = Date.new( 2021, 6, 10 )
+  def test_todays_matches_2024_6_10
+     today = Date.new( 2024, 6, 10 )
      ary = @client.todays_matches( date: today )
      ## note: returns empty array if no matches scheduled/playing today
      pp ary
@@ -93,11 +93,10 @@ class TestClientEuro < MiniTest::Test
     "group"=>"Group A"},
 =end
 
-    assert_equal 'TUR', h['matches'][0]['team1']['code']
-    assert_equal 'ITA', h['matches'][0]['team2']['code']
-    assert_equal 0,     h['matches'][0]['score1']
-    assert_equal 3,     h['matches'][0]['score2']
+    assert_equal 'GER', h['matches'][0]['team1']['code']
+    assert_equal 'SCO', h['matches'][0]['team2']['code']
+    # assert_equal nil,     h['matches'][0]['score1']
+    # assert_equal nil,     h['matches'][0]['score2']
   end
 
-
-end # class TestClientEuro
+end # class TestClientEuro2024
