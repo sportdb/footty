@@ -1,30 +1,20 @@
-## stdlibs
-
-require 'net/http'
-require 'uri'
-require 'json'
-require 'pp'
-
-
-## 3rd party gems/libs
-## require 'props'
-
-require 'logutils'
-require 'fetcher'
+require 'sportdb/quick'   ## note - pulls in cocos et al
 
 
 # our own code
-require 'footty/version' # let it always go first
-require 'footty/client'
+require_relative 'footty/version' # let it always go first
+require_relative 'footty/client'
 
 
 module Footty
 
-  def self.client
-    ## note: hard code tournament / league for now
-    @client ||= Client.new( league: 'euro', year: 2024 )    ## use "singelton" / shared client
-  end
 
+##
+## fix/todo
+##   add option for --league/-l
+##              and --year/-y
+##   or pass in as args  eg.  footty de
+##    and filter ARGV - why? why not?
 
 
   def self.main
@@ -32,6 +22,13 @@ module Footty
 
     what = ARGV[0] || 'today'
     what = what.downcase
+
+     league = 'de'  # 'eng'
+     year = 2024
+
+    # Client.new( league: 'euro', year: 2024 )
+    client = Client.new( league: league, year: year )
+
 
     ## in the future make today "configurable" as param - why? why not?
     today = Date.today
@@ -52,7 +49,7 @@ module Footty
          puts "** No matches played yet.\n"
       end
     elsif ['upcoming', 'up', 'u', 'next', 'n'].include?( what )
-      matches = client.upcoming_matches
+      matches = client.upcoming_matches( limit: 18 )
       if matches.empty?
          puts "** No more matches scheduled.\n"
       end
@@ -65,21 +62,18 @@ module Footty
 
           ## note: was world cup 2018 - end date -- Date.new( 2018, 7, 11 )
           ## note: was euro 2020 (in 2021) - end date -- Date.new( 2021, 7, 11 )
-          if Date.today > Date.new( 2024, 7, 14 )     ## tournament is over, look back
+          if Date.today > Date.new( 2025, 6, 1 )     ## tournament is over, look back
             puts "Past matches:"
             matches = client.past_matches
           else  ## world cup is upcoming /in-progress,look forward
             puts "Upcoming matches:"
-            matches = client.upcoming_matches
+            matches = client.upcoming_matches( limit: 18 )
           end
        end
     end
 
-
-
     print_matches( matches )
   end
-
 
 
   def self.print_matches( matches )
@@ -88,16 +82,23 @@ module Footty
     today = Date.today
 
     matches.each do |match|
-      print "   %5s" % "\##{match['num']} "
+      print "   %5s" % "\##{match['num']} "   if match['num']
 
       date = Date.parse( match['date'] )
       print "#{date.strftime('%a %b/%d')} "      ## e.g. Thu Jun/14
+      print "#{match['time']} "  if match['time']
+
       if date > today
          diff = (date - today).to_i
          print "%10s" % "(in #{diff}d) "
       end
 
-      print "%22s" % "#{match['team1']['name']} (#{match['team1']['code']})"
+
+      if match['team1'].is_a?( Hash )
+        print "%22s" % "#{match['team1']['name']} (#{match['team1']['code']})"
+      else
+        print "%22s" % "#{match['team1']}"
+      end
 
       ## todo/fix: add support for knockout scores
       ##                 with score1et/score1p  (extra time and penalty)
@@ -108,7 +109,12 @@ module Footty
         print "    vs    "
       end
 
-      print "%-22s" % "#{match['team2']['name']} (#{match['team2']['code']})"
+      if match['team2'].is_a?( Hash )
+        print "%-22s" % "#{match['team2']['name']} (#{match['team2']['code']})"
+      else
+        print "%-22s" % "#{match['team2']}"
+      end
+
 
       if match['group']
         print " #{match['group']} /"    ## group phase/stage
@@ -149,8 +155,6 @@ module Footty
         end
         print "]\n"
       end
-
-
     end
   end
 

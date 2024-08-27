@@ -1,8 +1,8 @@
 ###
 #  to run use
-#     ruby -I ./lib -I ./test test/test_client_euro2020.rb
+#     ruby test/test_client_euro2020.rb
 
-require 'helper'
+require_relative 'helper'
 
 
 
@@ -101,3 +101,41 @@ class TestClientEuro2020 < Minitest::Test
 
 
 end # class TestClientEuro2020
+
+__END__
+
+GET https://raw.githubusercontent.com/openfootball/euro.json/master/2020/euro.json...
+{"name"=>"Euro 2021",
+ "rounds"=>
+  [{"name"=>"Matchday 1",
+    "matches"=>
+     [{"num"=>1,
+       "date"=>"2021-06-11",
+       "time"=>"21:00",
+       "team1"=>{"name"=>"Turkey", "code"=>"TUR"},
+       "team2"=>{"name"=>"Italy", "code"=>"ITA"},
+       "score"=>{"ft"=>[0, 3], "ht"=>[0, 0]},
+       "goals1"=>[],
+       "goals2"=>
+        [{"name"=>"Demiral", "minute"=>53, "owngoal"=>true},
+         {"name"=>"Immobile", "minute"=>66},
+         {"name"=>"Insigne", "minute"=>79}],
+       "group"=>"Group A"},
+      {"num"=>2,
+       "date"=>"2021-06-12",
+       "time"=>"15:00",
+       "team1"=>{"name"=>"Wales", "code"=>"WAL"},
+       "team2"=>{"name"=>"Switzerland", "code"=>"SUI"},
+       "score"=>{"ft"=>[1, 1], "ht"=>[0, 0]},
+       "goals1"=>[{"name"=>"Moore", "minute"=>74}],
+       "goals2"=>[{"name"=>"Embolo", "minute"=>49}],
+       "group"=>"Group A"},
+      {"num"=>3,
+       "date"=>"2021-06-12",
+       "time"=>"18:00",
+       "team1"=>{"name"=>"Denmark", "code"=>"DEN"},
+       "team2"=>{"name"=>"Finland", "code"=>"FIN"},
+       "score"=>{"ft"=>[0, 1], "ht"=>[0, 0]},
+       "goals1"=>[],
+       "goals2"=>[{"name"=>"Pohjanpalo", "minute"=>60}],
+       "group"=>"Group B"},
