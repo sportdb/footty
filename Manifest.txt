@@ -3,6 +3,7 @@ Manifest.txt
 README.md
 Rakefile
 bin/footty
+bin/ftty
 lib/footty.rb
-lib/footty/client.rb
+lib/footty/dataset.rb
 lib/footty/version.rb
