@@ -18,7 +18,7 @@ Hoe.spec 'footty' do
   self.history_file = 'CHANGELOG.md'
 
   self.extra_deps = [
-    ['sportdb-quick']
+    ['sportdb-quick', '>= 0.2.0']
   ]
 
   self.licenses = ['Public Domain']

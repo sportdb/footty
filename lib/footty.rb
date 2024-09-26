@@ -7,23 +7,21 @@ require_relative 'footty/dataset'
 
 
 module Footty
-
-  def self.main
+  def self.main( args=ARGV )
     puts banner # say hello
 
      league = 'en'
-     year   = 2024
+     year   = nil
 
-     ## filter ARGV for league or year
-     args = ARGV.select do |arg|
+     leagues = Dataset.leagues  ## e.g. ['world','euro',
+                                ##       'de','en','at']
+
+     ## filter args for league or year
+     args = args.select do |arg|
                              if arg =~ /^\d{4}$/
                                  year = arg.to_i(10)
                                  false  ## eat-up
-                             elsif ['world',
-                                    'euro',
-                                    'de',
-                                    'en',
-                                    'at'].include?( arg )
+                             elsif leagues.include?( arg )
                                  league = arg
                                  false
                              else
