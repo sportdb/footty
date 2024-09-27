@@ -1,4 +1,5 @@
-# footty - football.db command line client for european ("euro") championship 2024 and more
+# footty - football.db command line tool for national & int'l football club leagues (& cups) from around the world (bonus - incl. world cup, euro and more)
+
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
 * bugs  :: [github.com/sportdb/footty/issues](https://github.com/sportdb/footty/issues)
@@ -11,15 +12,27 @@
 
 ## Usage - Who's playing today?
 
-The footty command line tool lets you query the online football.db HTTP JSON API services
+The footty command line tool lets you query the online football.db via HTTP
 for upcoming or past matches. For example:
 
-    $ footty              # Defaults to today's euro 2024 matches
+    $ footty         # Defaults to today's English Premier League 2024/25 matches
 
-prints on Jun/14 2024:
+prints on Sep 27, 2024:
 
-    #1 Fri Jun/14            Germany (GER)    vs    Scotland (SCO)         Group A / Matchday 1
-   
+    Upcoming matches:
+    Sat Sep/28 12:30   (in 1d)    Newcastle United FC    vs    Manchester City FC     Matchday 6
+    Sat Sep/28 15:00   (in 1d)             Arsenal FC    vs    Leicester City FC      Matchday 6
+    Sat Sep/28 15:00   (in 1d)           Brentford FC    vs    West Ham United FC     Matchday 6
+    Sat Sep/28 15:00   (in 1d)             Chelsea FC    vs    Brighton & Hove Albion  Matchday 6
+    Sat Sep/28 15:00   (in 1d)             Everton FC    vs    Crystal Palace FC      Matchday 6
+    Sat Sep/28 15:00   (in 1d)   Nottingham Forest FC    vs    Fulham FC              Matchday 6
+    Sat Sep/28 17:30   (in 1d) Wolverhampton Wanderers FC    vs    Liverpool FC           Matchday 6
+    Sun Sep/29 14:00   (in 2d)        Ipswich Town FC    vs    Aston Villa FC         Matchday 6
+    Sun Sep/29 16:30   (in 2d)   Manchester United FC    vs    Tottenham Hotspur FC   Matchday 6
+    Mon Sep/30 20:00   (in 3d)        AFC Bournemouth    vs    Southampton FC         Matchday 6
+
+
+
 Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
 
     $ footty tomorrow    # -or-
@@ -41,7 +54,32 @@ Use `past` or `p` to print all past matches e.g.:
     $ footty p
 
 
+
 That's it. Enjoy the beautiful game.
+
+
+## Bonus - More Leagues & Cups  - Bundesliga, Serie A, Ligue 1, La Liga & More
+
+Pass in the league code to display the Germand Bundesliga, Spanish La Liga, etc:
+
+    $ footty de        #  who's playing in the bundesliga today?
+    $ footty es        #  who's playing in la liga today?
+    ...
+
+League codes include:
+
+- `de`  =>  Bundesliga
+- `es`  =>  La Liga
+- `it`  =>  Serie A
+- `fr`  =>  Ligue 1
+- ...
+
+More
+
+- `world`  =>  World Cup
+- `euro`   =>  "Euro" - European Championship
+
+See [footty/dataset](https://github.com/sportdb/footty/blob/master/lib/footty/dataset.rb) for the complete built-in list of data sources (and league keys).
 
 
 
@@ -62,7 +100,6 @@ Just install the gem:
 
 The `footty` scripts are dedicated to the public domain.
 Use it as you please with no restrictions whatsoever.
-
 
 
 

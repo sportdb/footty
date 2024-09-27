@@ -11,18 +11,34 @@ module Footty
       'euro' =>  { '2024' => 'euro/2024--germany/euro.txt',
                    '2021' => 'euro/2021--europe/euro.txt'
                  },
-      'de'=>    'deutschland/$season$/1-bundesliga.txt',
+      'de'  =>    'deutschland/$season$/1-bundesliga.txt',
+      'de2' =>   'deutschland/$season$/2-bundesliga2.txt',
       'en'=>    'england/$season$/1-premierleague.txt',
       'es'=>    'espana/$season$/1-liga.txt',
       'it'=>    'italy/$season$/1-seriea.txt',
       'at'=>    'austria/$season$/1-bundesliga.txt',
+      'at2'  =>   'austria/$season$/2-liga2.txt',
+      'at3o' =>   'austria/$season$/3-regionalliga-ost.txt',
+      'atcup' =>  'austria/$season$/cup.txt',
 
       'fr'=>    'europe/france/$season$/1-ligue1.txt',
       'nl'=>    'europe/netherlands/$season$/1-eredivisie.txt',
       'be'=>    'europe/belgium/$season$/1-firstdivisiona.txt',
 
       'champs'=> 'champions-league/$season$/cl.txt',
+
+      'br'    => 'south-america/brazil/$year$/1-seriea.txt',
+      'ar'    => 'south-america/argentina/$year$/1-primeradivision.txt',
+      'co'    => 'south-america/colombia/$year$/1-primeraa.txt',
+      ## use a different code for copa libertadores? why? why not?
+      'copa'  => 'south-america/copa-libertadores/$year$/libertadores.txt',
+
+      'mx'    => 'mexico/$season$/1-ligamx.txt',
+
+      'eg'    => 'africa/egypt/$season$/1-premiership.txt',
+      'ma'    => 'africa/morocco/$season$/1-botolapro1.txt',
     }
+
 
     ## return built-in league keys
     def self.leagues()  SOURCES.keys; end
@@ -70,8 +86,8 @@ module Footty
       @data ||= begin
                   matches = []
                   @urls.each do |url|
-                    res = get!( url )    ## use "memoized" / cached result
-                    matches += SportDb::QuickMatchReader.parse( res.text )
+                    txt = get!( url )    ## use "memoized" / cached result
+                    matches += SportDb::QuickMatchReader.parse( txt )
                   end
                   data = matches.map {|match| match.as_json }  # convert to json
                   ## quick hack to get keys as strings not symbols!!
@@ -148,19 +164,26 @@ private
     end  # method select_matches
 
 
-    def get!( url )
-      response = Webclient.get( url )
 
-      if response.status.ok?
-         response
-      else
-        puts "!! HTTP ERROR - #{response.status.code} #{response.status.message}"
-        ## dump headers
-        response.headers.each do |key,value|
-           puts "   #{key}:  #{value}"
-        end
-        exit 1
-      end
-    end  # method get!
+    def get!( url )
+        ##  use cached urls for 12h by default
+        ##  if expired in cache (or not present) than get/fetch
+       if Webcache.expired_in_12h?( url )
+         response = Webget.text( url )
+
+         if response.status.ok?
+           response.text   # note - return text (utf-8)
+         else
+           ## dump headers
+           response.headers.each do |key,value|
+             puts "   #{key}:  #{value}"
+           end
+           puts "!! HTTP ERROR - #{response.status.code} #{response.status.message}"
+           exit 1
+         end
+       else
+         Webcache.read( url )
+       end
+    end  # method get_txt!
   end # class Dataset
 end # module Footty

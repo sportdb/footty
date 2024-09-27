@@ -1,9 +1,16 @@
 require 'sportdb/quick'   ## note - pulls in cocos et al
-
+require 'webget'    ## add webcache support
 
 # our own code
 require_relative 'footty/version' # let it always go first
 require_relative 'footty/dataset'
+
+
+
+## set cache to local .cache dir for now - why? why not?
+Webcache.root = './cache'
+#  pp Webcache.root
+Webget.config.sleep = 1  ## set delay in secs (to 1 sec - default is/maybe 3)
 
 
 module Footty
