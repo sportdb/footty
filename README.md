@@ -1,4 +1,4 @@
-# footty & co. - open football (football.dd) command-line tools incl. fbtxt, fbtxt2json, and more
+# footty & co. - open football (football.db) command-line tools incl. fbtxt, fbtxt2json, and more
 
 
 Gem Family:
