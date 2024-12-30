@@ -2,7 +2,7 @@ require 'hoe'
 
 
 Hoe.spec 'fbtxt' do
-  self.version = '0.1.2'
+  self.version = '0.2.0'
 
   self.summary = "fbtxt - convert football match schedules & more in tabular comma-separated values (csv) format to (future-proof & evergreen) football.txt"
   self.description = summary
@@ -19,7 +19,8 @@ Hoe.spec 'fbtxt' do
   self.licenses = ['Public Domain']
 
   self.extra_deps = [
-       ['sportdb-writers', '>= 0.4.0'],
+       ['sportdb-writers', '>= 0.4.1'],
+       ['football-timezones', '>= 0.3.0'],
   ]
 
   self.spec_extras = {

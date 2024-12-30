@@ -13,6 +13,7 @@
 # $LOAD_PATH.unshift( '../../../sportdb/sport.db/quick/lib' )
 
 require 'sportdb/writers'
+require 'football/timezones'
 
 
 require 'optparse'   ## check if included in cocos prelude?
