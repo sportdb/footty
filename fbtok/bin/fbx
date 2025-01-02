@@ -88,12 +88,12 @@ paths.each_with_index do |path,i|
     ## pp secs
 
     secs.each_with_index do |sec,j|   ## sec(tion)s
-      season = sec[:season]
+      season = Season.parse( sec[:season] )   ## convert (str) to season obj!!!
       league = sec[:league]
       stage  = sec[:stage]
       lines  = sec[:lines]
 
-      puts "   section #{j+1}/#{secs.size} -   #{league.name} #{season}, #{stage}  -  #{lines.size} line(s)"
+      puts "   section #{j+1}/#{secs.size} -   #{league} #{season}, #{stage}  -  #{lines.size} line(s)"
 
       next if opts[:outline]
 

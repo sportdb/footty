@@ -1,5 +1,5 @@
 
-require 'sportdb/quick'
+require 'sportdb/formats'
 
 
 ## more stdlibs

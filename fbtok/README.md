@@ -19,6 +19,20 @@ $ gem install fbtok
 
 ## Usage
 
+
+### fbtok -  use tokenizer/parser
+
+- depends on sportdb-parser
+
+### fbt   -  use quick match reader &  fbx   -  dump match schedule  - uses quick league & match readers
+
+- depends on sportdb-quick
+
+### fbchk  -  use quick match linter; check league and team names via search & more
+
+- depends on sportdb-formats (incl. sportdb-search & sportdb-catalogs)
+
+
 ...
 
 
