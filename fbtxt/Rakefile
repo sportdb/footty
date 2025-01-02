@@ -7,7 +7,7 @@ Hoe.spec 'fbtxt' do
   self.summary = "fbtxt - convert football match schedules & more in tabular comma-separated values (csv) format to (future-proof & evergreen) football.txt"
   self.description = summary
 
-  self.urls = { home: 'https://github.com/sportdb/sport.db' }
+  self.urls = { home: 'https://github.com/sportdb/footty' }
 
   self.author = 'Gerald Bauer'
   self.email  = 'gerald.bauer@gmail.com'

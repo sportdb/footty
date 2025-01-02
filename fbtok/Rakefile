@@ -1,10 +1,10 @@
 require 'hoe'
 
 
-Hoe.spec 'fbtxt2json' do
+Hoe.spec 'fbtok' do
   self.version = '0.1.0'
 
-  self.summary = "fbtxt2json - convert football.txt match schedules & more to json"
+  self.summary = "fbtok - football.txt lint tools incl. tokenizer, parser & more"
   self.description = summary
 
   self.urls = { home: 'https://github.com/sportdb/footty' }
@@ -19,7 +19,10 @@ Hoe.spec 'fbtxt2json' do
   self.licenses = ['Public Domain']
 
   self.extra_deps = [
-       ['sportdb-quick', '>= 0.2.1'],
+     #  ['sportdb-parser',  '>= 0.2.2'],
+     #  ['sportdb-structs', '>= 0.5.0'],
+     #  ['logutils',        '>= 0.6.1'],
+     ['sportdb-quick', '>= 0.3.0'],
   ]
 
   self.spec_extras = {

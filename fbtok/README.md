@@ -1,10 +1,11 @@
-# fbtxt - convert football match schedules & more in tabular comma-separated values (csv) format to (future-proof & evergreen) football.txt
+# fbtok - football.txt lint tools incl. tokenizer, parser & more
+ 
 
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
 * bugs  :: [github.com/sportdb/footty/issues](https://github.com/sportdb/footty/issues)
-* gem   :: [rubygems.org/gems/fbtxt](https://rubygems.org/gems/fbtxt)
-* rdoc  :: [rubydoc.info/gems/fbtxt](http://rubydoc.info/gems/fbtxt)
+* gem   :: [rubygems.org/gems/fbtok](https://rubygems.org/gems/fbtok)
+* rdoc  :: [rubydoc.info/gems/fbtok](http://rubydoc.info/gems/fbtok)
 
 
 ## Step 0 - Installation Via Gems
@@ -12,20 +13,11 @@
 To install the command-line tool via gems (ruby's package manager) use:
 
 ```
-$ gem install fbtxt
+$ gem install fbtok
 ```
 
 
 ## Usage
-
-Try in your shell / terminal:
-
-```
-$ fbtxt -h
-```
-
-resulting in:
-
 
 ...
 
