@@ -3,14 +3,33 @@
 ## tip: to test run:
 ##   ruby -I ./lib bin/fbleagues
 
+#####
+#  print/dump all leagues
+#        if no args passed along
+#       e.g.  $ fbleagues
+#    otherwise filter by country code
+#       e.g.  $ fbleagues eng
+
+
 
 ## our own code
 require 'fbcat'
+
+require 'optparse'
+
 
 
 ## default to built-in for now
 path = "#{FootballDb::Data.data_dir}/catalog.db"
 ### './catalog.db',
+
+
+
+## local hack
+##   if exists up-to-date catalog db (use local version NOT built-in)
+# catalog_path = '/sports/sportdb/sport.db/catalog/catalog.db'
+##  path = catalog_path  if File.exist?( catalog_path )
+
 
 config = {
         adapter:  'sqlite3',
@@ -20,7 +39,32 @@ pp config
 
 
 args = ARGV
- 
+opts = { debug: false,
+       }
+
+parser = OptionParser.new do |parser|
+  parser.banner = "Usage: #{$PROGRAM_NAME} [options] KEYS"
+
+##
+## check if git has a offline option?? (use same)
+##             check for other tools - why? why not?
+#    parser.on( "-q", "--quiet",
+#                 "less debug output/messages - default is (#{!opts[:debug]})" ) do |debug|
+#      opts[:debug] = false
+#    end
+   parser.on( "--verbose", "--debug",
+               "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
+     opts[:debug] = true
+   end
+end
+parser.parse!( args )
+
+puts "OPTS:"
+p opts
+puts "ARGV:"
+p args
+
+
 
 ActiveRecord::Base.establish_connection( config )
 

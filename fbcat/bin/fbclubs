@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+## tip: to test run:
+##   ruby -I ./lib bin/fbclubs
+
+#####
+#  print/dump all clubs
+#        if no args passed along
+#       e.g.  $ fbclubs
+#    otherwise filter by country code
+#       e.g.  $ fbclubs eng
+
+
+
+## our own code
+require 'fbcat'
+
+require 'optparse'
+
+
+
+# to be done
+
+
+puts "bye"
