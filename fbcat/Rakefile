@@ -1,0 +1,31 @@
+require 'hoe'
+
+
+Hoe.spec 'fbcat' do
+  self.version = '0.1.0'
+
+  self.summary = "fbcat - command-line tools for built-in football catalog (reference) dbs incl. leagues, clubs, & more"
+  self.description = summary
+
+  self.urls = { home: 'https://github.com/sportdb/footty' }
+
+  self.author = 'Gerald Bauer'
+  self.email  = 'gerald.bauer@gmail.com'
+
+  # switch extension to .markdown for gihub formatting
+  self.readme_file  = 'README.md'
+  self.history_file = 'CHANGELOG.md'
+
+  self.licenses = ['Public Domain']
+
+  self.extra_deps = [
+    ['activerecord'], 
+    ['sqlite3'],
+    ['cocos'],
+    ['footballdb-data'],
+  ]
+
+  self.spec_extras = {
+    required_ruby_version: '>= 3.1.0'
+  }
+end

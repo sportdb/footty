@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+## tip: to test run:
+##   ruby -I ./lib bin/fbleagues
+
+
+## our own code
+require 'fbcat'
+
+
+## default to built-in for now
+path = "#{FootballDb::Data.data_dir}/catalog.db"
+### './catalog.db',
+
+config = {
+        adapter:  'sqlite3',
+        database:   path
+}
+pp config
+
+
+args = ARGV
+ 
+
+ActiveRecord::Base.establish_connection( config )
+
+
+puts "  #{Country.count} countries"
+puts "        #{CountryName.count} country names"
+puts "  #{Club.count} clubs"
+puts "        #{ClubName.count} club names"
+puts "  #{NationalTeam.count} national teams"
+puts "        #{NationalTeamName.count} national team names"
+puts "  #{League.count} leagues"
+puts "        #{LeagueName.count} league names"
+puts "        #{LeaguePeriod.count} league periods"
+
+
+
+def print_league( league )    
+    periods = league.league_periods
+
+  if league.intl? 
+    if league.clubs?
+        print "INTL CLUBS"  
+    else
+        print "INTL NATIONAL TEAMS"  
+    end
+  end
+
+  print "#{league.country.key}, #{league.country.name} (#{league.country.code})"   if league.country
+  print " - "
+
+  print "#{league.name} "
+  print "(#{periods.size}) "  if periods.size > 1
+  
+    print "\n"
+    periods.each do |period|
+      print "  - #{period.tier_key}, "
+      print "#{period.start_season}"  if period.start_season
+      print "-"
+      print "#{period.end_season} "  if period.end_season
+      print "   "
+      if period.name == league.name 
+        print '"' 
+      else
+        print "#{period.name}" 
+      end 
+      print " / #{period.qname}"  if period.name != period.qname
+      print ",  #{period.slug}"
+      print "\n"
+      ## pp period
+    end
+end
+
+def print_leagues( leagues )
+   leagues.each do |league|
+     print_league( league )
+   end
+   puts "  #{leagues.size} record(s)"
+end
+
+
+if args.size > 0
+    args.each do |arg|
+        ## assume arg is country key
+        country = arg
+        puts
+        puts "==> #{country}"
+        leagues = League.where( "country_key = '#{country}'" )
+        print_leagues( leagues )
+    end
+else
+puts
+puts "==> INTL NATIONAL TEAMS"
+leagues = League.where( 'intl = true AND clubs = false')
+print_leagues( leagues )
+
+
+puts
+puts "==> INTL CLUBS"
+leagues = League.where( 'intl = true AND clubs = true')
+print_leagues( leagues)
+
+puts
+puts "==> NATIONAL LEAGUES & CUPS"
+leagues = League.where( 'intl = false AND clubs = true')
+print_leagues( leagues)
+end
+
+
+puts "bye"
+
