@@ -20,15 +20,15 @@ require 'optparse'
 
 
 ## default to built-in for now
-path = "#{FootballDb::Data.data_dir}/catalog.db"
-### './catalog.db',
-
-
 
 ## local hack
-##   if exists up-to-date catalog db (use local version NOT built-in)
-# catalog_path = '/sports/sportdb/sport.db/catalog/catalog.db'
-##  path = catalog_path  if File.exist?( catalog_path )
+## if exists up-to-date catalog db (use local version NOT built-in)
+catalog_path = '/sports/sportdb/sport.db/catalog/catalog.db'
+path =  if File.exist?( catalog_path )
+           catalog_path
+        else
+           "#{FootballDb::Data.data_dir}/catalog.db"
+        end
 
 
 config = {
