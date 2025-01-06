@@ -40,10 +40,22 @@ pp config
 
 args = ARGV
 opts = { debug: false,
+         codes: false,  ## show codes
+         names: false,  ## show (alt) names
        }
 
 parser = OptionParser.new do |parser|
   parser.banner = "Usage: #{$PROGRAM_NAME} [options] KEYS"
+
+   parser.on( "--codes",
+               "show codes (default: #{opts[:codes]})" ) do |codes|
+     opts[:codes] = true
+   end
+
+   parser.on( "--names",
+               "show (alt) names (default: #{opts[:names]})" ) do |names|
+     opts[:names] = true
+   end
 
 ##
 ## check if git has a offline option?? (use same)
@@ -81,7 +93,8 @@ puts "        #{LeaguePeriod.count} league periods"
 
 
 
-def print_league( league )    
+def print_league( league, show_codes:,
+                          show_names: )    
     periods = league.league_periods
 
   if league.intl? 
@@ -97,8 +110,28 @@ def print_league( league )
 
   print "#{league.name} "
   print "(#{periods.size}) "  if periods.size > 1
-  
+  print "\n"
+
+  if show_names
+    print  "   (alt) names - #{league.alt_names}"
     print "\n"
+  end
+
+   if show_codes
+       codes = league.league_codes
+       print  "   %2d code(s) - " % codes.size
+       print codes.map { |rec| rec.code }.join( ' ' )
+       print "\n"
+   end
+
+   if show_names
+       names = league.league_names
+       print  "   %2d name(s) - " % names.size
+       print names.map { |rec| rec.name }.join( ' ' )
+       print "\n"
+   end
+
+
     periods.each do |period|
       print "  - #{period.tier_key}, "
       print "#{period.start_season}"  if period.start_season
@@ -114,12 +147,28 @@ def print_league( league )
       print ",  #{period.slug}"
       print "\n"
       ## pp period
+ 
+      if show_codes
+        codes = period.league_period_codes
+        print  "     %2d code(s) - " % codes.size 
+        print codes.map { |rec| rec.code }.join( ' ' )
+        print "\n"
+      end
+      if show_names
+        names = period.league_period_names
+        print  "     %2d name(s) - " % names.size 
+        print names.map { |rec| rec.name }.join( ' ' )
+        print "\n"
+      end
     end
 end
 
-def print_leagues( leagues )
+
+def print_leagues( leagues, show_codes: true,
+                            show_names: true )
    leagues.each do |league|
-     print_league( league )
+     print_league( league, show_codes: show_codes,
+                           show_names: show_names )
    end
    puts "  #{leagues.size} record(s)"
 end
@@ -132,24 +181,28 @@ if args.size > 0
         puts
         puts "==> #{country}"
         leagues = League.where( "country_key = '#{country}'" )
-        print_leagues( leagues )
+        print_leagues( leagues, show_codes: opts[:codes],
+                                show_names: opts[:names] )
     end
 else
 puts
 puts "==> INTL NATIONAL TEAMS"
 leagues = League.where( 'intl = true AND clubs = false')
-print_leagues( leagues )
+print_leagues( leagues, show_codes: opts[:codes],
+                        show_names: opts[:names] )
 
 
 puts
 puts "==> INTL CLUBS"
 leagues = League.where( 'intl = true AND clubs = true')
-print_leagues( leagues)
+print_leagues( leagues, show_codes: opts[:codes],
+                        show_names: opts[:names] )
 
 puts
 puts "==> NATIONAL LEAGUES & CUPS"
 leagues = League.where( 'intl = false AND clubs = true')
-print_leagues( leagues)
+print_leagues( leagues, show_codes: opts[:codes],
+                        show_names: opts[:names] )
 end
 
 
