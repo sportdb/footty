@@ -1,10 +1,14 @@
+#!/usr/bin/env ruby
 
-module SportDb
-class Parser
+## tip: to test run:
+##   ruby -I ./lib bin/fbtree
+
+require 'fbtok'
+
 
 ###
 ## note - Linter for now nested inside Parser - keep? why? why not?
-class Linter
+class RaccLinter
 
 def self.debug=(value) @@debug = value; end
 def self.debug?() @@debug ||= false; end  ## note: default is FALSE
@@ -16,7 +20,6 @@ attr_reader :errors
 
 def initialize
   @errors = []
-  @parser = Parser.new   ## use own parser instance (not shared) - why? why not?
 end
 
 
@@ -51,11 +54,11 @@ def errors?() @errors.size > 0; end
 #########
 ## parse - false (default) - tokenize (only)
 ##       - true            - tokenize & parse
-def read( path  )
+def read( path )
   ## note: every (new) read call - resets errors list to empty
   @errors = []
 
-  nodes = OutlineReader.read( path )
+  nodes = SportDb::OutlineReader.read( path )
 
   ##  process nodes
   h1 = nil
@@ -88,7 +91,7 @@ def read( path  )
 
        lines = node[1]
 
-       tree = []
+       txt  = []
        lines.each_with_index do |line,i|
 
         if debug?
@@ -119,53 +122,106 @@ def read( path  )
               next
         end
 
-        t, error_messages  =  @parser.tokenize_with_errors( line )
-                            
-         if error_messages.size > 0
-            ## add to "global" error list
-            ##   make a triplet tuple (file / msg / line text)
-            error_messages.each do |msg|
-                @errors << [ path,
-                             msg,
-                             line
-                           ]
-            end
-         end
+        txt << line
+        txt << "\n"
+      end
 
-          ## post-process tokens
-          ##  - check for round, group, etc.
-          t = t.map do |tok|
-            #############
-            ## pass 1
-            ##   replace all texts with keyword matches (e.g. group, round, leg, etc.)
-                if tok[0] == :TEXT
-                   text = tok[1]
-                    if @parser.is_group?( text )
-                           [:GROUP, text]
-                    elsif @parser.is_round?( text ) || @parser.is_leg?( text )
-                           [:ROUND, text]
-                    else
-                        tok  ## pass through as-is (1:1)
-                    end
-                else
-                   tok
-                end
-          end
- 
-         pp t   if debug?
+      ## flatten
+      txt = txt.join
+      pp txt   if debug?
 
-         tree << t
-       end
-
-       ## pp tree
+      parser = RaccMatchParser.new( txt )   ## use own parser instance (not shared) - why? why not?
+      tree = parser.parse
+      pp tree
     else
         pp node
         raise ArgumentError, "unsupported (node) type >#{type}<"
     end
   end  # each node
 end  # read
-end  # class Linter
+end  # class RaccLinter
 
 
-end   # class Parser
-end   # module SportDb
+
+
+###############################################
+#  start with code
+
+
+
+args = ARGV
+ 
+
+opts = {
+    debug: true,
+}
+
+parser = OptionParser.new do |parser|
+  parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
+
+
+  parser.on( "-q", "--quiet",
+             "less debug output/messages - default is (#{!opts[:debug]})" ) do |debug|
+    opts[:debug] = false
+  end
+  parser.on( "--verbose", "--debug",
+               "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
+    opts[:debug] = true
+  end
+end
+parser.parse!( args )
+
+puts "OPTS:"
+p opts
+puts "ARGV:"
+p args
+
+
+## todo/check - use packs or projects or such
+##                instead of specs - why? why not?
+   paths = if args.empty?
+             [
+               '../../../openfootball/euro/2021--europe/euro.txt',
+               '../../../openfootball/euro/2024--germany/euro.txt',
+             ]
+          else
+            ## check for directories
+            ##   and auto-expand
+            SportDb::Parser::Opts.expand_args( args )
+          end
+
+
+
+
+errors = []
+linter = RaccLinter.new
+
+paths.each_with_index do |path,i|
+
+  puts "==> [#{i+1}/#{paths.size}] reading >#{path}<..."
+
+  linter.read( path )
+end
+
+puts "bye"
+
+
+
+
+__END__
+
+   if errors.size > 0
+      puts
+      pp errors
+      puts
+      puts "!!   #{errors.size} parse error(s) in #{paths.size} datafiles(s)"
+   else
+      puts
+      puts "OK   no parse errors found in #{paths.size} datafile(s)"
+   end
+
+   ## add errors to rec via rec['errors'] to allow
+   ##   for further processing/reporting
+   rec['errors'] = errors
+end
+

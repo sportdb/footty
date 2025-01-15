@@ -5,6 +5,7 @@ Rakefile
 bin/fbchk
 bin/fbt
 bin/fbtok
+bin/fbtree
 bin/fbx
 lib/fbtok.rb
 lib/fbtok/linter.rb

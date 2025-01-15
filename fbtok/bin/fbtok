@@ -10,7 +10,6 @@ args = ARGV
 
 opts = {
     debug: true,
-    metal: false,
     file:  nil,
 }
 
@@ -27,11 +26,14 @@ parser = OptionParser.new do |parser|
     opts[:debug] = true
   end
 
+=begin
   parser.on( "--metal",
                  "turn off typed parse tree; show to the metal tokens"+
                    " (default: #{opts[:metal]})" ) do |metal|
     opts[:metal] = true
   end
+=end
+
 
   parser.on( "-f FILE", "--file FILE",
                 "read datafiles (pathspecs) via .csv file") do |file|
@@ -85,7 +87,7 @@ specs.each_with_index do |(paths, rec),i|
 
    paths.each_with_index do |path,j|
       puts "==> [#{j+1}/#{paths.size}] reading >#{path}<..."
-      linter.read( path, parse: !opts[:metal] )
+      linter.read( path )
 
       errors += linter.errors    if linter.errors?
    end
@@ -94,10 +96,10 @@ specs.each_with_index do |(paths, rec),i|
       puts
       pp errors
       puts
-      puts "!!   #{errors.size} parse error(s) in #{paths.size} datafiles(s)"
+      puts "!!   #{errors.size} tokenize error(s) in #{paths.size} datafiles(s)"
    else
       puts
-      puts "OK   no parse errors found in #{paths.size} datafile(s)"
+      puts "OK   no tokenize errors found in #{paths.size} datafile(s)"
    end
 
    ## add errors to rec via rec['errors'] to allow
