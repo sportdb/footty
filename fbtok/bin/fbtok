@@ -87,7 +87,7 @@ specs.each_with_index do |(paths, rec),i|
 
    paths.each_with_index do |path,j|
       puts "==> [#{j+1}/#{paths.size}] reading >#{path}<..."
-      linter.read( path )
+      linter.read( path, parse: false )  ## only tokenize (do NOT parse)
 
       errors += linter.errors    if linter.errors?
    end

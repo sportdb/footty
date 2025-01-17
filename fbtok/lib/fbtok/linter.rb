@@ -7,7 +7,7 @@ class Parser
 class Linter
 
 def self.debug=(value) @@debug = value; end
-def self.debug?() @@debug ||= false; end  ## note: default is FALSE
+def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
 def debug?()  self.class.debug?; end
 
 
@@ -23,35 +23,10 @@ end
 def errors?() @errors.size > 0; end
 
 
-
-  ## note:  colon (:) MUST be followed by one (or more) spaces
-  ##      make sure mon feb 12 18:10 will not match
-  ##        allow 1. FC Köln etc.
-  ##               Mainz 05:
-  ##           limit to 30 chars max
-  ##          only allow  chars incl. intl buut (NOT ()[]/;)
-  ##
-  ##   Group A:
-  ##   Group B:   - remove colon
-  ##    or lookup first
-
-  ATTRIB_RE = %r{^
-                   [ ]*?     # slurp leading spaces
-                (?<key>[^:|\]\[()\/; -]
-                       [^:|\]\[()\/;]{0,30}
-                 )
-                   [ ]*?     # slurp trailing spaces
-                   :[ ]+
-                (?<value>.+)
-                    [ ]*?   # slurp trailing spaces
-                   $
-                }ix
-
-
 #########
 ## parse - false (default) - tokenize (only)
 ##       - true            - tokenize & parse
-def read( path  )
+def read( path, parse: true )
   ## note: every (new) read call - resets errors list to empty
   @errors = []
 
@@ -62,9 +37,7 @@ def read( path  )
   h2 = nil
   orphans = 0    ## track paragraphs's with no heading
 
-  attrib_found = false
-
-
+ 
   nodes.each do |node|
     type = node[0]
 
@@ -88,35 +61,34 @@ def read( path  )
 
        lines = node[1]
 
+
        tree = []
+
+     if parse
+       ## flatten lines
+       txt  = []
+       lines.each_with_index do |line,i|
+          txt << line
+          txt << "\n"
+       end
+       txt = txt.join
+    
+       if debug?
+         puts "lines:"
+         pp txt   
+       end
+ 
+       ## todo/fix -  add/track parse errors!!!!!!
+       parser = RaccMatchParser.new( txt )   ## use own parser instance (not shared) - why? why not?
+       tree = parser.parse
+       pp tree  
+
+     else   ## process for tokenize only
        lines.each_with_index do |line,i|
 
         if debug?
          puts
          puts "line >#{line}<"
-        end
-
-
-        ## skip new (experimental attrib syntax)
-        if attrib_found == false &&
-            ATTRIB_RE.match?( line )
-          ## note: check attrib regex AFTER group def e.g.:
-          ##         Group A:
-          ##         Group B:  etc.
-          ##     todo/fix - change Group A: to Group A etc.
-          ##                       Group B: to Group B
-           attrib_found = true
-           ## logger.debug "skipping key/value line - >#{line}<"
-           next
-        end
-
-        if attrib_found
-          ## check if line ends with dot
-          ##  if not slurp up lines to the next do!!!
-          ## logger.debug "skipping key/value line - >#{line}<"
-          attrib_found = false   if line.end_with?( '.' )
-              # logger.debug "skipping key/value line (cont.) - >#{line}<"
-              next
         end
 
         t, error_messages  =  @parser.tokenize_with_errors( line )
@@ -156,8 +128,7 @@ def read( path  )
 
          tree << t
        end
-
-       ## pp tree
+      end
     else
         pp node
         raise ArgumentError, "unsupported (node) type >#{type}<"
