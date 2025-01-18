@@ -30,39 +30,9 @@ def read( path, parse: true )
   ## note: every (new) read call - resets errors list to empty
   @errors = []
 
-  nodes = OutlineReader.read( path )
+  outline = QuickMatchOutline.read( path )
 
-  ##  process nodes
-  h1 = nil
-  h2 = nil
-  orphans = 0    ## track paragraphs's with no heading
-
- 
-  nodes.each do |node|
-    type = node[0]
-
-    if type == :h1
-        h1 = node[1]  ## get heading text
-        puts "  = Heading 1 >#{node[1]}<"
-    elsif type == :h2
-        if h1.nil?
-          puts "!! WARN - no heading for subheading; skipping parse"
-          next
-        end
-        h2 = node[1]  ## get heading text
-        puts "  == Heading 2 >#{node[1]}<"
-    elsif type == :p
-
-       if h1.nil?
-         orphans += 1    ## only warn once
-         puts "!! WARN - no heading for #{orphans} text paragraph(s); skipping parse"
-         next
-       end
-
-       lines = node[1]
-
-
-       tree = []
+  outline.each_para do |lines|
 
      if parse
        ## flatten lines
@@ -84,6 +54,7 @@ def read( path, parse: true )
        pp tree  
 
      else   ## process for tokenize only
+       tree = []
        lines.each_with_index do |line,i|
 
         if debug?
@@ -127,14 +98,10 @@ def read( path, parse: true )
          pp t   if debug?
 
          tree << t
-       end
-      end
-    else
-        pp node
-        raise ArgumentError, "unsupported (node) type >#{type}<"
-    end
-  end  # each node
-end  # read
+       end  # each line
+      end   # parse? (or tokenize?) 
+   end  # each para (node)
+end  # method read
 end  # class Linter
 
 
