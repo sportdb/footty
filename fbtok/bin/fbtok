@@ -44,10 +44,17 @@ parser = OptionParser.new do |parser|
 end
 parser.parse!( args )
 
-puts "OPTS:"
-p opts
-puts "ARGV:"
-p args
+
+
+if opts[:debug]
+  puts "OPTS:"
+  p opts
+  puts "ARGV:"
+  p args
+
+  SportDb::Parser::Linter.debug = true    
+  SportDb::Parser::Opts.debug   = true
+end
 
 
 ## todo/check - use packs or projects or such
@@ -55,7 +62,8 @@ p args
 specs = []
 if opts[:file]
       recs = read_csv( opts[:file] )
-      pp recs
+      pp recs     if opts[:debug]
+
       ##  note - make pathspecs relative to passed in file arg!!!
       basedir = File.dirname( opts[:file] )
       recs.each do |rec|
@@ -65,8 +73,8 @@ if opts[:file]
 else
    paths = if args.empty?
              [
-               '../../../openfootball/euro/2021--europe/euro.txt',
-               '../../../openfootball/euro/2024--germany/euro.txt',
+               '/sports/openfootball/euro/2021--europe/euro.txt',
+               '/sports/openfootball/euro/2024--germany/euro.txt',
              ]
           else
             ## check for directories
@@ -77,7 +85,6 @@ else
 end
 
 
-SportDb::Parser::Linter.debug = true    if opts[:debug]
 
 linter = SportDb::Parser::Linter.new
 

@@ -27,18 +27,27 @@ parser = OptionParser.new do |parser|
 end
 parser.parse!( args )
 
-puts "OPTS:"
-p opts
-puts "ARGV:"
-p args
+
+if opts[:debug]
+  puts "OPTS:"
+  p opts
+  puts "ARGV:"
+  p args
+
+  SportDb::Parser::Linter.debug = true    
+  SportDb::Parser::Opts.debug   = true
+end
+
+
+
 
 
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
    paths = if args.empty?
              [
-               '../../../openfootball/euro/2021--europe/euro.txt',
-               '../../../openfootball/euro/2024--germany/euro.txt',
+               '/sports/openfootball/euro/2021--europe/euro.txt',
+               '/sports/openfootball/euro/2024--germany/euro.txt',
              ]
           else
             ## check for directories
@@ -48,7 +57,23 @@ p args
 
 
 
-SportDb::Parser::Linter.debug = true    if opts[:debug]
+def dump_tree_stats( tree )
+  stats = Hash.new(0)  ## track counts only for now
+  tree.each do |node|
+     stats[ node.class ] += 1 
+  end
+
+  match_count  = stats[ RaccMatchParser::MatchLine ]
+  goal_count   = stats[ RaccMatchParser::GoalLine ]
+  lineup_count = stats[ RaccMatchParser::LineupLine ] 
+
+  puts "   #{match_count} MatchLine(s)"     if match_count > 0
+  puts "   #{goal_count} GoalLine(s)"       if goal_count > 0
+  puts "   #{lineup_count} LineupLine(s)"   if lineup_count > 0
+end
+
+
+
 
 linter = SportDb::Parser::Linter.new
 
@@ -57,7 +82,9 @@ paths.each_with_index do |path,i|
 
   puts "==> [#{i+1}/#{paths.size}] reading >#{path}<..."
 
-  linter.read( path, parse: true )
+  tree = linter.read( path, parse: true )
+
+  dump_tree_stats( tree )
 end
 
 

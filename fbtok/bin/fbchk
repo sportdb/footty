@@ -9,6 +9,7 @@
 $LOAD_PATH.unshift( File.expand_path( '/sports/sportdb/sport.db/sportdb-structs/lib' ))
 $LOAD_PATH.unshift( File.expand_path( '/sports/sportdb/sport.db/sportdb-catalogs/lib' ))
 $LOAD_PATH.unshift( File.expand_path( '/sports/sportdb/sport.db/sportdb-search/lib' ))
+$LOAD_PATH.unshift( File.expand_path( '/sports/sportdb/sport.db/sportdb-formats/lib' ))
 
 
 ## our own code

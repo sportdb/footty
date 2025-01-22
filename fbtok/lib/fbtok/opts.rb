@@ -7,6 +7,10 @@ class Parser
 ## note - Opts Helpers for now nested inside Parser - keep here? why? why not?
 class Opts
 
+  def self.debug=(value) @@debug = value; end
+  def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
+  
+
     SEASON_RE = %r{ (?:
                        \d{4}-\d{2}
                      | \d{4}(--[a-z0-9_-]+)?
@@ -63,9 +67,11 @@ def self.expand_args( args )
         ## check if directory
         if Dir.exist?( arg )
             datafiles = find( arg )
-            puts
-            puts "  found #{datafiles.size} match txt datafiles in #{arg}"
-            pp datafiles
+            if debug?
+              puts
+              puts "  found #{datafiles.size} match txt datafiles in #{arg}"
+              pp datafiles
+            end
             paths += datafiles
         else
               ## assume it's a file

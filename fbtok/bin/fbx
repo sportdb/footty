@@ -70,12 +70,12 @@ paths =  if args.empty?
 
 
 
-
-
-
-
-SportDb::MatchParser.debug = true    if opts[:debug]
-
+if opts[:debug]
+  SportDb::MatchParser.debug = true    
+else
+  SportDb::MatchParser.debug = false    
+  LogUtils::Logger.root.level = :info
+end
 
 ## errors = []
 
@@ -84,16 +84,19 @@ paths.each_with_index do |path,i|
     puts "==> [#{i+1}/#{paths.size}] reading >#{path}<..."
 
     txt = read_text( path )
-    secs = SportDb::QuickLeagueOutlineReader.parse( txt )
-    ## pp secs
+    outline = SportDb::QuickLeagueOutline.parse( txt )
 
-    secs.each_with_index do |sec,j|   ## sec(tion)s
-      season = Season.parse( sec[:season] )   ## convert (str) to season obj!!!
-      league = sec[:league]
-      stage  = sec[:stage]
-      lines  = sec[:lines]
+    ##  todo/fix - add each_sec_with_index upstream
+    ##    add outline.secs.size - why? why not?
+    j = 0
+    secs_count = '?'
+    outline.each_sec do |sec|   ## sec(tion)s
+      season = Season.parse( sec.season )   ## convert (str) to season obj!!!
+      league = sec.league
+      stage  = sec.stage
+      lines  = sec.lines
 
-      puts "   section #{j+1}/#{secs.size} -   #{league} #{season}, #{stage}  -  #{lines.size} line(s)"
+      puts "   section #{j+1}/#{secs_count} -   #{league} #{season}, #{stage}  -  #{lines.size} line(s)"
 
       next if opts[:outline]
 
@@ -130,6 +133,8 @@ paths.each_with_index do |path,i|
       pp rounds
       puts ">>> #{groups.size} groups:"
       pp groups
+
+      j += 1
     end  # each secs
 end  # each paths
 

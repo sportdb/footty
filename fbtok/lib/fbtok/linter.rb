@@ -30,18 +30,19 @@ def read( path, parse: true )
   ## note: every (new) read call - resets errors list to empty
   @errors = []
 
+  @tree = []
+
   outline = QuickMatchOutline.read( path )
 
   outline.each_para do |lines|
 
      if parse
-       ## flatten lines
-       txt  = []
-       lines.each_with_index do |line,i|
-          txt << line
-          txt << "\n"
-       end
-       txt = txt.join
+       ## flatten lines (array of strings) into all-in-one string
+       txt  = lines.reduce( String.new ) do |mem, line|
+                                            mem << line
+                                            mem << "\n"
+                                            mem
+                                        end
     
        if debug?
          puts "lines:"
@@ -49,12 +50,18 @@ def read( path, parse: true )
        end
  
        ## todo/fix -  add/track parse errors!!!!!!
+       ##   pass along debug flag to parser (& tokenizer)?
        parser = RaccMatchParser.new( txt )   ## use own parser instance (not shared) - why? why not?
        tree = parser.parse
-       pp tree  
+
+       if debug?
+         puts "parse tree:"
+         pp tree  
+       end
+
+       @tree += tree   ## add nodes
 
      else   ## process for tokenize only
-       tree = []
        lines.each_with_index do |line,i|
 
         if debug?
@@ -75,32 +82,13 @@ def read( path, parse: true )
             end
          end
 
-          ## post-process tokens
-          ##  - check for round, group, etc.
-          t = t.map do |tok|
-            #############
-            ## pass 1
-            ##   replace all texts with keyword matches (e.g. group, round, leg, etc.)
-                if tok[0] == :TEXT
-                   text = tok[1]
-                    if @parser.is_group?( text )
-                           [:GROUP, text]
-                    elsif @parser.is_round?( text ) || @parser.is_leg?( text )
-                           [:ROUND, text]
-                    else
-                        tok  ## pass through as-is (1:1)
-                    end
-                else
-                   tok
-                end
-          end
- 
          pp t   if debug?
-
-         tree << t
        end  # each line
       end   # parse? (or tokenize?) 
    end  # each para (node)
+
+   ## note - only returns pare tree for now; no tokens (on parse=false)
+   @tree   ## return parse tree 
 end  # method read
 end  # class Linter
 
