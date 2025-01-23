@@ -10,6 +10,7 @@ args = ARGV
 
 opts = {
     debug: true,
+    file:  nil,
 }
 
 parser = OptionParser.new do |parser|
@@ -24,6 +25,14 @@ parser = OptionParser.new do |parser|
                "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
     opts[:debug] = true
   end
+
+  parser.on( "-f FILE", "--file FILE",
+                "read datafiles (pathspecs) via .csv file") do |file|
+    opts[:file] = file
+    ## note: for batch (massive) processing auto-set debug (verbose output) to false (as default)
+    opts[:debug] = false
+  end
+
 end
 parser.parse!( args )
 
@@ -44,16 +53,20 @@ end
 
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
-   paths = if args.empty?
-             [
-               '/sports/openfootball/euro/2021--europe/euro.txt',
-               '/sports/openfootball/euro/2024--germany/euro.txt',
-             ]
-          else
-            ## check for directories
-            ##   and auto-expand
-            SportDb::Parser::Opts.expand_args( args )
-          end
+specs =  if opts[:file]
+            SportDb::Parser::Opts.read_pathspecs( opts[:file] )
+         else
+           paths =  if args.empty?
+                      ['/sports/openfootball/euro/2021--europe/euro.txt',
+                       '/sports/openfootball/euro/2024--germany/euro.txt'] 
+                    else
+                       ## check for directories
+                       ##   and auto-expand
+                       SportDb::Parser::Opts.expand_args( args )
+                    end
+             ## always return array of specs
+            [SportDb::Parser::Opts.build_pathspec( paths: paths)]  
+         end
 
 
 
@@ -78,16 +91,51 @@ end
 linter = SportDb::Parser::Linter.new
 
 
-paths.each_with_index do |path,i|
+specs.each_with_index do |spec,i|
+    paths = spec.paths
+    rec   = spec.rec
+   
+    errors = []
 
-  puts "==> [#{i+1}/#{paths.size}] reading >#{path}<..."
+   paths.each_with_index do |path,j|
+      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{paths.size}] reading >#{path}<..."
+      tree = linter.read( path, parse: true )
+      dump_tree_stats( tree )
+    
+      errors += linter.errors    if linter.errors?
+   end
 
-  tree = linter.read( path, parse: true )
+   if errors.size > 0
+      puts
+      pp errors
+      puts
+      puts "!!   #{errors.size} parse error(s) in #{paths.size} datafiles(s)"
+   else
+      puts
+      puts "OK   no parse errors found in #{paths.size} datafile(s)"
+   end
 
-  dump_tree_stats( tree )
+   ## add errors to rec via rec['errors'] to allow
+   ##   for further processing/reporting
+   rec['errors'] = errors
 end
 
 
+###
+## generate a report if --file option used
+if opts[:file]
+
+  buf = SportDb::Parser::BatchReport.new( 
+            specs, 
+            title: 'fbtree summary report' ).build
+
+  puts
+  puts "SUMMARY:"
+  puts buf
+
+  #  maybe write out in the future?
+  # basedir  = File.dirname( opts[:file] )
+  # basename = File.basename( opts[:file], File.extname( opts[:file] ))
+end
+
 puts "bye"
-
-

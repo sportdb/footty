@@ -47,13 +47,18 @@ require 'fbtok'
 end
 parser.parse!( args )
 
-puts "OPTS:"
-p opts
-puts "ARGV:"
-p args
 
-
-
+if opts[:debug]
+  puts "OPTS:"
+  p opts
+  puts "ARGV:"
+  p args
+  
+  SportDb::MatchParser.debug = true    
+else
+  SportDb::MatchParser.debug = false    
+  LogUtils::Logger.root.level = :info
+end
 
 
 paths =  if args.empty?
@@ -70,12 +75,6 @@ paths =  if args.empty?
 
 
 
-if opts[:debug]
-  SportDb::MatchParser.debug = true    
-else
-  SportDb::MatchParser.debug = false    
-  LogUtils::Logger.root.level = :info
-end
 
 ## errors = []
 

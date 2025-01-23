@@ -31,7 +31,9 @@ class Opts
                 }x
 
 
-def self.find( path, dir: nil )
+
+
+def self._find( path )
     ## check - rename dir
     ##          use root_dir or work_dir or cd or such - why? why not?
 
@@ -40,11 +42,8 @@ def self.find( path, dir: nil )
     ## note: normalize path - use File.expand_path ??
     ##    change all backslash to slash for now
     ## path = path.gsub( "\\", '/' )
-    path =  if dir
-              File.expand_path( path, File.expand_path( dir ))
-            else
-              File.expand_path( path )
-            end
+    path =  File.expand_path( path )
+          
 
     ## check all txt files
     ## note: incl. files starting with dot (.)) as candidates
@@ -60,29 +59,109 @@ def self.find( path, dir: nil )
 end
 
 
-def self.expand_args( args )
-    paths = []
-
-    args.each do |arg|
-        ## check if directory
-        if Dir.exist?( arg )
-            datafiles = find( arg )
-            if debug?
-              puts
-              puts "  found #{datafiles.size} match txt datafiles in #{arg}"
-              pp datafiles
-            end
-            paths += datafiles
-        else
-              ## assume it's a file
-            paths << arg
+def self._expand( arg )
+    ## check if directory
+    if Dir.exist?( arg )
+          datafiles = _find( arg )
+          if debug?
+            puts
+            puts "  found #{datafiles.size} match txt datafiles in #{arg}"
+            pp datafiles
+          end
+          datafiles
+    else ## assume it's a file
+        ## make sure path exists; raise error if not 
+        if File.exist?( arg )
+          [arg]   ## note - always return an array - why? why not?
+        else    
+          raise Errno::ENOENT, "No such file or directory - #{arg}" 
         end
     end
+end
 
-    paths
+
+def self.expand_args( args )
+  paths = []
+  args.each do |arg|
+    paths += _expand( arg )
+  end
+  paths 
+end
+
+
+
+## todo/check - find a better name 
+##   e.g.  BatchItem or PackageDef or ???
+##
+##   find a different name for rec for named value props?
+##      why? why not?
+PathspecNode = Struct.new( :paths, :rec )
+
+def self.build_pathspec( paths: )
+    PathspecNode.new( paths: paths, rec: {} )
+end
+
+def self.read_pathspecs( src )
+    specs = []
+
+    recs = read_csv( src )
+    pp recs     if debug?
+  
+    ##  note - make pathspecs relative to passed in file arg!!!
+    basedir = File.dirname( src )
+    recs.each do |rec|
+        path = rec['path']
+        fullpath = File.expand_path( path, basedir ) 
+        ## make sure path exists; raise error if not
+        paths =  if Dir.exist?( fullpath )
+                    _find( fullpath )
+                 else
+                    raise Errno::ENOENT, "No such directory - #{fullpath})" 
+                 end
+        
+        specs << PathspecNode.new( paths: paths, rec: rec )
+    end
+    specs
 end
 end  # class Opts
 
 
+##
+#  BatchReport (a.k.a. PathspecsReport)
+
+class BatchReport
+
+  def initialize( specs, title: )
+     @specs = specs
+     @title = title
+  end
+
+  def build
+     buf = String.new
+     buf << "# #{@title} - #{@specs.size} dataset(s)\n\n"
+  
+     @specs.each_with_index do |spec,i|
+       paths  = spec.paths
+       rec    = spec.rec
+       errors = rec['errors']
+  
+       if errors.size > 0
+         buf << "!! #{errors.size} ERROR(S)  "
+       else
+         buf << "   OK          "
+       end
+       buf << "%-20s" % rec['path']
+       buf << " - #{paths.size} datafile(s)"
+       buf << "\n"
+  
+       if errors.size > 0
+         buf << errors.pretty_inspect
+         buf << "\n"
+       end
+     end
+  
+     buf
+  end   # method build
+end  # class BatchReport
 end   # class Parser
 end   # module SportDb

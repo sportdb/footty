@@ -59,52 +59,51 @@ end
 parser.parse!( args )
 
 
-puts "OPTS:"
-p opts
-puts "ARGV:"
-p args
-
-
-    ## todo/check - use packs or projects or such
-    ##                instead of specs - why? why not?
-    specs = []
-    if opts[:file]
-          recs = read_csv( opts[:file] )
-          pp recs
-          ##  note - make pathspecs relative to passed in file arg!!!
-          basedir = File.dirname( opts[:file] )
-          recs.each do |rec|
-             paths = SportDb::Parser::Opts.find( rec['path'], dir: basedir )
-             specs << [paths, rec]
-          end
-    else
-       paths = if args.empty?
-                 []
-              else
-                ## check for directories
-                ##   and auto-expand
-                SportDb::Parser::Opts.expand_args( args )
-              end
-        specs << [paths, {}]
-    end
-
-
 if opts[:debug]
-   SportDb::QuickMatchLinter.debug = true
-   SportDb::QuickMatchReader.debug = true
-   SportDb::MatchParser.debug      = true
+  puts "OPTS:"
+  p opts
+  puts "ARGV:"
+  p args
+
+  SportDb::QuickMatchLinter.debug = true
+  SportDb::QuickMatchReader.debug = true
+  SportDb::MatchParser.debug      = true
 else
-   SportDb::QuickMatchLinter.debug = false
-   SportDb::QuickMatchReader.debug = false
-   SportDb::MatchParser.debug      = false
-   LogUtils::Logger.root.level = :info
+  SportDb::QuickMatchLinter.debug = false
+  SportDb::QuickMatchReader.debug = false
+  SportDb::MatchParser.debug      = false
+  LogUtils::Logger.root.level = :info
 end
 
 
-  specs.each_with_index do |(paths, rec),i|
+
+
+## todo/check - use packs or projects or such
+##                instead of specs - why? why not?
+specs =  if opts[:file]
+            SportDb::Parser::Opts.read_pathspecs( opts[:file] )
+         else
+           paths =  if args.empty?
+                      [] 
+                    else
+                       ## check for directories
+                       ##   and auto-expand
+                       SportDb::Parser::Opts.expand_args( args )
+                    end
+             ## always return array of specs
+            [SportDb::Parser::Opts.build_pathspec( paths: paths)]  
+         end
+
+
+
+
+  specs.each_with_index do |spec,i|
+    paths = spec.paths
+    rec   = spec.rec
+
     errors = []
     paths.each_with_index do |path,j|
-      puts "==> [#{j+1}/#{paths.size}] reading >#{path}<..."
+      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{paths.size}] reading >#{path}<..."
       quick = SportDb::QuickMatchLinter.new( read_text( path ),
                                               check_teams: opts[:teams] )
       matches = quick.parse
@@ -140,28 +139,9 @@ end
 ###
 ## generate a report if --file option used
 if opts[:file]
-
-  buf = String.new
-
-  buf << "# fbchk summary report - #{specs.size} dataset(s)\n\n"
-
-  specs.each_with_index do |(paths, rec),i|
-     errors = rec['errors']
-
-     if errors.size > 0
-       buf << "!! #{errors.size} ERROR(S)  "
-     else
-       buf << "   OK          "
-     end
-     buf << "%-20s" % rec['path']
-     buf << " - #{paths.size} datafile(s)"
-     buf << "\n"
-
-     if errors.size > 0
-         buf << errors.pretty_inspect
-         buf << "\n"
-     end
- end
+  buf = SportDb::Parser::BatchReport.new( 
+            specs, 
+            title: 'fbchk summary report' ).build
 
   puts
   puts "SUMMARY:"
@@ -169,7 +149,7 @@ if opts[:file]
 
   basedir  = File.dirname( opts[:file] )
   basename = File.basename( opts[:file], File.extname( opts[:file] ))
-  outpath  = "#{basedir}/fbcheck.#{basename}.txt"
+  outpath  = "#{basedir}/fbchk.#{basename}.txt"
   write_text( outpath, buf )
 end
 
