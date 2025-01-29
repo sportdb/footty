@@ -10,6 +10,7 @@ args = ARGV
 
 opts = {
     debug: true,
+    warn:  false,
     file:  nil,
 }
 
@@ -18,13 +19,18 @@ parser = OptionParser.new do |parser|
 
 
   parser.on( "-q", "--quiet",
-             "less debug output/messages - default is (#{!opts[:debug]})" ) do |debug|
+             "less debug output/messages (default: #{!opts[:debug]})" ) do |debug|
     opts[:debug] = false
   end
   parser.on( "--verbose", "--debug",
                "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
     opts[:debug] = true
   end
+  parser.on( "-w", "--warn",
+              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
+    opts[:warn] = true
+  end
+
 
   parser.on( "-f FILE", "--file FILE",
                 "read datafiles (pathspecs) via .csv file") do |file|
@@ -42,11 +48,12 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
-
-  SportDb::Parser::Linter.debug = true    
-  SportDb::Parser::Opts.debug   = true
 end
 
+SportDb::Parser::Linter.debug = opts[:debug]    
+SportDb::Parser::Opts.debug   = opts[:debug]
+
+SportDb::Parser::Linter.warn  = opts[:warn]    
 
 
 

@@ -10,6 +10,10 @@ def self.debug=(value) @@debug = value; end
 def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
 def debug?()  self.class.debug?; end
 
+##  turn warn(ings) into errors (default is false)
+def self.warn=(value) @@warn = value; end
+def self.warn?()      @@warn ||= false; end  ## note: default is FALSE
+def warn?()   self.class.warn?; end
 
 
 attr_reader :errors
@@ -101,7 +105,8 @@ def read( path, parse: true )
 
    ##
    ## auto-add error if no tokens/tree nodes
-   if @tree.empty?   ## @tree.size == 0
+   ##   note - do NOT report empty file error by default 
+   if @tree.empty? && warn?  ## @tree.size == 0
       @errors << [path, "empty; no #{parse ? 'parse tree nodes' : 'tokens'}"]
    end
 
