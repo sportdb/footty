@@ -13,7 +13,7 @@ class Opts
 
     SEASON_RE = %r{ (?:
                        \d{4}-\d{2}
-                     | \d{4}(--[a-z0-9_-]+)?
+                     | \d{4} (?: --[a-z0-9_-]+ )?   ## todo/fix - allow "extension" to 2024-25 too - why?
                     )
                   }x
     SEASON = SEASON_RE.source    ## "inline" helper for embedding in other regexes - keep? why? why not?
@@ -25,12 +25,26 @@ class Opts
     ##     BUT NOT as first character!!! (e.g. exclude .confg.txt !!!)
     ##               e.g. 2024-25/at.1.txt
     ##                        change to at_1 or uefa_cl or such - why? why not?
-    MATCH_RE = %r{ (?: ^|/ )      # beginning (^) or beginning of path (/)
+    MATCH_RE = %r{ (?:   ## "classic"  variant i)  with season folder
+                      (?: ^|/ )      # beginning (^) or beginning of path (/)
                        #{SEASON}
-                     /[a-z0-9][a-z0-9_.-]*\.txt$  ## txt e.g /1-premierleague.txt
+                         /
+                       [a-z0-9][a-z0-9_.-]*\.txt$  ## txt e.g /1-premierleague.txt
+                    )
+                     |
+                    (?:  ## "compact" variant ii) with season in filename
+                       (?: ^|/ )      # beginning (^) or beginning of path (/)
+                        (?: \d{4}-\d{2} 
+                                | 
+                              \d{4}
+                         )
+                         _  ## allow more than one underscore - why? why not?
+                        [a-z0-9][a-z0-9_.-]*\.txt$           
+                    )
                 }x
 
-
+    ### add support for matchdatafile with season NOT in directory
+    ##      but starting filename e.g. 2024_friendlies.txt or 2024-25_bundesliga.txt
 
 
 def self._find( path )

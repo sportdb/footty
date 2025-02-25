@@ -2,7 +2,7 @@ require 'hoe'
 
 
 Hoe.spec 'fbtok' do
-  self.version = '0.3.2'
+  self.version = '0.3.3'
 
   self.summary = "fbtok - football.txt lint tools incl. tokenizer, parser & more"
   self.description = summary
