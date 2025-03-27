@@ -7,6 +7,8 @@
 ## our own code
 require 'sportdb/quick'
 
+require 'fbtok'  ### check if requires sportdb/quick  (no need to duplicate)
+
 
 
 require 'optparse'
@@ -35,7 +37,7 @@ parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
    end
 
    parser.on( "-o PATH", "--output PATH",
-                  "output to file" ) do |output|
+                  "output to file / dir" ) do |output|
      opts[:output] = output
    end
 end
@@ -48,7 +50,7 @@ p args
 
 
 paths = if args.empty?
-          ['../../../openfootball/euro/2021--europe/euro.txt']
+          ['/sports/openfootball/euro/2021--europe/euro.txt']
         else
           args
         end
@@ -64,35 +66,105 @@ else
 end
 
 
-## step 1 - concat(enate) all text files into one
-txt = String.new
-paths.each_with_index do |path,i|
-   puts "==> reading [#{i+1}/#{paths.size}] >#{path}<..."
-   txt += "\n\n"   if i > 0
-   txt += read_text( path )
+###
+##  two modes -   process directories or  concat(enate)d files 
+##
+##   check if args is a directory
+##
+dirs  = 0
+files = 0
+paths.each do |path|
+     if Dir.exist?( path )
+        dirs  += 1
+     elsif File.exist?( path )
+        files += 1
+     else ## not a file or dir repprt errr
+         raise ArgumentError, "file/dir does NOT exist - #{path}"
+     end
 end
 
-## step 2 - parse (matches) in the football.txt format
-quick = SportDb::QuickMatchReader.new( txt )
-matches = quick.parse
-name    = quick.league_name   ## quick hack - get league+season via league_name
-
-data = { 'name'    => name,
-         'matches' => matches.map {|match| match.as_json }}
-pp data
-puts
-puts "  #{matches.size} match(es)"
-
-if quick.errors?
-   puts "!! #{quick.errors.size} parse error(s):"
-   pp quick.errors
-   exit 1
+if dirs > 0 && files > 0
+     raise ArgumentError, "#{files} file(s), #{dirs} dir(s) - can only process dirs or files but NOT both; sorry"
 end
 
-if opts[:output]
-   puts "==> writing matches to #{opts[:output]}"
-   write_json( opts[:output], data )
+
+
+def parse( txt, dump: false )   ### check - name parse_txt or txt_to_json or such - why? why not?
+   quick = SportDb::QuickMatchReader.new( txt )
+   matches = quick.parse
+   name    = quick.league_name   ## quick hack - get league+season via league_name
+ 
+   data = { 'name'    => name,
+            'matches' => matches.map {|match| match.as_json }}
+  
+   if dump
+     pp data
+     puts
+   end
+   puts "  #{matches.size} match(es)"
+ 
+   if quick.errors?
+      puts "!! #{quick.errors.size} parse error(s):"
+      pp quick.errors
+      exit 1
+   end
+
+   data
 end
+
+
+if files > 0
+  ## step 1 - concat(enate) all text files into one
+  txt = String.new
+  paths.each_with_index do |path,i|
+    puts "==> reading file [#{i+1}/#{paths.size}] >#{path}<..."
+    txt += "\n\n"   if i > 0
+    txt += read_text( path )
+  end
+
+  ## step 2 - parse (matches) in the football.txt format
+  data = parse( txt, dump: true )
+ 
+  if opts[:output]
+     puts "==> writing matches to #{opts[:output]}"
+     write_json( opts[:output], data )
+  end
+elsif dirs > 0
+   paths.each_with_index do |path,i|
+      puts "==> reading dir [#{i+1}/#{paths.size}] >#{path}<..."
+
+      datafiles = SportDb::Parser::Opts._find( path )
+      pp datafiles
+      puts "   #{datafiles.size} datafile(s)"
+
+      datafiles.each do |datafile|
+         txt = read_text( datafile )
+         data = parse( txt )
+
+         if opts[:output]
+            ### norm - File.expanddir !!!
+            reldir = File.expand_path(File.dirname( path ))   ## keep last dir (in relative name)
+            relpath = datafile.sub( reldir+'/', '' )
+            dir     = File.dirname( relpath )
+            ## puts "  reldir = #{reldir}, datafile = #{datafile}"
+            ## puts "  relpath = #{relpath}, dir = #{dir}"
+            basename = File.basename( relpath, File.extname(relpath)) 
+            outpath  = "#{opts[:output]}/#{dir}/#{basename}.json"
+         else
+           dir = File.dirname( datafile )  
+           basename = File.basename( datafile, File.extname(datafile) ) 
+           outpath = "#{dir}/#{basename}.json"
+         end
+         puts "  writing matches to #{outpath}"
+         write_json( outpath, data )
+      end
+   end
+else 
+   ## do nothing; no args
+end
+
+
+
 
 puts "bye"
 

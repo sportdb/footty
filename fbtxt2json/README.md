@@ -29,9 +29,15 @@ resulting in:
 ```
 Usage: fbtxt2json [options] PATH
         --verbose, --debug           turn on verbose / debug output (default: false)
-    -o, --output PATH                output to file
+    -o, --output PATH                output to file / dir
 ```
 
+
+Note - the football.txt to .json converter works in two modes. (1) you can pass in one or more files to concat(enate) into one .json output or (2) you can pass in one or more directories to convert all files (automagically) one-by-one.
+
+
+
+###  Concat(enate) one or more files into one .json output
 
 Let's try to convert the "Euro" European Championship 2024
 in the Football.TXT format (see [`euro/2024--germany/euro.txt`](https://github.com/openfootball/euro/blob/master/2024--germany/euro.txt)) to JSON:
@@ -113,6 +119,55 @@ to output into a file use the `-o/--output` option:
 ```
 $ fbtxt2json england/2024-25/1-premierleague.txt -o en.json
 ```
+
+
+### (Auto-)convert one or more directories
+
+Let's try to convert the England directory (repo), that is, all datafiles
+in the Football.TXT format (see [`/england`](https://github.com/openfootball/england)) to JSON:
+
+```
+$ fbtxt2json england
+```
+
+resulting in:
+
+```
+england/
+   2024-25/
+       1-premierleague.json
+       2-championship.json
+       3-league1.json
+       4-league2.json
+       5-nationalleague.json
+       eflcup.json
+       facup.json
+...
+```
+
+Note - by default all `.txt` file extensions get changed to `.json`.
+To use a different output directory use the `-o/--output` option. Example:
+
+```
+$ fbtxt2json england -o ./o
+```
+
+resulting in:
+
+```
+o/
+  2024-25/
+       1-premierleague.json
+       2-championship.json
+       3-league1.json
+       4-league2.json
+       5-nationalleague.json
+       eflcup.json
+       facup.json
+...
+...
+```
+
 
 That's it.
 
