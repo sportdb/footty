@@ -13,7 +13,7 @@
 # $LOAD_PATH.unshift( '../../../sportdb/sport.db/quick/lib' )
 
 require 'sportdb/writers'
-require 'football/timezones'
+require 'leagues'
 
 
 require 'optparse'   ## check if included in cocos prelude?
@@ -48,7 +48,7 @@ end
 puts "#{matches.size} matches"
 puts
 
-txt = SportDb::TxtMatchWriter.build( matches )
+txt = SportDb::TxtMatchWriter.build_v2( matches )
 puts txt
 puts
 puts "bye"

@@ -38,3 +38,10 @@ build/
 # add logs
 logs.txt
 errors.txt
+
+## 
+# more
+o/
+tmp/
+
+

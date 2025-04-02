@@ -5,7 +5,7 @@
 
 
 require 'sportdb/writers'
-require 'football/timezones'
+require 'leagues'
 
 
 require 'optparse'   ## check if included in cocos prelude?
@@ -67,10 +67,20 @@ puts "ARGV:"
 p args
 
 
+### get latest season with autofiller
+##     todo use new LeaguesetAutofiller class - why? why not?
+##    or move code of autofiller here - why? why not?
+##
+##    share with fbup ???
+autofiller = ->(league_query) {           
+  Leagueset.autofiller( league_query, source_path: source_path )
+} 
+
+
 datasets =   if opts[:file]
-                  read_leagueset( opts[:file] )
+                  read_leagueset( opts[:file], autofill: autofiller )
              else
-                  parse_leagueset_args( args )
+                  parse_leagueset_args( args, autofill: autofiller )
              end
 
 puts "datasets:"
@@ -87,14 +97,19 @@ datasets.validate!( source_path: source_path )
 
 
 ## step 1 - generate
-datasets.each do |league_key, seasons|
-    puts "==> gen #{league_key} - #{seasons.size} seasons(s)..."
-
-    league_info = find_league_info( league_key )
-    pp league_info
+datasets.each do |league_query, seasons|
+    puts "==> gen #{league_query} - #{seasons.size} seasons(s)..."
 
     seasons.each do |season|
-      filename = "#{season.to_path}/#{league_key}.csv"
+      ## todo/fix - use find_by! - add upstream
+      league_info = LeagueCodes.find_by( code: league_query, season: season )
+      pp league_info
+  
+      league_code = league_info['code']
+      league_name = league_info['name']
+
+
+      filename = "#{season.to_path}/#{league_code}.csv"
       path = find_file( filename, path: source_path )
 
       ## get matches
@@ -103,17 +118,15 @@ datasets.each do |league_key, seasons|
       puts "     #{matches.size} matches"
 
       ## build
-      txt = SportDb::TxtMatchWriter.build( matches )
+      txt = SportDb::TxtMatchWriter.build_v2( matches )
       puts txt   if opts[:debug]
 
-      league_name  = league_info[ :name ]      # e.g. Brasileiro Série A
-      league_name =  league_name.call( season )   if league_name.is_a?( Proc )  ## is proc/func - name depends on season
 
       buf = String.new
       buf << "= #{league_name} #{season}\n\n"
       buf << txt
 
-      outpath = "#{root_dir}/foot/#{season.to_path}/#{league_key}.txt"
+      outpath = "#{root_dir}/foot/#{season.to_path}/#{league_code}.txt"
 
       if opts[:dry]
         puts "   (dry) writing to >#{outpath}<..."
