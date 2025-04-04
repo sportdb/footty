@@ -4,6 +4,13 @@
 ##   ruby -I ./lib bin/fbtxt2json
 
 
+#####
+## todo
+##   add option for [no]-halt-on-error (default: false)
+##      or use a different (shorter) name e.g. --resume?
+
+
+
 ## our own code
 require 'sportdb/quick'
 
@@ -16,8 +23,10 @@ require 'optparse'
 
 
 args = ARGV
-opts = { debug:  false,
+opts = {  debug:  false,
           output: nil,
+          summary: false,
+          seasons: [],
        }
 
 parser = OptionParser.new do |parser|
@@ -40,13 +49,28 @@ parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
                   "output to file / dir" ) do |output|
      opts[:output] = output
    end
+
+   parser.on( "--summary", 
+                  "(auto-)generate summary (index.html) page (default: #{opts[:summary]})" ) do |summary|
+     opts[:summary] = summary
+   end
+
+   parser.on( "--seasons SEASONS",
+                  "turn on processing only seasons (default: #{!opts[:seasons].empty?}" ) do |seasons|
+       pp seasons
+       seasons = seasons.split( /[, ]/ )
+       seasons = seasons.map {|season| Season.parse(season) }               
+       opts[:seasons] = seasons
+   end   
 end
 parser.parse!( args )
+
 
 puts "OPTS:"
 p opts
 puts "ARGV:"
 p args
+
 
 
 paths = if args.empty?
@@ -89,7 +113,9 @@ end
 
 
 
-def parse( txt, dump: false )   ### check - name parse_txt or txt_to_json or such - why? why not?
+def parse( txt,
+            summary: nil, 
+            dump: false )   ### check - name parse_txt or txt_to_json or such - why? why not?
    quick = SportDb::QuickMatchReader.new( txt )
    matches = quick.parse
    name    = quick.league_name   ## quick hack - get league+season via league_name
@@ -107,6 +133,12 @@ def parse( txt, dump: false )   ### check - name parse_txt or txt_to_json or suc
       puts "!! #{quick.errors.size} parse error(s):"
       pp quick.errors
       exit 1
+   end
+
+
+   if summary
+      ## add stats to summary page
+      summary << "- #{name} | #{matches.size} match(es)\n"
    end
 
    data
@@ -130,19 +162,31 @@ if files > 0
      write_json( opts[:output], data )
   end
 elsif dirs > 0
+
+   ## use a html pre(formatted) text
+   summary = String.new
+   summary << "<pre>\n"
+   summary << "run on #{Time.now.to_s}\n\n"   ## add version and such - why? why not?
+
    paths.each_with_index do |path,i|
       puts "==> reading dir [#{i+1}/#{paths.size}] >#{path}<..."
+      summary << "==> [#{i+1}/#{paths.size}] dir #{path}\n"
+
+### todo/fix: add seasons filter upstream??
+##
 
       datafiles = SportDb::Parser::Opts._find( path )
       pp datafiles
       puts "   #{datafiles.size} datafile(s)"
+      summary << "    #{datafiles.size} datafile(s)\n\n"
 
       datafiles.each do |datafile|
          txt = read_text( datafile )
-         data = parse( txt )
+         data = parse( txt, summary: summary )
 
          if opts[:output]
-            ### norm - File.expanddir !!!
+            ### norm - File.expand_path !!!
+            ##   note - use '.' to use (relative to) local directory !!!
             reldir = File.expand_path(File.dirname( path ))   ## keep last dir (in relative name)
             relpath = datafile.sub( reldir+'/', '' )
             dir     = File.dirname( relpath )
@@ -158,6 +202,12 @@ elsif dirs > 0
          puts "  writing matches to #{outpath}"
          write_json( outpath, data )
       end
+   end
+
+   summary << "</pre>"
+   puts summary
+   if opts[:summary]
+     write_text( "#{opts[:output]}/index.html", summary )
    end
 else 
    ## do nothing; no args
