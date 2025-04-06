@@ -172,10 +172,8 @@ elsif dirs > 0
       puts "==> reading dir [#{i+1}/#{paths.size}] >#{path}<..."
       summary << "==> [#{i+1}/#{paths.size}] dir #{path}\n"
 
-### todo/fix: add seasons filter upstream??
-##
 
-      datafiles = SportDb::Parser::Opts._find( path )
+      datafiles = SportDb::Parser::Opts._find( path, seasons: opts[:seasons] )
       pp datafiles
       puts "   #{datafiles.size} datafile(s)"
       summary << "    #{datafiles.size} datafile(s)\n\n"
@@ -206,7 +204,8 @@ elsif dirs > 0
 
    summary << "</pre>"
    puts summary
-   if opts[:summary]
+   ## note - do NOT write-out summary if seasons filter is used!!!
+   if opts[:summary] && opts[:seasons].size == 0
      write_text( "#{opts[:output]}/index.html", summary )
    end
 else 

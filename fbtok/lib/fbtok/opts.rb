@@ -12,8 +12,10 @@ class Opts
   
 
     SEASON_RE = %r{ (?:
-                       \d{4}-\d{2}
-                     | \d{4} (?: --[a-z0-9_-]+ )?   ## todo/fix - allow "extension" to 2024-25 too - why?
+                       (?<season>\d{4}-\d{2})
+                        | 
+                       (?<season>\d{4}) 
+                         (?: --[a-z0-9_-]+ )?   ## todo/fix - allow "extension" to 2024-25 too - why?
                     )
                   }x
     SEASON = SEASON_RE.source    ## "inline" helper for embedding in other regexes - keep? why? why not?
@@ -34,9 +36,9 @@ class Opts
                      |
                     (?:  ## "compact" variant ii) with season in filename
                        (?: ^|/ )      # beginning (^) or beginning of path (/)
-                        (?: \d{4}-\d{2} 
+                        (?:  (?<season>\d{4}-\d{2}) 
                                 | 
-                              \d{4}
+                             (?<season>\d{4})
                          )
                          _  ## allow more than one underscore - why? why not?
                         [a-z0-9][a-z0-9_.-]*\.txt$           
@@ -47,7 +49,7 @@ class Opts
     ##      but starting filename e.g. 2024_friendlies.txt or 2024-25_bundesliga.txt
 
 
-def self._find( path )
+def self._find( path, seasons: nil )
     ## check - rename dir
     ##          use root_dir or work_dir or cd or such - why? why not?
 
@@ -58,6 +60,11 @@ def self._find( path )
     ## path = path.gsub( "\\", '/' )
     path =  File.expand_path( path )
           
+    if seasons && seasons.size > 0
+       ## norm seasons
+       seasons = seasons.map {|season| Season(season) }
+    end
+
 
     ## check all txt files
     ## note: incl. files starting with dot (.)) as candidates
@@ -65,7 +72,14 @@ def self._find( path )
     candidates = Dir.glob( "#{path}/**/{*,.*}.txt" )
     ## pp candidates
     candidates.each do |candidate|
-      datafiles << candidate    if MATCH_RE.match( candidate )
+       if m=MATCH_RE.match( candidate )
+          if seasons && seasons.size > 0   ## check for seasons filter 
+            season = Season.parse(m[:season])
+            datafiles << candidate   if seasons.include?( season )   
+          else
+            datafiles << candidate 
+          end  
+       end
     end
 
     ## pp datafiles
