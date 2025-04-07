@@ -56,7 +56,7 @@ parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
    end
 
    parser.on( "--seasons SEASONS",
-                  "turn on processing only seasons (default: #{!opts[:seasons].empty?}" ) do |seasons|
+                  "turn on processing only seasons (default: #{!opts[:seasons].empty?})" ) do |seasons|
        pp seasons
        seasons = seasons.split( /[, ]/ )
        seasons = seasons.map {|season| Season.parse(season) }               

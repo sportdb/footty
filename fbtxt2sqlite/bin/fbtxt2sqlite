@@ -1,0 +1,113 @@
+#!/usr/bin/env ruby
+
+## tip: to test run:
+##   ruby -I ./lib bin/fbtxt2sqlite
+
+
+## our own code
+require 'sportdb/models_v2'
+
+require 'fbtok'  ### check if requires sportdb/quick  (no need to duplicate)
+
+
+
+require 'optparse'
+
+
+
+args = ARGV
+opts = {  debug:  false,
+          seasons: [],
+       }
+
+parser = OptionParser.new do |parser|
+parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
+
+##
+## check if git has a offline option?? (use same)
+##             check for other tools - why? why not?
+#    parser.on( "-q", "--quiet",
+#                 "less debug output/messages - default is (#{!opts[:debug]})" ) do |debug|
+#      opts[:debug] = false
+#    end
+
+   parser.on( "--verbose", "--debug",
+               "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
+     opts[:debug] = true
+   end
+
+   parser.on( "--seasons SEASONS",
+                  "turn on processing only seasons (default: #{!opts[:seasons].empty?})" ) do |seasons|
+       pp seasons
+       seasons = seasons.split( /[, ]/ )
+       seasons = seasons.map {|season| Season.parse(season) }               
+       opts[:seasons] = seasons
+   end   
+end
+parser.parse!( args )
+
+
+puts "OPTS:"
+p opts
+puts "ARGV:"
+p args
+
+
+## note - first arg is database
+if args.size < 1
+    puts "!! ERROR - sqlite database path required"
+    exit 1
+end
+
+dbpath  = args.shift
+
+paths = if args.empty?
+          ['/sports/openfootball/euro/2021--europe/euro.txt']
+        else
+          args
+        end
+
+
+if opts[:debug]
+##   SportDb::QuickMatchReader.debug = true
+   SportDb::MatchParser.debug      = true
+else
+##   SportDb::QuickMatchReader.debug = false
+   SportDb::MatchParser.debug      = false
+   LogUtils::Logger.root.level = :info
+end
+
+
+
+SportDbV2.open( dbpath )
+SportDbV2.auto_migrate!
+SportDbV2.tables
+
+
+paths.each_with_index do |path,i|
+     if Dir.exist?( path )
+         puts "==> reading dir [#{i+1}/#{paths.size}] >#{path}<..."
+        
+         datafiles = SportDb::Parser::Opts._find( path, seasons: opts[:seasons] )
+         pp datafiles
+         puts "   #{datafiles.size} datafile(s)"
+   
+         datafiles.each_with_index do |datafile,j|
+            puts "    ... reading file [#{j+1}/#{datafiles.size}] >#{datafile}<..."
+            SportDbV2::MatchReader.read( datafile )
+         end
+     elsif File.exist?( path )
+       puts "==> reading file [#{i+1}/#{paths.size}] >#{path}<..."
+       SportDbV2::MatchReader.read( path )
+     else ## not a file or dir repprt errr
+         raise ArgumentError, "file/dir does NOT exist - #{path}"
+     end
+end
+
+
+puts "---"
+SportDbV2.tables
+
+
+puts "bye"
+

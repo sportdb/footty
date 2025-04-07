@@ -1,0 +1,32 @@
+require 'hoe'
+
+
+Hoe.spec 'fbtxt2sqlite' do
+  self.version = '0.0.1'
+
+  self.summary = "fbtxt2sqlite - read football.txt match schedules & more into sqlite database"
+  self.description = summary
+
+  self.urls = { home: 'https://github.com/sportdb/footty' }
+
+  self.author = 'Gerald Bauer'
+  self.email  = 'gerald.bauer@gmail.com'
+
+  # switch extension to .markdown for gihub formatting
+  self.readme_file  = 'README.md'
+  self.history_file = 'CHANGELOG.md'
+
+  self.licenses = ['Public Domain']
+
+  self.extra_deps = [
+       ['sportdb-models_v2'],
+       ## ['sportdb-quick', '>= 0.2.1'],  ## pulled-in via sportdb-models_v2 already
+       ### note - include fbtok gem for (shared) command-line helpers/machinery!!!
+       ['fbtok', '>= 0.3.3'],
+       ['sqlite3'],
+  ]
+
+  self.spec_extras = {
+    required_ruby_version: '>= 3.1.0'
+  }
+end
