@@ -81,7 +81,7 @@ More
 - `world`  =>  World Cup
 - `euro`   =>  "Euro" - European Championship
 
-See [footty/openfootball](https://github.com/sportdb/footty/blob/master/lib/footty/openfootball.rb) for the complete built-in list of data sources (and league codes).
+See [footty/openfootball](https://github.com/sportdb/footty/blob/master/footty/lib/footty/openfootball.rb) for the complete built-in list of data sources (and league codes).
 
 
 
