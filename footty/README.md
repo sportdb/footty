@@ -1,4 +1,4 @@
-# footty - football.db command line tool for national & int'l football club leagues (& cups) from around the world (bonus - incl. world cup, euro and more)
+# footty/ftty - football.db command line tool for national & int'l football club leagues (& cups) from around the world (bonus - incl. world cup, euro and more)
 
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
@@ -12,13 +12,15 @@
 
 ## Usage - Who's playing today?
 
-The footty command line tool lets you query the online football.db via HTTP
+The footty (or ftty) command line tool lets you query the online football.db via HTTP
 for upcoming or past matches. For example:
 
-    $ footty         # Defaults to today's English Premier League 2024/25 matches
+    $ footty         # Defaults to today's matches of top leagues
+    
 
 prints on Sep 27, 2024:
 
+    ==> English Premier League 2024/25
     Upcoming matches:
     Sat Sep/28 12:30   (in 1d)    Newcastle United FC    vs    Manchester City FC     Matchday 6
     Sat Sep/28 15:00   (in 1d)             Arsenal FC    vs    Leicester City FC      Matchday 6
@@ -33,25 +35,25 @@ prints on Sep 27, 2024:
 
 
 
-Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
+Use `--tomorrow` or `-t` ` to print tomorrow's matches e.g.:
 
-    $ footty tomorrow    # -or-
-    $ footty t
+    $ footty --tomorrow    # -or-
+    $ footty -t
 
-Use `yesterday` or `y` or `-1` to print yesterday's matches e.g.:
+Use `--yesterday` or `-y`  to print yesterday's matches e.g.:
 
-    $ footty yesterday    # -or-
-    $ footty y
+    $ footty --yesterday    # -or-
+    $ footty -y
 
-Use `upcoming` or `up` or `u` to print all upcoming matches e.g.:
+Use `--upcoming` or `--up` or `-u` to print all upcoming matches e.g.:
 
-    $ footty upcoming    # -or-
-    $ footty up
+    $ footty --upcoming    # -or-
+    $ footty --up
 
-Use `past` or `p` to print all past matches e.g.:
+Use `--past` or `-p` to print all past matches e.g.:
 
-    $ footty past    # -or-
-    $ footty p
+    $ footty --past    # -or-
+    $ footty -p
 
 
 
@@ -60,7 +62,7 @@ That's it. Enjoy the beautiful game.
 
 ## Bonus - More Leagues & Cups  - Bundesliga, Serie A, Ligue 1, La Liga & More
 
-Pass in the league code to display the Germand Bundesliga, Spanish La Liga, etc:
+Pass in the league code to display the German Bundesliga, Spanish La Liga, etc:
 
     $ footty de        #  who's playing in the bundesliga today?
     $ footty es        #  who's playing in la liga today?
@@ -79,7 +81,7 @@ More
 - `world`  =>  World Cup
 - `euro`   =>  "Euro" - European Championship
 
-See [footty/dataset](https://github.com/sportdb/footty/blob/master/lib/footty/dataset.rb) for the complete built-in list of data sources (and league keys).
+See [footty/openfootball](https://github.com/sportdb/footty/blob/master/lib/footty/openfootball.rb) for the complete built-in list of data sources (and league codes).
 
 
 
