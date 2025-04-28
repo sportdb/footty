@@ -47,6 +47,23 @@ module Footty
     end
 
 
+    def query( q )
+        ## query/check for team name match for now
+        rx =  /#{Regexp.escape(q)}/i   ## use case-insensitive regex match
+        
+        matches = select_matches do |match|
+                          if rx.match( match['team1'] ) ||
+                             rx.match( match['team2'] )  
+                             true
+                          else
+                             false
+                          end
+                  end
+        matches 
+    end
+
+
+
     def upcoming_matches( date: Date.today,
                           limit: nil )
       ## note: includes todays matches for now

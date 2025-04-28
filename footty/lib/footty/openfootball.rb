@@ -11,11 +11,23 @@ module Footty
       'euro' =>  { '2024' => 'euro/2024--germany/euro.txt',
                    '2021' => 'euro/2021--europe/euro.txt'
                  },
-      'de'  =>    'deutschland/$season$/1-bundesliga.txt',
-      'de2' =>   'deutschland/$season$/2-bundesliga2.txt',
-   
-      'en'=>    'england/$season$/1-premierleague.txt',
-      'es'=>    'espana/$season$/1-liga.txt',
+      'de'    =>    'deutschland/$season$/1-bundesliga.txt',
+      'de2'   =>   'deutschland/$season$/2-bundesliga2.txt',
+      'de3'   =>   'deutschland/$season$/3-liga3.txt',
+      'decup' =>   'deutschland/$season$/cup.txt',
+      
+
+      'en'   =>    'england/$season$/1-premierleague.txt',
+      'en2'  =>    'england/$season$/2-championship.txt',
+      ##  add alternate codes!!!
+      ##   use  eflcup, facup - why? why not?
+      'eneflcup'  =>  'england/$season$/eflcup.txt',
+      'enfacup'   =>  'england/$season$/facup.txt',
+    
+
+      'es'    =>  'espana/$season$/1-liga.txt',
+      'escup' =>  'espana/$season$/cup.txt',
+
       'it'=>    'italy/$season$/1-seriea.txt',
    
       'at'=>    'austria/$season$/1-bundesliga.txt',
@@ -32,13 +44,20 @@ module Footty
       'br'    => 'south-america/brazil/$year$_br1.txt',
       'ar'    => 'south-america/argentina/$year$_ar1.txt',
       'co'    => 'south-america/colombia/$year$_co1.txt',
+      
       ## use a different code for copa libertadores? why? why not?
       'copa'  => 'south-america/copa-libertadores/$year$_copal.txt',
 
       'mx'    => 'world/north-america/mexico/$season$_mx1.txt',
+      'mls'   => 'world/north-america/major-league-soccer/$year$_mls.txt',
 
       'eg'    => 'world/africa/egypt/$season$_eg1.txt',
       'ma'    => 'world/africa/morocco/$season$_ma1.txt',
+
+      'au'    =>  'world/pacific/australia/$season$_au1.txt',
+      'jp'    =>  'world/asia/japan/$year$_jp1.txt',
+      'cn'    =>  'world/asia/china/$year$_cn1.txt',
+
     }
 
 
@@ -50,6 +69,8 @@ module Footty
     ### auto-fill latest season
     def self.latest_season( league: )
       spec = SOURCES[ league.downcase ]
+
+      raise ArgumentError, "no dataset (source) for league #{league} found"    if spec.nil?
 
       ##  todo/fix - report error if no spec found
       season =  if spec.is_a?( Hash )  ## assume lookup by year

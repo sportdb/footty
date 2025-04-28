@@ -10,7 +10,6 @@ require 'optparse'
 require_relative 'footty/version' # let version always go first
 require_relative 'footty/dataset'
 require_relative 'footty/openfootball'
-## require_relative 'footty/datalib'
 
 require_relative 'footty/print'
 
@@ -31,6 +30,8 @@ module Footty
               verbose: false,    ## add more details
               ## add cache/cache_dir - why? why not?
 
+              query:   nil,
+
               ## display format/mode  - week/window/upcoming/past (default is today)
               yesterday: nil,
               tomorrow:  nil,
@@ -49,6 +50,11 @@ module Footty
                  "turn on verbose output (default: #{opts[:verbose]})" ) do |verbose|
         opts[:verbose] = true
       end   
+
+      parser.on( "-q NAME", "--query",
+                   "query mode; display matches where team name matches query" ) do |query|
+        opts[:query] = query
+      end
 
 
       parser.on( "-y", "--yesterday" ) do |yesterday|
@@ -71,6 +77,35 @@ module Footty
     p opts
     puts "ARGV:"
     p args
+
+
+    ###
+    ##   use simple norm(alize) args (that is,) league codes for now
+    ##      - downcase, strip dot (.) etc.)
+    ##   e.g.  en.facup   => enfacup
+    ##         at.cup     => atcup     etc.
+    args = args.map { |arg| arg.downcase.gsub( /[._-]/, '' ) }
+
+
+
+    ######################
+    ## note - first check for buil-in "magic" commands
+    ##   e.g. leagues / codes    -  dump built-in league codes
+
+    if args.include?( 'leagues' ) 
+       puts "==> openfootball dataset sources:"
+       pp OpenfootballDataset::SOURCES
+       
+       ## pretty print keys/codes only
+       puts  
+       puts OpenfootballDataset::SOURCES.keys.join( ' ' )
+       puts "   #{OpenfootballDataset::SOURCES.keys.size} league code(s)"
+
+       exit 1
+    end
+
+
+
 
     
     top = [['world',   '2022'],
@@ -108,6 +143,28 @@ module Footty
     
   
 
+    ###################
+    ##  check for query option to filter matches by query (team)
+    if opts[:query]
+      q = opts[:query]
+      puts
+      puts
+      datasets.each do |dataset|
+        matches = dataset.query( q )
+
+        if matches.size == 0
+           ## siltently skip for now
+        else  ## assume matches found
+          print "==> #{dataset.league_name}"
+          print "   #{dataset.start_date} - #{dataset.end_date}"
+          print "   -- #{dataset.matches.size} match(es)"
+          print "\n"
+          print_matches( matches )
+        end
+      end
+      exit 1
+    end
+
 
     # Dataset.new( league: 'euro', year: 2024 )
     # dataset = Dataset.new( league: league, year: year )
@@ -127,6 +184,7 @@ module Footty
              else
                'today'
              end
+
 
     ## start with two empty lines - assume (massive) debug output before ;-)
     puts
