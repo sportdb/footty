@@ -39,7 +39,11 @@ module Footty
       'nl'=>    'europe/netherlands/$season$_nl1.txt',
       'be'=>    'europe/belgium/$season$_be1.txt',
 
-      'champs'=> 'champions-league/$season$/cl.txt',
+      'champs'     => 'champions-league/$season$/cl.txt',
+      'uefacl'    => 'champions-league/$season$/cl.txt',
+      'uefael'    => 'champions-league/$season$/el.txt',
+      'uefaconf'  => 'champions-league/$season$/conf.txt',
+
 
       'br'    => 'south-america/brazil/$year$_br1.txt',
       'ar'    => 'south-america/argentina/$year$_ar1.txt',
@@ -50,6 +54,8 @@ module Footty
 
       'mx'    => 'world/north-america/mexico/$season$_mx1.txt',
       'mls'   => 'world/north-america/major-league-soccer/$year$_mls.txt',
+
+      'concacafcl' => 'world/north-america/champions-league/$year$_concacafcl.txt',
 
       'eg'    => 'world/africa/egypt/$season$_eg1.txt',
       'ma'    => 'world/africa/morocco/$season$_ma1.txt',

@@ -22,6 +22,27 @@ Webget.config.sleep = 1  ## set delay in secs (to 1 sec - default is/maybe 3)
 
 
 module Footty
+
+
+  def self.week_tue_to_mon( today=Date.today )
+    ## Calculate the start of the (sport) week (tuesday)
+    ##  note - wday starts counting sunday (0), monday (1), etc.
+    week_tue = today - (today.wday - 2) % 7
+    week_mon = week_tue + 6
+
+    [week_tue,week_mon]
+  end
+
+  def self.fmt_week( week_start, week_end )
+    buf = String.new
+    buf << "Week %02d" % week_start.cweek
+    buf << " - #{week_start.strftime( "%a %b/%-d")}"
+    buf << " to #{week_end.strftime( "%a %b/%-d %Y")}"
+    buf 
+  end
+
+
+
   def self.main( args=ARGV )
     puts banner # say hello
 
@@ -38,7 +59,7 @@ module Footty
               upcoming:  nil,
               past:      nil,
 
-              #  week:      nil,
+              week:      false,
               #  window:    nil,   ## 2 day plus/minus  +2/-2
            }
 
@@ -68,6 +89,11 @@ module Footty
       end
       parser.on( "-u", "--up", "--upcoming" ) do |upcoming|
         opts[:upcoming] = true
+      end
+
+      parser.on( "-w", "--week",
+                  "show matches of the (sport) week from tue to mon (default: #{opts[:week]})" ) do |week|
+        opts[:week] = true
       end
     end
     parser.parse!( args )
@@ -110,6 +136,8 @@ module Footty
     
     top = [['world',   '2022'],
            ['euro',   '2024'],
+           ['mls',    '2025'],
+           ['concacafcl', '2025'],
            ['mx',     '2024/25'],
            ['copa',   '2025'],       ## copa libertadores
            ['en',     '2024/25'],
@@ -117,8 +145,12 @@ module Footty
            ['it',     '2024/25'],
            ['fr',     '2024/25'],
            ['de',     '2024/25'],
+           ['decup',  '2024/25'],
            ['at',     '2024/25'],
-           ['champs', '2024/25'],
+           ['atcup',   '2024/25'],
+           ['uefacl',   '2024/25'],
+           ['uefael',   '2024/25'],
+           ['uefaconf', '2024/25'],
           ]
  
           
@@ -181,21 +213,36 @@ module Footty
                'past'
              elsif opts[:upcoming]
                'upcoming'
+             elsif opts[:week]
+               'week'
              else
                'today'
              end
 
 
-    ## start with two empty lines - assume (massive) debug output before ;-)
-    puts
-    puts
+    ## if week get week number and start and end date (tuesday to mondey)
+    if what == 'week'
+      week_start, week_end = Footty.week_tue_to_mon( today)
+      puts
+      puts  "=== " + Footty.fmt_week( week_start, week_end ) + " ==="
+    else
+      ## start with two empty lines - assume (massive) debug output before ;-)
+      puts
+      puts
+    end
+
     datasets.each do |dataset|
       print "==> #{dataset.league_name}"
       print "   #{dataset.start_date} - #{dataset.end_date}"
       print "   -- #{dataset.matches.size} match(es)"
       print "\n"
 
-      if what == 'yesterday'
+      if what == 'week'
+        matches = dataset.weeks_matches( week_start, week_end )    
+        if matches.empty?
+          puts (' '*4) + "** No matches scheduled or played in week #{week_start.cweek}.\n"
+        end
+     elsif what == 'yesterday'
         matches = dataset.yesterdays_matches
         if matches.empty?
            puts (' '*4) + "** No matches played yesterday.\n"

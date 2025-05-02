@@ -42,7 +42,20 @@ module Footty
     def yesterdays_matches( date: Date.today )  matches_for( date-1 );  end
 
     def matches_for( date )
-      matches = select_matches { |match| date == Date.parse( match['date'] ) }
+      matches = select_matches do |match| 
+                                  date == Date.parse( match['date'] ) 
+                               end
+      matches
+    end
+
+    
+    def weeks_matches( week_start, week_end )  matches_within( week_start, week_end);  end
+
+    def matches_within( start_date, end_date )
+      matches = select_matches do |match| 
+                                 date = Date.parse( match['date'] )
+                                 date >= start_date && date <= end_date  
+                               end
       matches
     end
 

@@ -1,6 +1,6 @@
 
 module Footty
-   VERSION = '2025.4.28'
+   VERSION = '2025.5.2'
 
    def self.banner
      "footty/#{VERSION} on Ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}) [#{RUBY_PLATFORM}] in (#{root})"
