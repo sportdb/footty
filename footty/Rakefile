@@ -17,7 +17,7 @@ Hoe.spec 'footty' do
   self.history_file = 'CHANGELOG.md'
 
   self.extra_deps = [
-    ['sportdb-quick', '>= 0.2.0'],
+    ['sportdb-quick', '>= 0.7.0'],
     ['webget'],
   ]
 

@@ -1,7 +1,5 @@
 require 'sportdb/quick'   ## note - pulls in cocos et al
-require 'webget'    ## add webcache support
-
-require 'optparse'
+require 'webget'          ## add webcache support
 
 
 
@@ -38,7 +36,7 @@ module Footty
     buf << "Week %02d" % week_start.cweek
     buf << " - #{week_start.strftime( "%a %b/%-d")}"
     buf << " to #{week_end.strftime( "%a %b/%-d %Y")}"
-    buf 
+    buf
   end
 
 
@@ -63,14 +61,14 @@ module Footty
               #  window:    nil,   ## 2 day plus/minus  +2/-2
            }
 
-           
+
     parser = OptionParser.new do |parser|
       parser.banner = "Usage: #{$PROGRAM_NAME} [options] LEAGUES"
 
-      parser.on( "--verbose", 
+      parser.on( "--verbose",
                  "turn on verbose output (default: #{opts[:verbose]})" ) do |verbose|
         opts[:verbose] = true
-      end   
+      end
 
       parser.on( "-q NAME", "--query",
                    "query mode; display matches where team name matches query" ) do |query|
@@ -118,12 +116,12 @@ module Footty
     ## note - first check for buil-in "magic" commands
     ##   e.g. leagues / codes    -  dump built-in league codes
 
-    if args.include?( 'leagues' ) 
+    if args.include?( 'leagues' )
        puts "==> openfootball dataset sources:"
        pp OpenfootballDataset::SOURCES
-       
+
        ## pretty print keys/codes only
-       puts  
+       puts
        puts OpenfootballDataset::SOURCES.keys.join( ' ' )
        puts "   #{OpenfootballDataset::SOURCES.keys.size} league code(s)"
 
@@ -133,8 +131,8 @@ module Footty
 
 
 
-    
-    top = [['world',   '2022'],
+
+    top = [['world',   '2026'],
            ['euro',   '2024'],
            ['mls',    '2025'],
            ['concacafcl', '2025'],
@@ -152,14 +150,14 @@ module Footty
            ['uefael',   '2024/25'],
            ['uefaconf', '2024/25'],
           ]
- 
-          
+
+
     leagues =  if args.size == 0
                    top
                else
-                   ### auto-fill (latest) season/year 
-                   args.map do |arg| 
-                              [arg, OpenfootballDataset.latest_season( league: arg )]  
+                   ### auto-fill (latest) season/year
+                   args.map do |arg|
+                              [arg, OpenfootballDataset.latest_season( league: arg )]
                             end
                end
 
@@ -169,11 +167,11 @@ module Footty
                                 dataset = OpenfootballDataset.new( league: league, season: season )
                                 ## parse matches
                                 matches = dataset.matches
-                                puts "  #{league} #{season} - #{matches.size} match(es)"                                 
+                                puts "  #{league} #{season} - #{matches.size} match(es)"
                                 dataset
-                            end                     
-    
-  
+                            end
+
+
 
     ###################
     ##  check for query option to filter matches by query (team)
@@ -238,7 +236,7 @@ module Footty
       print "\n"
 
       if what == 'week'
-        matches = dataset.weeks_matches( week_start, week_end )    
+        matches = dataset.weeks_matches( week_start, week_end )
         if matches.empty?
           puts (' '*4) + "** No matches scheduled or played in week #{week_start.cweek}.\n"
         end

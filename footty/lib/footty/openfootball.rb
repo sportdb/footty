@@ -3,7 +3,9 @@ module Footty
 
   class OpenfootballDataset  <  Dataset
     SOURCES = {
-      'world' => { '2022' => [ 'worldcup/2022--qatar/cup.txt',
+      'world' => {# '2026' => [ 'worldcup/2026--usa/cup.txt',
+                  #             'worldcup/2026--usa/cup_finals.txt'],
+                   '2022' => [ 'worldcup/2022--qatar/cup.txt',
                                'worldcup/2022--qatar/cup_finals.txt'],
                    '2018' => [ 'worldcup/2018--russia/cup.txt',
                                'worldcup/2018--russia/cup_finals.txt']
@@ -15,7 +17,7 @@ module Footty
       'de2'   =>   'deutschland/$season$/2-bundesliga2.txt',
       'de3'   =>   'deutschland/$season$/3-liga3.txt',
       'decup' =>   'deutschland/$season$/cup.txt',
-      
+
 
       'en'   =>    'england/$season$/1-premierleague.txt',
       'en2'  =>    'england/$season$/2-championship.txt',
@@ -23,13 +25,13 @@ module Footty
       ##   use  eflcup, facup - why? why not?
       'eneflcup'  =>  'england/$season$/eflcup.txt',
       'enfacup'   =>  'england/$season$/facup.txt',
-    
+
 
       'es'    =>  'espana/$season$/1-liga.txt',
       'escup' =>  'espana/$season$/cup.txt',
 
       'it'=>    'italy/$season$/1-seriea.txt',
-   
+
       'at'=>    'austria/$season$/1-bundesliga.txt',
       'at2'  =>   'austria/$season$/2-liga2.txt',
       'at3o' =>   'austria/$season$/3-regionalliga-ost.txt',
@@ -48,7 +50,7 @@ module Footty
       'br'    => 'south-america/brazil/$year$_br1.txt',
       'ar'    => 'south-america/argentina/$year$_ar1.txt',
       'co'    => 'south-america/colombia/$year$_co1.txt',
-      
+
       ## use a different code for copa libertadores? why? why not?
       'copa'  => 'south-america/copa-libertadores/$year$_copal.txt',
 
@@ -80,10 +82,10 @@ module Footty
 
       ##  todo/fix - report error if no spec found
       season =  if spec.is_a?( Hash )  ## assume lookup by year
-                    spec.keys[0]   
+                    spec.keys[0]
                 else  ## assume vanilla urls (no lookup by year)
-                    ## default to 2025 or 2024/25 for now
-                    spec.index( '$year$') ? '2025' : '2024/25'
+                    ## default to 2026 or 2025/26 for now
+                    spec.index( '$year$') ? '2026' : '2025/26'
                 end
       season
     end
@@ -116,13 +118,13 @@ module Footty
                   end
 
       matches = matches.map {|match| match.as_json }  # convert to json
-             
-      ## note - sort by date/time 
+
+      ## note - sort by date/time
       ##  (assume stable sort; no reshuffle of matches if already sorted by date/time)
 
       matches = matches.sort do |l,r|
                      result =  l['date'] <=> r['date']
-                     result =  l['time'] <=> r['time']    if result == 0 && 
+                     result =  l['time'] <=> r['time']    if result == 0 &&
                                                            (l['time'] && r['time'])
                      result
                   end
@@ -144,7 +146,7 @@ module Footty
 
     def matches()     @matches; end
     def league_name() @league_name; end
-  
+
 
 
     def get!( url )

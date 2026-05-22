@@ -38,3 +38,6 @@ build/
 cache/
 
 
+####
+# ignore logs
+logs.txt
