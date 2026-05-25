@@ -9,9 +9,9 @@ for upcoming or past matches. For example:
 
     $ footty              # Defaults to today's euro 2024 matches
 
-prints on Jun/14 2024:
+prints on Jun 14 2024:
 
-    #1 Fri Jun/14            Germany (GER)    vs    Scotland (SCO)         Group A / Matchday 1
+    #1 Fri Jun 14            Germany (GER)    vs    Scotland (SCO)         Group A / Matchday 1
 
 Use `tomorrow` or `t` or `+1` to print tomorrow's matches e.g.:
 
@@ -35,6 +35,3 @@ Use `past` or `p` to print all past matches e.g.:
 
 
 That's it. Enjoy the beautiful game.
-
-
-

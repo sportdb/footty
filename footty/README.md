@@ -21,17 +21,17 @@ for upcoming or past matches. For example:
 prints on Sep 27, 2024:
 
     ==> English Premier League 2024/25
-    Upcoming matches:
-    Sat Sep 28 12:30   (in 1d)    Newcastle United FC    vs    Manchester City FC     ▪ Matchday 6
-    Sat Sep 28 15:00   (in 1d)             Arsenal FC    vs    Leicester City FC      ▪ Matchday 6
-    Sat Sep 28 15:00   (in 1d)           Brentford FC    vs    West Ham United FC     ▪ Matchday 6
-    Sat Sep 28 15:00   (in 1d)             Chelsea FC    vs    Brighton & Hove Albion ▪ Matchday 6
-    Sat Sep 28 15:00   (in 1d)             Everton FC    vs    Crystal Palace FC      ▪ Matchday 6
-    Sat Sep 28 15:00   (in 1d)   Nottingham Forest FC    vs    Fulham FC              ▪ Matchday 6
-    Sat Sep 28 17:30   (in 1d) Wolverhampton Wanderers FC    vs    Liverpool FC          ▪ Matchday 6
-    Sun Sep 29 14:00   (in 2d)        Ipswich Town FC    vs    Aston Villa FC         ▪ Matchday 6
-    Sun Sep 29 16:30   (in 2d)   Manchester United FC    vs    Tottenham Hotspur FC   ▪ Matchday 6
-    Mon Sep 30 20:00   (in 3d)        AFC Bournemouth    vs    Southampton FC         ▪ Matchday 6
+    ▪ Matchday 6 ▪
+    Sat Sep 28 12:30   (in 1d)    Newcastle United FC    v    Manchester City FC
+               15:00   (in 1d)             Arsenal FC    v    Leicester City FC
+               15:00   (in 1d)           Brentford FC    v    West Ham United FC
+               15:00   (in 1d)             Chelsea FC    v    Brighton & Hove Albion
+               15:00   (in 1d)             Everton FC    v    Crystal Palace FC
+               15:00   (in 1d)   Nottingham Forest FC    v    Fulham FC
+               17:30   (in 1d) Wolverhampton Wanderers FC    v    Liverpool FC
+    Sun Sep 29 14:00   (in 2d)        Ipswich Town FC    v    Aston Villa FC
+               16:30   (in 2d)   Manchester United FC    v    Tottenham Hotspur FC
+    Mon Sep 30 20:00   (in 3d)        AFC Bournemouth    v    Southampton FC
 
 
 
@@ -45,7 +45,7 @@ Use `--yesterday` or `-y`  to print yesterday's matches e.g.:
     $ footty --yesterday    # -or-
     $ footty -y
 
-Use `--upcoming` or `--up` or `-u` to print all upcoming matches e.g.:
+Use `--upcoming`/`--up` or `-u` to print all upcoming matches e.g.:
 
     $ footty --upcoming    # -or-
     $ footty --up
