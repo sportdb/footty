@@ -9,9 +9,40 @@ module Footty
 
     today = Date.today
 
+    last_date  = nil
+    last_round = nil
+
     matches.each do |match|
+
+      ## note - merge group into round
+
+      round = String.new
+      round += "#{match['group']}, "   if match['group']     ## (optional) group
+      round += "#{match['round']}"
+
+      if last_round.nil? || last_round != round
+        print "▪ #{round} ▪\n"    ## knock out (k.o.) phase/stage
+        last_date = nil
+      else
+        ## print "     " + (" " *round.length)
+      end
+      last_round = round
+
+
+
+
+
       date = match['date']
-      print "#{date.strftime('%a %b %d')} "      ## e.g. Thu Jun 14
+
+      ## do NOT repeat same date
+      if last_date.nil? || last_date != date
+        print "#{date.strftime('%a %b %d')} "      ## e.g. Thu Jun 14
+      else
+        print "           "
+      end
+      last_date = date
+
+
       print "#{match['time']} "    if match['time']
 
       if date > today
@@ -55,7 +86,7 @@ module Footty
         score = "#{match['score'][0]}-#{match['score'][1]}"
         print "  #{score}  "
       else
-        print "    vs    "
+        print "   v   "
       end
 
       if match['team2'].is_a?( Hash )
@@ -65,18 +96,13 @@ module Footty
       end
 
 
-      print "▪"    ## note - add round marker!!
-
-
-      print " #{match['group']} /"   if match['group']     ## (optional) group
-
-
-      print " #{match['round']} "    ## knock out (k.o.) phase/stage
-
 
       print "%-5s " % "(\##{match['num']}) "   if match['num']
 
       print " @ #{match['ground']}"         if match['ground']
+
+
+      print " [#{match['status']}]"   if match['status']
 
 
       print "\n"
