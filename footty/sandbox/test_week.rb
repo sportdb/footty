@@ -27,8 +27,8 @@ pp Footty.week_tue_to_mon( today+11)
 pp Footty.week_tue_to_mon( today+12)
 pp Footty.week_tue_to_mon( today+13)
 
-week_start, week_end = Footty.week_tue_to_mon( today)
-puts  Footty.fmt_week( week_start, week_end )
+start_week, end_week = Footty.week_tue_to_mon( today)
+puts  Footty.fmt_week( start_week, end_week )
 
 
 puts  Footty.fmt_week(*Footty.week_tue_to_mon( today+7) )

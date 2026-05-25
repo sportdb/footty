@@ -3,8 +3,8 @@ module Footty
 
   class OpenfootballDataset  <  Dataset
     SOURCES = {
-      'world' => {# '2026' => [ 'worldcup/2026--usa/cup.txt',
-                  #             'worldcup/2026--usa/cup_finals.txt'],
+      'world' => { '2026' => [ 'worldcup/2026--usa/cup.txt',
+                               'worldcup/2026--usa/cup_finals.txt'],
                    '2022' => [ 'worldcup/2022--qatar/cup.txt',
                                'worldcup/2022--qatar/cup_finals.txt'],
                    '2018' => [ 'worldcup/2018--russia/cup.txt',
@@ -122,6 +122,20 @@ module Footty
       ## note - sort by date/time
       ##  (assume stable sort; no reshuffle of matches if already sorted by date/time)
 
+
+      ###
+      ## note - convert date to date obj or nil !!!
+      matches = matches.map do |match|
+                                 if match['date'] && match['date'].empty? == false
+                                    match['date'] = Date.strptime( match['date'], '%Y-%m-%d' )
+                                 else
+                                    match['date'] = nil
+                                 end
+
+                                 match
+                            end
+
+
       matches = matches.sort do |l,r|
                      result =  l['date'] <=> r['date']
                      result =  l['time'] <=> r['time']    if result == 0 &&
@@ -133,12 +147,13 @@ module Footty
     end
 
 
+
     def openfootball_url( path, season: )
        repo, local_path = path.split( '/',  2)
        url = "https://raw.githubusercontent.com/openfootball/#{repo}/master/#{local_path}"
        ## check for template vars too
        season = Season( season )
-       url = url.gsub( '$year$', season.start_year.to_s )
+       url = url.gsub( '$year$',   season.start_year.to_s )
        url = url.gsub( '$season$', season.to_path )
        url
     end

@@ -5,7 +5,9 @@ Rakefile
 bin/footty
 bin/ftty
 lib/footty.rb
-lib/footty/dataset.rb
-lib/footty/openfootball.rb
-lib/footty/print.rb
+lib/footty/dataset/dataset.rb
+lib/footty/dataset/openfootball.rb
+lib/footty/main.rb
+lib/footty/pp_matches.rb
+lib/footty/pp_week.rb
 lib/footty/version.rb

@@ -16,22 +16,22 @@ The footty (or ftty) command line tool lets you query the online football.db via
 for upcoming or past matches. For example:
 
     $ footty         # Defaults to today's matches of top leagues
-    
+
 
 prints on Sep 27, 2024:
 
     ==> English Premier League 2024/25
     Upcoming matches:
-    Sat Sep/28 12:30   (in 1d)    Newcastle United FC    vs    Manchester City FC     Matchday 6
-    Sat Sep/28 15:00   (in 1d)             Arsenal FC    vs    Leicester City FC      Matchday 6
-    Sat Sep/28 15:00   (in 1d)           Brentford FC    vs    West Ham United FC     Matchday 6
-    Sat Sep/28 15:00   (in 1d)             Chelsea FC    vs    Brighton & Hove Albion  Matchday 6
-    Sat Sep/28 15:00   (in 1d)             Everton FC    vs    Crystal Palace FC      Matchday 6
-    Sat Sep/28 15:00   (in 1d)   Nottingham Forest FC    vs    Fulham FC              Matchday 6
-    Sat Sep/28 17:30   (in 1d) Wolverhampton Wanderers FC    vs    Liverpool FC           Matchday 6
-    Sun Sep/29 14:00   (in 2d)        Ipswich Town FC    vs    Aston Villa FC         Matchday 6
-    Sun Sep/29 16:30   (in 2d)   Manchester United FC    vs    Tottenham Hotspur FC   Matchday 6
-    Mon Sep/30 20:00   (in 3d)        AFC Bournemouth    vs    Southampton FC         Matchday 6
+    Sat Sep 28 12:30   (in 1d)    Newcastle United FC    vs    Manchester City FC     ▪ Matchday 6
+    Sat Sep 28 15:00   (in 1d)             Arsenal FC    vs    Leicester City FC      ▪ Matchday 6
+    Sat Sep 28 15:00   (in 1d)           Brentford FC    vs    West Ham United FC     ▪ Matchday 6
+    Sat Sep 28 15:00   (in 1d)             Chelsea FC    vs    Brighton & Hove Albion ▪ Matchday 6
+    Sat Sep 28 15:00   (in 1d)             Everton FC    vs    Crystal Palace FC      ▪ Matchday 6
+    Sat Sep 28 15:00   (in 1d)   Nottingham Forest FC    vs    Fulham FC              ▪ Matchday 6
+    Sat Sep 28 17:30   (in 1d) Wolverhampton Wanderers FC    vs    Liverpool FC          ▪ Matchday 6
+    Sun Sep 29 14:00   (in 2d)        Ipswich Town FC    vs    Aston Villa FC         ▪ Matchday 6
+    Sun Sep 29 16:30   (in 2d)   Manchester United FC    vs    Tottenham Hotspur FC   ▪ Matchday 6
+    Mon Sep 30 20:00   (in 3d)        AFC Bournemouth    vs    Southampton FC         ▪ Matchday 6
 
 
 
@@ -81,7 +81,7 @@ More
 - `world`  =>  World Cup
 - `euro`   =>  "Euro" - European Championship
 
-See [footty/openfootball](https://github.com/sportdb/footty/blob/master/footty/lib/footty/openfootball.rb) for the complete built-in list of data sources (and league codes).
+See [footty/openfootball](https://github.com/sportdb/footty/blob/master/footty/lib/footty/dataset/openfootball.rb) for the complete built-in list of data sources (and league codes).
 
 
 
@@ -110,4 +110,3 @@ Use it as you please with no restrictions whatsoever.
 
 Yes, you can. More than welcome.
 See [Help & Support »](https://github.com/openfootball/help)
-

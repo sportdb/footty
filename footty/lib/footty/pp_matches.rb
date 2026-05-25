@@ -1,14 +1,18 @@
 
 module Footty
 
+
+##
+#    note - assume "upstream" date is always date object or nil (NOT string)!!!
+
  def self.print_matches( matches )
 
     today = Date.today
 
     matches.each do |match|
-      date = Date.strptime( match['date'], '%Y-%m-%d' )
+      date = match['date']
       print "#{date.strftime('%a %b %d')} "      ## e.g. Thu Jun 14
-      print "#{match['time']} "  if match['time']
+      print "#{match['time']} "    if match['time']
 
       if date > today
          diff = (date - today).to_i
@@ -23,7 +27,8 @@ module Footty
       end
 
 
-      if match['score'].is_a?( Hash ) &&  match['score']['ft']
+
+      if match['score'].is_a?( Hash )
 
           if match['score']['et']
              et = "#{match['score']['et'][0]}-#{match['score']['et'][1]} aet"
@@ -59,26 +64,19 @@ module Footty
         print "%-22s" % "#{match['team2']}"
       end
 
-      ## if match['stage']
-      ##  print " #{match['stage']} /"    ## stage
-      ## end
-
 
       print "▪"    ## note - add round marker!!
 
-      if match['group']
-         print " #{match['group']} /"    ## group phase
-      end
+
+      print " #{match['group']} /"   if match['group']     ## (optional) group
+
 
       print " #{match['round']} "    ## knock out (k.o.) phase/stage
 
+
       print "%-5s " % "(\##{match['num']}) "   if match['num']
 
-      ## todo/fix - check for ground name in use???
-      if match['ground']
-        print " @ #{match['ground']}"
-      end
-
+      print " @ #{match['ground']}"         if match['ground']
 
 
       print "\n"

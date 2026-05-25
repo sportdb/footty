@@ -1,6 +1,6 @@
 
 module Footty
-   VERSION = '2025.5.2'
+   VERSION = '2026.5.25'
 
    def self.banner
      "footty/#{VERSION} on Ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}) [#{RUBY_PLATFORM}] in (#{root})"
@@ -10,5 +10,3 @@ module Footty
      File.expand_path( File.dirname(File.dirname(File.dirname(__FILE__))) )
    end
 end
-
-
