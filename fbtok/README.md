@@ -25,23 +25,25 @@ $ gem install fbtok
 - depends on sportdb-parser
 
 get help
+
 ```
 $ fbtok -h
 $ fbtree -h
 ```
 
 run on single / individual (data)files
-````
+
+```
 $ fbtok england/2025-26/1-permierleague.txt
 $ fbtok worldcup/min/2022.txt
 
 $ fbtree england/2025-26/1-permierleague.txt
 $ fbtree worldcup/min/2022.txt
-
 ```
 
 or on directories (auto-collecting all datafiles)
 
+```
 $ fbtok england
 $ fbtok worldcup
 
@@ -50,18 +52,19 @@ $ fbtree worldcup
 ```
 
 
-
 ### fbquick/fbquik & fbx   -  use quick match reader & dump match schedule
 
 - depends on sportdb-quick (& sportdb-parser)
 
 get help
+
 ```
 $ fbquik -h
 $ fbx -h
 ```
 
 run on single / individual (data)files
+
 ````
 $ fbquik england/2025-26/1-permierleague.txt
 $ fbquik worldcup/min/2022.txt
@@ -72,12 +75,12 @@ $ fbx worldcup/min/2022.txt
 
 or on directories (auto-collecting all datafiles)
 
+```
 $ fbquik england
 $ fbquik worldcup
 ```
 
 note: `fbx` only works with single / individual (data)files
-
 
 
 
