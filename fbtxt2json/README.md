@@ -1,10 +1,11 @@
-# fbtxt2json - convert football.txt match schedules & more to json
+# fbtxt2json (& fbtxt2csv) - convert football.txt match schedules & more to (structured) json or (tabular) csv
 
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
 * bugs  :: [github.com/sportdb/footty/issues](https://github.com/sportdb/footty/issues)
 * gem   :: [rubygems.org/gems/fbtxt2json](https://rubygems.org/gems/fbtxt2json)
 * rdoc  :: [rubydoc.info/gems/fbtxt2json](http://rubydoc.info/gems/fbtxt2json)
+
 
 
 ## Step 0 - Installation Via Gems
