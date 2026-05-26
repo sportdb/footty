@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   ruby -I ./lib bin/fbtxt2json
+##   $ ruby -I ./lib bin/fbtxt2json
 
 
 #####
@@ -50,7 +50,7 @@ parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
      opts[:output] = output
    end
 
-   parser.on( "--summary", 
+   parser.on( "--summary",
                   "(auto-)generate summary (index.html) page (default: #{opts[:summary]})" ) do |summary|
      opts[:summary] = summary
    end
@@ -59,9 +59,9 @@ parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
                   "turn on processing only seasons (default: #{!opts[:seasons].empty?})" ) do |seasons|
        pp seasons
        seasons = seasons.split( /[, ]/ )
-       seasons = seasons.map {|season| Season.parse(season) }               
+       seasons = seasons.map {|season| Season.parse(season) }
        opts[:seasons] = seasons
-   end   
+   end
 end
 parser.parse!( args )
 
@@ -91,7 +91,7 @@ end
 
 
 ###
-##  two modes -   process directories or  concat(enate)d files 
+##  two modes -   process directories or  concat(enate)d files
 ##
 ##   check if args is a directory
 ##
@@ -114,21 +114,21 @@ end
 
 
 def parse( txt,
-            summary: nil, 
+            summary: nil,
             dump: false )   ### check - name parse_txt or txt_to_json or such - why? why not?
    quick = SportDb::QuickMatchReader.new( txt )
    matches = quick.parse
    name    = quick.league_name   ## quick hack - get league+season via league_name
- 
+
    data = { 'name'    => name,
             'matches' => matches.map {|match| match.as_json }}
-  
+
    if dump
      pp data
      puts
    end
    puts "  #{matches.size} match(es)"
- 
+
    if quick.errors?
       puts "!! #{quick.errors.size} parse error(s):"
       pp quick.errors
@@ -156,7 +156,7 @@ if files > 0
 
   ## step 2 - parse (matches) in the football.txt format
   data = parse( txt, dump: true )
- 
+
   if opts[:output]
      puts "==> writing matches to #{opts[:output]}"
      write_json( opts[:output], data )
@@ -190,11 +190,11 @@ elsif dirs > 0
             dir     = File.dirname( relpath )
             ## puts "  reldir = #{reldir}, datafile = #{datafile}"
             ## puts "  relpath = #{relpath}, dir = #{dir}"
-            basename = File.basename( relpath, File.extname(relpath)) 
+            basename = File.basename( relpath, File.extname(relpath))
             outpath  = "#{opts[:output]}/#{dir}/#{basename}.json"
          else
-           dir = File.dirname( datafile )  
-           basename = File.basename( datafile, File.extname(datafile) ) 
+           dir = File.dirname( datafile )
+           basename = File.basename( datafile, File.extname(datafile) )
            outpath = "#{dir}/#{basename}.json"
          end
          puts "  writing matches to #{outpath}"
@@ -208,7 +208,7 @@ elsif dirs > 0
    if opts[:summary] && opts[:seasons].size == 0
      write_text( "#{opts[:output]}/index.html", summary )
    end
-else 
+else
    ## do nothing; no args
 end
 
@@ -216,4 +216,3 @@ end
 
 
 puts "bye"
-

@@ -1,22 +1,18 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   ruby -I ./lib bin/fbt
+##   $ ruby -I ./lib bin/fbquick
 ##     -or-
-##   ruby -I ../parser/lib -I ./lib bin/fbt
+##   $ ruby -I ../parser/lib -I ./lib bin/fbquick
 ##     -or-
-##   ruby -I ../parser/lib -I ../sportdb-structs/lib -I ./lib bin/fbt
+##   $ ruby -I ../parser/lib -I ../quick/lib -I ./lib bin/fbquick
+
+##
+## todo/fix - add (shortcut) alias  fbquik,fbqk - why? why not?
 
 
 ## our own code
 require 'fbtok'
-
-
-##
-## read textfile
-##   and dump tokens
-##
-##   fbt  ../openfootball/.../euro.txt
 
 
 
@@ -57,7 +53,7 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
-  
+
   SportDb::QuickMatchReader.debug = true
   SportDb::MatchParser.debug      = true
 else
@@ -70,30 +66,26 @@ end
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
 specs =  if opts[:file]
-            SportDb::Parser::Opts.read_pathspecs( opts[:file] )
+            read_pathspecs( opts[:file] )
          else
-           paths =  if args.empty?
-                      ['/sports/openfootball/euro/2021--europe/euro.txt',
-                       '/sports/openfootball/euro/2024--germany/euro.txt'] 
-                    else
-                       ## check for directories
-                       ##   and auto-expand
-                       SportDb::Parser::Opts.expand_args( args )
-                    end
-             ## always return array of specs
-            [SportDb::Parser::Opts.build_pathspec( paths: paths)]  
+           args =     ['/sports/openfootball/euro/2021--europe/euro.txt',
+                       '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+
+            build_pathspecs( args )
          end
 
+pp specs
 
 
-  specs.each_with_index do |spec,i|
-    paths = spec.paths
-    rec   = spec.rec
+
+  specs.each_with_index do |rec,i|
+    datafiles = rec['datafiles']
     errors = []
 
-    paths.each_with_index do |path,j|
-      puts "==> [#{j+1}/#{paths.size}] reading >#{path}<..."
-      quick = SportDb::QuickMatchReader.new( read_text( path ) )
+    datafiles.each_with_index do |path,j|
+      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
+      txt = read_text( path )
+      quick = SportDb::QuickMatchReader.new( txt )
       matches = quick.parse
 
       if quick.errors?
@@ -109,11 +101,11 @@ specs =  if opts[:file]
 
     if errors.size > 0
       puts
-      puts "!! #{errors.size} PARSE ERRORS in #{paths.size} datafile(s)"
+      puts "!! #{errors.size} PARSE ERRORS in #{datafiles.size} datafile(s)"
       pp errors
     else
       puts
-      puts "  OK - no parse errors in #{paths.size} datafile(s)"
+      puts "  OK - no parse errors in #{datafiles.size} datafile(s)"
     end
 
      ## add errors to rec via rec['errors'] to allow
@@ -126,9 +118,9 @@ specs =  if opts[:file]
 ###
 ## generate a report if --file option used
 if opts[:file]
-  buf = SportDb::Parser::BatchReport.new( 
-            specs, 
-            title: 'fbt summary report' ).build
+  buf = SportDb::PathspecReport.new(
+            specs,
+            title: 'fbquick summary report' ).build
 
   puts
   puts "SUMMARY:"
@@ -142,4 +134,3 @@ end
 
 
 puts "bye"
-

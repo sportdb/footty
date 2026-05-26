@@ -8,15 +8,17 @@ require 'fbtok'
 
 
 path = '/sports/openfootball/internationals'
-datafiles = SportDb::Parser::Opts._expand( path )
-    
+datafiles = SportDb::Pathspec._find( path )
+
+## pp datafiles
 puts "  #{datafiles.size} datafile"
 
 
-MATCH_RE =  SportDb::Parser::Opts::MATCH_RE
+MATCH_RE =  SportDb::Pathspec::MATCH_RE
 
 pp MATCH_RE.match( "internationals/fifi_wild_cup/2006/fifi_wild_cup.txt" )
 pp MATCH_RE.match( "internationals/fifi_wild_cup/2006_fifi_wild_cup.txt" )
+pp MATCH_RE.match( "internationals/fifi_wild_cup/2006.txt" )
 
 
 puts "bye"

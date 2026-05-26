@@ -1,5 +1,5 @@
-# fbtok - football.txt lint tools incl. tokenizer, parser & more
- 
+# fbtok - football.txt lint tools incl. tokenizer (lexer), parser & more
+
 
 
 * home  :: [github.com/sportdb/footty](https://github.com/sportdb/footty)
@@ -20,20 +20,67 @@ $ gem install fbtok
 ## Usage
 
 
-### fbtok -  use tokenizer/parser
+### fbtok & fbtree -  use tokenizer (lexer) & parser
 
 - depends on sportdb-parser
 
-### fbt   -  use quick match reader &  fbx   -  dump match schedule  - uses quick league & match readers
+get help
+```
+$ fbtok -h
+$ fbtree -h
+```
 
-- depends on sportdb-quick
+run on single / individual (data)files
+````
+$ fbtok england/2025-26/1-permierleague.txt
+$ fbtok worldcup/min/2022.txt
 
-### fbchk  -  use quick match linter; check league and team names via search & more
+$ fbtree england/2025-26/1-permierleague.txt
+$ fbtree worldcup/min/2022.txt
 
-- depends on sportdb-formats (incl. sportdb-search & sportdb-catalogs)
+```
+
+or on directories (auto-collecting all datafiles)
+
+$ fbtok england
+$ fbtok worldcup
+
+$ fbtree england
+$ fbtree worldcup
+```
 
 
-...
+
+### fbquick & fbx   -  use quick match reader & dump match schedule
+
+- depends on sportdb-quick (& sportdb-parser)
+
+get help
+```
+$ fbquick -h
+$ fbx -h
+```
+
+run on single / individual (data)files
+````
+$ fbquick england/2025-26/1-permierleague.txt
+$ fbquick worldcup/min/2022.txt
+
+$ fbx england/2025-26/1-permierleague.txt
+$ fbx worldcup/min/2022.txt
+
+```
+
+or on directories (auto-collecting all datafiles)
+
+$ fbquick england
+$ fbquick worldcup
+```
+
+note: `fbx` only works with single / individual (data)files
+
+
+
 
 
 

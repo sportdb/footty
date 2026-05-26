@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   ruby -I ./lib bin/fbtok
+##   $ ruby -I ./lib bin/fbtok
 
 require 'fbtok'
 
 args = ARGV
- 
+
 
 opts = {
     debug: true,
@@ -31,14 +31,6 @@ parser = OptionParser.new do |parser|
     opts[:warn] = true
   end
 
-=begin
-  parser.on( "--metal",
-                 "turn off typed parse tree; show to the metal tokens"+
-                   " (default: #{opts[:metal]})" ) do |metal|
-    opts[:metal] = true
-  end
-=end
-
 
   parser.on( "-f FILE", "--file FILE",
                 "read datafiles (pathspecs) via .csv file") do |file|
@@ -58,57 +50,56 @@ if opts[:debug]
   p args
 end
 
-SportDb::Parser::Linter.debug = opts[:debug]    
-SportDb::Parser::Opts.debug   = opts[:debug]
 
-SportDb::Parser::Linter.warn  = opts[:warn]    
+# SportDb::Parser::Linter.debug = opts[:debug]
+# SportDb::Parser::Linter.warn  = opts[:warn]
 
 
 
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
 specs =  if opts[:file]
-            SportDb::Parser::Opts.read_pathspecs( opts[:file] )
+            read_pathspecs( opts[:file] )
          else
-           paths =  if args.empty?
-                      ['/sports/openfootball/euro/2021--europe/euro.txt',
-                       '/sports/openfootball/euro/2024--germany/euro.txt'] 
-                    else
-                       ## check for directories
-                       ##   and auto-expand
-                       SportDb::Parser::Opts.expand_args( args )
-                    end
-             ## always return array of specs
-            [SportDb::Parser::Opts.build_pathspec( paths: paths)]  
+           args = ['/sports/openfootball/euro/2021--europe/euro.txt',
+                   '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+
+            build_pathspecs( args )
          end
 
 
-linter = SportDb::Parser::Linter.new
+pp specs
 
 
-specs.each_with_index do |spec,i|
-    paths = spec.paths
-    rec   = spec.rec
-   
+
+specs.each_with_index do |rec,i|
+    datafiles = rec['datafiles']
+
     errors = []
 
-   paths.each_with_index do |path,j|
-      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{paths.size}] reading >#{path}<..."
-      tokens =  linter.read( path, parse: false )  ## only tokenize (do NOT parse)
+    datafiles.each_with_index do |path,j|
+      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
 
-      puts "   #{tokens.size} token(s)"    
+      txt = read_text( path )
+      lexer = SportDb::Lexer.new( txt, debug: opts[:debug] )
+      tokens, more_errors = lexer.tokenize_with_errors
 
-      errors += linter.errors    if linter.errors?
+      ####
+      ## todo - report error on empty file (no tokens!!!)
+
+      puts "   #{tokens.size} token(s)"
+
+      errors += more_errors    if more_errors.size > 0
    end
 
    if errors.size > 0
       puts
       pp errors
       puts
-      puts "!!   #{errors.size} tokenize error(s) in #{paths.size} datafiles(s)"
+      puts "!!   #{errors.size} tokenize error(s) in #{datafiles.size} datafiles(s)"
    else
       puts
-      puts "OK   no tokenize errors found in #{paths.size} datafile(s)"
+      puts "OK   no tokenize errors found in #{datafiles.size} datafile(s)"
    end
 
    ## add errors to rec via rec['errors'] to allow
@@ -120,9 +111,8 @@ end
 ###
 ## generate a report if --file option used
 if opts[:file]
-
-  buf = SportDb::Parser::BatchReport.new( 
-            specs, 
+  buf = SportDb::PathspecReport.new(
+            specs,
             title: 'fbtok summary report' ).build
 
   puts
@@ -135,4 +125,3 @@ if opts[:file]
 end
 
 puts "bye"
-

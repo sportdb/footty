@@ -1,13 +1,6 @@
 
-require 'sportdb/formats'
-
-
-## more stdlibs
-require 'optparse'   ## check - already auto-required in cocos? keep? why? why not?
+require 'sportdb/quick'
 
 
 ## our own code
-require_relative 'fbtok/opts'
-require_relative 'fbtok/linter'
-
-
+require_relative 'fbtok/pathspec'

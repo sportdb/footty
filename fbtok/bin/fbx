@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   ruby -I ./lib -I ../parser/lib bin/fbx
+##   $ ruby -I ./lib -I ../parser/lib bin/fbx
 
 ##
 ## todo/fix - use for testing
@@ -40,10 +40,10 @@ require 'fbtok'
     opts[:debug] = debug
   end
 
-  parser.on( "--outline",
-                "turn on outline (only) output (default: #{opts[:outline]})" ) do |outline|
-    opts[:outline] = outline
-  end
+#  parser.on( "--outline",
+#                "turn on outline (only) output (default: #{opts[:outline]})" ) do |outline|
+#    opts[:outline] = outline
+#  end
 end
 parser.parse!( args )
 
@@ -53,27 +53,23 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
-  
-  SportDb::MatchParser.debug = true    
+
+  SportDb::MatchParser.debug = true
 else
-  SportDb::MatchParser.debug = false    
+  SportDb::MatchParser.debug = false
   LogUtils::Logger.root.level = :info
 end
 
 
-paths =  if args.empty?
-            [
+args =  [
               '../../../openfootball/euro/2021--europe/euro.txt',
               '../../../openfootball/euro/2024--germany/euro.txt',
-            ]
-         else
-            ## check for directories
-            ##   and auto-expand
+        ]   if args.empty?
 
-            SportDb::Parser::Opts.expand_args( args )
-         end
+pp args
 
 
+paths = args
 
 
 ## errors = []
@@ -83,58 +79,20 @@ paths.each_with_index do |path,i|
     puts "==> [#{i+1}/#{paths.size}] reading >#{path}<..."
 
     txt = read_text( path )
-    outline = SportDb::QuickLeagueOutline.parse( txt )
 
-    ##  todo/fix - add each_sec_with_index upstream
-    ##    add outline.secs.size - why? why not?
-    j = 0
-    secs_count = '?'
-    outline.each_sec do |sec|   ## sec(tion)s
-      season = Season.parse( sec.season )   ## convert (str) to season obj!!!
-      league = sec.league
-      stage  = sec.stage
-      lines  = sec.lines
+    parser = SportDb::MatchParser.new( txt, start: nil )
 
-      puts "   section #{j+1}/#{secs_count} -   #{league} #{season}, #{stage}  -  #{lines.size} line(s)"
-
-      next if opts[:outline]
-
-=begin
-    ### check if event info availabe - use start_date;
-      ##    otherwise we have to guess (use a "synthetic" start_date)
-      event_info = catalog.events.find_by( season: season,
-                                           league: league )
-
-      start = if event_info && event_info.start_date
-                  puts "event info found:"
-                  puts "  using start date from event: "
-                  pp event_info
-                  pp event_info.start_date
-                  event_info.start_date
-              else
-=end
-     start  =   if season.year?
-                  Date.new( season.start_year, 1, 1 )
-                else
-                  Date.new( season.start_year, 7, 1 )
-                end
-
-      parser = SportDb::MatchParser.new( lines,
-                                         start )   ## note: keep season start_at date for now (no need for more specific stage date need for now)
-
-      auto_conf_teams,  matches, rounds, groups = parser.parse
+    auto_conf_teams, matches, rounds, groups = parser.parse
 
       puts ">>> #{auto_conf_teams.size} teams:"
       pp auto_conf_teams
       puts ">>> #{matches.size} matches:"
-      ## pp matches
+      pp matches[0,2]   ## print first two matches
+      puts "..."
       puts ">>> #{rounds.size} rounds:"
       pp rounds
       puts ">>> #{groups.size} groups:"
       pp groups
-
-      j += 1
-    end  # each secs
 end  # each paths
 
 =begin
@@ -150,4 +108,3 @@ end
 =end
 
 puts "bye"
-

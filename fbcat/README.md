@@ -23,6 +23,14 @@ $ gem install fbcat
 
 
 
+### fbchk  -  use quick match linter; check league and team names via search & more
+
+- depends on sportdb-formats (incl. sportdb-search & sportdb-catalogs)
+
+
+
+
+
 ## Questions? Comments?
 
 Yes, you can. More than welcome.

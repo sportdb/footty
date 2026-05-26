@@ -12,17 +12,17 @@ path = '/sports/openfootball/england'
 ## path = '/sports/openfootball/europe'
 
 
-datafiles = SportDb::Parser::Opts._find( path )
+datafiles = SportDb::Pathspec._find( path )
 pp datafiles
 puts "  #{datafiles.size} datafile"
 puts
 
-datafiles = SportDb::Parser::Opts._find( path, seasons: ['2023/24','2024'] )
+datafiles = SportDb::Pathspec._find( path, seasons: ['2023/24','2024'] )
 pp datafiles
 puts "  #{datafiles.size} datafile"
 puts
 
-datafiles = SportDb::Parser::Opts._find( path, seasons: ['2024/25','2025'] )
+datafiles = SportDb::Pathspec._find( path, seasons: ['2024/25','2025'] )
 pp datafiles
 puts "  #{datafiles.size} datafile"
 

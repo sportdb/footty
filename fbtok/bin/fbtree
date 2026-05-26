@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   ruby -I ./lib bin/fbtree
+##   $ ruby -I ./lib bin/fbtree
 
 require 'fbtok'
 
 args = ARGV
- 
+
 
 opts = {
     debug: true,
@@ -50,10 +50,9 @@ if opts[:debug]
   p args
 end
 
-SportDb::Parser::Linter.debug = opts[:debug]    
-SportDb::Parser::Opts.debug   = opts[:debug]
 
-SportDb::Parser::Linter.warn  = opts[:warn]    
+# SportDb::Parser::Linter.debug = opts[:debug]
+# SportDb::Parser::Linter.warn  = opts[:warn]
 
 
 
@@ -61,18 +60,12 @@ SportDb::Parser::Linter.warn  = opts[:warn]
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
 specs =  if opts[:file]
-            SportDb::Parser::Opts.read_pathspecs( opts[:file] )
+            read_pathspecs( opts[:file] )
          else
-           paths =  if args.empty?
-                      ['/sports/openfootball/euro/2021--europe/euro.txt',
-                       '/sports/openfootball/euro/2024--germany/euro.txt'] 
-                    else
-                       ## check for directories
-                       ##   and auto-expand
-                       SportDb::Parser::Opts.expand_args( args )
-                    end
-             ## always return array of specs
-            [SportDb::Parser::Opts.build_pathspec( paths: paths)]  
+           args = ['/sports/openfootball/euro/2021--europe/euro.txt',
+                   '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+
+            build_pathspecs( args )
          end
 
 
@@ -80,12 +73,12 @@ specs =  if opts[:file]
 def dump_tree_stats( tree )
   stats = Hash.new(0)  ## track counts only for now
   tree.each do |node|
-     stats[ node.class ] += 1 
+     stats[ node.class ] += 1
   end
 
   match_count  = stats[ RaccMatchParser::MatchLine ]
   goal_count   = stats[ RaccMatchParser::GoalLine ]
-  lineup_count = stats[ RaccMatchParser::LineupLine ] 
+  lineup_count = stats[ RaccMatchParser::LineupLine ]
 
   puts "   #{match_count} MatchLine(s)"     if match_count > 0
   puts "   #{goal_count} GoalLine(s)"       if goal_count > 0
@@ -95,31 +88,32 @@ end
 
 
 
-linter = SportDb::Parser::Linter.new
 
+specs.each_with_index do |rec,i|
+    datafiles = rec['datafiles']
 
-specs.each_with_index do |spec,i|
-    paths = spec.paths
-    rec   = spec.rec
-   
     errors = []
 
-   paths.each_with_index do |path,j|
-      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{paths.size}] reading >#{path}<..."
-      tree = linter.read( path, parse: true )
+   datafiles.each_with_index do |path,j|
+      puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
+
+      txt = read_text( path )
+      parser = RaccMatchParser.new( txt, debug: opts[:debug] )
+      tree = parser.parse
+
       dump_tree_stats( tree )
-    
-      errors += linter.errors    if linter.errors?
+
+      errors += parser.errors    if parser.errors?
    end
 
    if errors.size > 0
       puts
       pp errors
       puts
-      puts "!!   #{errors.size} parse error(s) in #{paths.size} datafiles(s)"
+      puts "!!   #{errors.size} parse error(s) in #{datafiles.size} datafiles(s)"
    else
       puts
-      puts "OK   no parse errors found in #{paths.size} datafile(s)"
+      puts "OK   no parse errors found in #{datafiles.size} datafile(s)"
    end
 
    ## add errors to rec via rec['errors'] to allow
@@ -132,8 +126,8 @@ end
 ## generate a report if --file option used
 if opts[:file]
 
-  buf = SportDb::Parser::BatchReport.new( 
-            specs, 
+  buf = SportDb::PathspecReport.new(
+            specs,
             title: 'fbtree summary report' ).build
 
   puts

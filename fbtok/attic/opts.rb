@@ -1,4 +1,6 @@
 
+
+
 module SportDb
 class Parser
 
@@ -9,12 +11,12 @@ class Opts
 
   def self.debug=(value) @@debug = value; end
   def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
-  
+
 
     SEASON_RE = %r{ (?:
                        (?<season>\d{4}-\d{2})
-                        | 
-                       (?<season>\d{4}) 
+                        |
+                       (?<season>\d{4})
                          (?: --[a-z0-9_-]+ )?   ## todo/fix - allow "extension" to 2024-25 too - why?
                     )
                   }x
@@ -36,12 +38,12 @@ class Opts
                      |
                     (?:  ## "compact" variant ii) with season in filename
                        (?: ^|/ )      # beginning (^) or beginning of path (/)
-                        (?:  (?<season>\d{4}-\d{2}) 
-                                | 
+                        (?:  (?<season>\d{4}-\d{2})
+                                |
                              (?<season>\d{4})
                          )
                          _  ## allow more than one underscore - why? why not?
-                        [a-z0-9][a-z0-9_.-]*\.txt$           
+                        [a-z0-9][a-z0-9_.-]*\.txt$
                     )
                 }x
 
@@ -59,7 +61,7 @@ def self._find( path, seasons: nil )
     ##    change all backslash to slash for now
     ## path = path.gsub( "\\", '/' )
     path =  File.expand_path( path )
-          
+
     if seasons && seasons.size > 0
        ## norm seasons
        seasons = seasons.map {|season| Season(season) }
@@ -73,12 +75,12 @@ def self._find( path, seasons: nil )
     ## pp candidates
     candidates.each do |candidate|
        if m=MATCH_RE.match( candidate )
-          if seasons && seasons.size > 0   ## check for seasons filter 
+          if seasons && seasons.size > 0   ## check for seasons filter
             season = Season.parse(m[:season])
-            datafiles << candidate   if seasons.include?( season )   
+            datafiles << candidate   if seasons.include?( season )
           else
-            datafiles << candidate 
-          end  
+            datafiles << candidate
+          end
        end
     end
 
@@ -98,11 +100,11 @@ def self._expand( arg )
           end
           datafiles
     else ## assume it's a file
-        ## make sure path exists; raise error if not 
+        ## make sure path exists; raise error if not
         if File.exist?( arg )
           [arg]   ## note - always return an array - why? why not?
-        else    
-          raise Errno::ENOENT, "No such file or directory - #{arg}" 
+        else
+          raise Errno::ENOENT, "No such file or directory - #{arg}"
         end
     end
 end
@@ -113,12 +115,12 @@ def self.expand_args( args )
   args.each do |arg|
     paths += _expand( arg )
   end
-  paths 
+  paths
 end
 
 
 
-## todo/check - find a better name 
+## todo/check - find a better name
 ##   e.g.  BatchItem or PackageDef or ???
 ##
 ##   find a different name for rec for named value props?
@@ -134,19 +136,19 @@ def self.read_pathspecs( src )
 
     recs = read_csv( src )
     pp recs     if debug?
-  
+
     ##  note - make pathspecs relative to passed in file arg!!!
     basedir = File.dirname( src )
     recs.each do |rec|
         path = rec['path']
-        fullpath = File.expand_path( path, basedir ) 
+        fullpath = File.expand_path( path, basedir )
         ## make sure path exists; raise error if not
         paths =  if Dir.exist?( fullpath )
                     _find( fullpath )
                  else
-                    raise Errno::ENOENT, "No such directory - #{fullpath})" 
+                    raise Errno::ENOENT, "No such directory - #{fullpath})"
                  end
-        
+
         specs << PathspecNode.new( paths: paths, rec: rec )
     end
     specs
@@ -167,12 +169,12 @@ class BatchReport
   def build
      buf = String.new
      buf << "# #{@title} - #{@specs.size} dataset(s)\n\n"
-  
+
      @specs.each_with_index do |spec,i|
        paths  = spec.paths
        rec    = spec.rec
        errors = rec['errors']
-  
+
        if errors.size > 0
          buf << "!! #{errors.size} ERROR(S)  "
        else
@@ -181,13 +183,13 @@ class BatchReport
        buf << "%-20s" % rec['path']
        buf << " - #{paths.size} datafile(s)"
        buf << "\n"
-  
+
        if errors.size > 0
          buf << errors.pretty_inspect
          buf << "\n"
        end
      end
-  
+
      buf
   end   # method build
 end  # class BatchReport
