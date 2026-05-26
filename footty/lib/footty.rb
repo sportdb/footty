@@ -24,10 +24,3 @@ Webcache.root = './cache'
 
 #  pp Webcache.root
 Webget.config.sleep = 1  ## set delay in secs (to 1 sec - default is/maybe 3)
-
-
-
-
-
-
-Footty.main   if __FILE__ == $0

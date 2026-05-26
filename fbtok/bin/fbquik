@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
 ## tip: to test run:
-##   $ ruby -I ./lib  bin/fbx
+##   $ ruby -I ./lib bin/fbquik
 
 
 ## our own code
 require 'fbtok'
 
 
-Fbx.main
+Fbquick.main

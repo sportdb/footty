@@ -51,30 +51,29 @@ $ fbtree worldcup
 
 
 
-### fbquick & fbx   -  use quick match reader & dump match schedule
+### fbquick/fbquik & fbx   -  use quick match reader & dump match schedule
 
 - depends on sportdb-quick (& sportdb-parser)
 
 get help
 ```
-$ fbquick -h
+$ fbquik -h
 $ fbx -h
 ```
 
 run on single / individual (data)files
 ````
-$ fbquick england/2025-26/1-permierleague.txt
-$ fbquick worldcup/min/2022.txt
+$ fbquik england/2025-26/1-permierleague.txt
+$ fbquik worldcup/min/2022.txt
 
 $ fbx england/2025-26/1-permierleague.txt
 $ fbx worldcup/min/2022.txt
-
 ```
 
 or on directories (auto-collecting all datafiles)
 
-$ fbquick england
-$ fbquick worldcup
+$ fbquik england
+$ fbquik worldcup
 ```
 
 note: `fbx` only works with single / individual (data)files

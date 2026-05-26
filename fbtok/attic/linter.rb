@@ -38,7 +38,7 @@ def read( path, parse: true )
   outline = QuickMatchOutline.read( path )
 
   outline.each_para do |lines|
-  
+
        ## flatten lines (array of strings) into all-in-one string
        txt  = lines.reduce( String.new ) do |mem, line|
          mem << line
@@ -49,9 +49,9 @@ def read( path, parse: true )
      if parse
        if debug?
          puts "lines:"
-         pp txt   
+         pp txt
        end
- 
+
        ##   pass along debug flag to parser (& tokenizer)?
        parser = RaccMatchParser.new( txt )   ## use own parser instance (not shared) - why? why not?
        tree, errors = parser.parse_with_errors
@@ -66,7 +66,7 @@ def read( path, parse: true )
 
        if debug?
          puts "parse tree:"
-         pp tree  
+         pp tree
        end
 
        @tree += tree   ## add nodes
@@ -75,7 +75,7 @@ def read( path, parse: true )
 
         if debug?
           puts "lines:"
-          pp txt   
+          pp txt
         end
 
 ##
@@ -84,7 +84,7 @@ def read( path, parse: true )
 
         lexer = Lexer.new( txt )
         t, errors  =  lexer.tokenize_with_errors
-                            
+
          if errors.size > 0
             ## add to "global" error list
             ##   make a triplet tuple (file / msg / line text)
@@ -95,22 +95,22 @@ def read( path, parse: true )
 
          if debug?
            puts "tokens:"
-           pp t   
+           pp t
          end
 
          @tree += t   ## add tokens to "tree"
-      end   # parse? (or tokenize?) 
+      end   # parse? (or tokenize?)
    end  # each para (node)
 
 
    ##
    ## auto-add error if no tokens/tree nodes
-   ##   note - do NOT report empty file error by default 
+   ##   note - do NOT report empty file error by default
    if @tree.empty? && warn?  ## @tree.size == 0
       @errors << [path, "empty; no #{parse ? 'parse tree nodes' : 'tokens'}"]
    end
 
-   @tree   ## return parse tree 
+   @tree   ## return parse tree
 end  # method read
 end  # class Linter
 
