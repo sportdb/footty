@@ -65,7 +65,7 @@ $ fbx -h
 
 run on single / individual (data)files
 
-````
+```
 $ fbquik england/2025-26/1-permierleague.txt
 $ fbquik worldcup/min/2022.txt
 
@@ -81,7 +81,6 @@ $ fbquik worldcup
 ```
 
 note: `fbx` only works with single / individual (data)files
-
 
 
 
