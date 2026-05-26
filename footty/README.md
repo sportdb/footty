@@ -8,6 +8,12 @@
 
 
 
+## Step 0 - Installation Via Gems
+
+To install the command-line tool via gems (ruby's package manager) use:
+
+    $ gem install footty
+
 
 
 ## Usage - Who's playing today?
@@ -16,7 +22,6 @@ The footty (or ftty) command line tool lets you query the online football.db via
 for upcoming or past matches. For example:
 
     $ footty         # Defaults to today's matches of top leagues
-
 
 prints on Sep 27, 2024:
 
@@ -91,19 +96,11 @@ See [footty/openfootball](https://github.com/sportdb/footty/blob/master/footty/l
 Why tty? tty stands for teletype (tty) writer and is the old traditional (short) name for the unix command line.
 
 
-## Install
-
-Just install the gem:
-
-    $ gem install footty
-
 
 ## License
 
 The `footty` scripts are dedicated to the public domain.
-Use it as you please with no restrictions whatsoever.
-
-
+Use as you please with no restrictions whatsoever.
 
 
 ## Questions? Comments?
