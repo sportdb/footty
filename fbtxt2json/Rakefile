@@ -2,7 +2,7 @@ require 'hoe'
 
 
 Hoe.spec 'fbtxt2json' do
-  self.version = '0.3.0'
+  self.version = '0.4.0'
 
   self.summary = "fbtxt2json (& fbtxt2csv) - convert football.txt match schedules & more to (structured) json or (tabular) csv"
   self.description = summary

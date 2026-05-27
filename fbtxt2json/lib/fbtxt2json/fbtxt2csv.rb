@@ -12,7 +12,7 @@ opts = {  debug:  false,
        }
 
 parser = OptionParser.new do |parser|
-parser.banner = "Usage: #{$PROGRAM_NAME} [options] PATH"
+parser.banner = "Usage: #{$PROGRAM_NAME} [options] DATAFILES and/or DIRS"
 
 ##
 ## check if git has a offline option?? (use same)
@@ -82,7 +82,7 @@ paths.each do |path|
          txt = read_text( datafile )
          recs += parse( txt )
       end
-   elsif File.exist?( path )
+   elsif File.file?( path )    ## note - File.exist? also incl. Dir - use anyway - why? why not?
       puts "==> reading file >#{path}<..."
       txt = read_text( path )
       recs += parse( txt )
@@ -93,7 +93,7 @@ end
 
 
 recs, headers = vacuum( recs )
-pp recs[0,10]   ## dump first 10 records
+pp recs[0,2]   ## dump first 2 records
 pp headers
 puts "  #{recs.size} record(s)"
 
@@ -124,6 +124,7 @@ MAX_HEADERS = [
   'P',
   'Round',
   'Status',
+  'Ground',
 ]
 
 
@@ -189,17 +190,27 @@ def self.parse( txt )   ### check - name parse_txt or txt_to_csv or such - why? 
 
 
    matches.each do |match|
-
-      ## for separator use comma (,) or pipe (|) or ???
-      round = String.new
-      round << "#{match.group}, "    if match.group
-      round << match.round
-
       ## pp match
       ## pp match.status
       ## pp match.round
       ## pp match.score
       ## pp match.score
+
+      round = String.new
+      round << "#{match.group}, "    if match.group
+      round << match.round           if match.round
+
+      ## note - make.score hash uses symbols!!!
+      ##         e.g. score[:ht] and NOT score['ht'] !!!
+      #    make sure hash keys are always strings
+      score = match.score
+      score = score.transform_keys(&:to_s)   if score.is_a?( Hash )
+
+      ground =   if match.ground.is_a?( Array )
+                     match.ground.join(', ')
+                 else  ## assume string or nil
+                     match.ground ? match.ground : ''
+                 end
 
       rec = [
             #############################
@@ -210,13 +221,14 @@ def self.parse( txt )   ### check - name parse_txt or txt_to_csv or such - why? 
             match.time ? match.time : '',
             match.team1,
             match.team2,
-            match.score && match.score.is_a?( Array ) && match.score.size == 2 ?  "#{match.score[0]}-#{match.score[1]}" : '',
-            match.score && match.score.is_a?( Hash ) && match.score['ht'] ?  "#{match.score['ht'][0]}-#{match.score['ht'][1]}" : '',
-            match.score && match.score.is_a?( Hash ) && match.score['ft'] ?  "#{match.score['ft'][0]}-#{match.score['ft'][1]}" : '',
-            match.score && match.score.is_a?( Hash ) && match.score['et'] ?  "#{match.score['et'][0]}-#{match.score['et'][1]}" : '',
-            match.score && match.score.is_a?( Hash ) && match.score['p']  ?  "#{match.score['p'][0]}-#{match.score['p'][1]}" : '',
+            score.is_a?( Array ) && score.size == 2 ?  "#{score[0]}-#{score[1]}" : '',
+            score.is_a?( Hash ) && score['ht'] ?  "#{score['ht'][0]}-#{score['ht'][1]}" : '',
+            score.is_a?( Hash ) && score['ft'] ?  "#{score['ft'][0]}-#{score['ft'][1]}" : '',
+            score.is_a?( Hash ) && score['et'] ?  "#{score['et'][0]}-#{score['et'][1]}" : '',
+            score.is_a?( Hash ) && score['p']  ?  "#{score['p'][0]}-#{score['p'][1]}" : '',
             round,
             match.status ? match.status : '',
+            ground,
        ]
 
        ## add more attributes e.g. ground, etc.

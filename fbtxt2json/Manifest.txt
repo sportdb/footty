@@ -4,3 +4,6 @@ README.md
 Rakefile
 bin/fbtxt2csv
 bin/fbtxt2json
+lib/fbtxt2json.rb
+lib/fbtxt2json/fbtxt2csv.rb
+lib/fbtxt2json/fbtxt2json.rb
