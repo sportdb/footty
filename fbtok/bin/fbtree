@@ -3,6 +3,11 @@
 ## tip: to test run:
 ##   $ ruby -I ./lib bin/fbtree
 
+
+## quick hack
+##   if available always use latest (local) source version
+$LOAD_PATH.unshift( '/sports/sportdb/sport.db.v2/parser/lib' )
+
 require 'fbtok'
 
 Fbtree.main

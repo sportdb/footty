@@ -20,6 +20,9 @@ class Pathspec
     ##     BUT NOT as first character!!! (e.g. exclude .confg.txt !!!)
     ##               e.g. 2024-25/at.1.txt
     ##                        change to at_1 or uefa_cl or such - why? why not?
+    ##
+    ##   note - support case-insensitive flag  (e.g. 2025-26/namur/2_Prov_A.txt)
+
     MATCH_RE = %r{
                     ## "classic" variant i)  with season folder
                     ##     e.g.  /1930/cup.txt
@@ -30,6 +33,13 @@ class Pathspec
                           (?:  --[a-z0-9_-]+
                           )?
                          /
+
+                        ### note - allow optional directories
+                        (?:
+                            [a-z0-9][a-z0-9_-]*
+                              /
+                        )*
+
                        [a-z0-9][a-z0-9._-]* \.txt   ## e.g /1-premierleague.txt
                          $
                     )
@@ -46,7 +56,7 @@ class Pathspec
                             \.txt
                             $
                     )
-                }x
+                }xi
 
     ### add support for matchdatafile with season NOT in directory
     ##      but starting filename e.g. 2024_friendlies.txt or 2024-25_bundesliga.txt
@@ -58,6 +68,12 @@ end
 
 
 ## todo/check - rename to glob or expand or such - why? why not?
+
+##
+##  todo - add a strict: true|false or   all: true|false or such option
+##                    that will use generic **/*.txt and only use ignore filter!!!
+
+
 def self._find( path, seasons: nil )
     ## check - rename dir
     ##          use root_dir or work_dir or cd or such - why? why not?
@@ -95,6 +111,8 @@ def self._find( path, seasons: nil )
           next   if seasons && seasons.size > 0 &&
                     !seasons.include?( Season.parse( m[:season] ))
 
+
+          #########
           ### exclude squad
           ##   and .v2 or .v2603
           ##
@@ -106,6 +124,12 @@ def self._find( path, seasons: nil )
 
           next   if /squad/i.match( basename )
           next   if /\.v[0-9][0-9_]*/i.match( basename )
+
+          #####
+          ### exclude dirs  w/ squad or wiki
+          dirname  = File.dirname( candidate )
+
+          next   if /squad|wiki/i.match( dirname )
 
 
           datafiles << candidate
