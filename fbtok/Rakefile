@@ -2,7 +2,7 @@ require 'hoe'
 
 
 Hoe.spec 'fbtok' do
-  self.version = '0.4.2'
+  self.version = '0.5.0'
 
   self.summary = "fbtok - football.txt lint tools incl. tokenizer, parser & more"
   self.description = summary
@@ -19,7 +19,7 @@ Hoe.spec 'fbtok' do
   self.licenses = ['Public Domain']
 
   self.extra_deps = [
-     ['sportdb-parser', '>= 0.7.1'],
+     ['sportdb-parser', '>= 0.7.2'],
      ['sportdb-quick',  '>= 0.7.0'],
   ]
 

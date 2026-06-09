@@ -54,8 +54,8 @@ end
 
 
 args =  [
-              '../../../openfootball/euro/2021--europe/euro.txt',
-              '../../../openfootball/euro/2024--germany/euro.txt',
+              '/sports/openfootball/euro/2021--europe/euro.txt',
+              '/sports/openfootball/euro/2024--germany/euro.txt',
         ]   if args.empty?
 
 pp args

@@ -1,11 +1,11 @@
 
 
 module SportDb
-
 class Pathspec
 
   def self.debug=(value) @@debug = value; end
   def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
+
 
 
     SEASON_RE = %r{ (?:
@@ -62,9 +62,6 @@ class Pathspec
     ##      but starting filename e.g. 2024_friendlies.txt or 2024-25_bundesliga.txt
 
 
-def self._norm_seasons( seasons )
-    seasons.map {|season| Season(season) }
-end
 
 
 ## todo/check - rename to glob or expand or such - why? why not?
@@ -75,22 +72,30 @@ end
 
 
 def self._find( path, seasons: nil )
+    ##
+    ## note -  only if seasons filter is turn on
+    ##                     MATCH_RE gets used!!!
+    ##            otherwise generic **/*.txt
+    ##
+    ## note -   the ignore/exlude filter always gets used/applied for now
+
+
     ## check - rename dir
     ##          use root_dir or work_dir or cd or such - why? why not?
-
 
     ## note: normalize path - use File.expand_path ??
     ##    change all backslash to slash for now
     ## path = path.gsub( "\\", '/' )
-    path =  File.expand_path( path )
+    fullpath =  File.expand_path( path )
 
     ####
     ## note - make sure path exists; raise error if not
-    raise Errno::ENOENT, "No such directory - #{path})"  unless Dir.exist?( path )
+    raise Errno::ENOENT, "No such directory - #{path})"  unless Dir.exist?( fullpath )
 
 
     if seasons && seasons.size > 0
-       seasons = _norm_seasons( seasons )    ## norm seasons (string, integer => Season obj)
+       ## norm seasons (string, integer => Season obj)
+       seasons =  seasons.map {|season| Season(season) }
     end
 
 
@@ -99,41 +104,45 @@ def self._find( path, seasons: nil )
     ##     (normally excluded with just *)
     ##  was:  Dir.glob( "#{path}/**/{*,.*}.txt" )
 
-    candidates = Dir.glob( "#{path}/**/*.txt" )
+    candidates = Dir.glob( "#{fullpath}/**/*.txt" )
     ## pp candidates
 
 
     datafiles = []
     candidates.each do |candidate|
-       if m = MATCH_RE.match( candidate )
 
-          ## check for seasons filter
-          next   if seasons && seasons.size > 0 &&
-                    !seasons.include?( Season.parse( m[:season] ))
+         ## (i) check for (optional) seasons filter
+         if seasons && seasons.size > 0
+            if m=MATCH_RE.match( candidate )
+               next   unless seasons.include?( Season.parse( m[:season] ))
+            else
+              next    ## note - no season found in filename; skip too
+            end
+         end
 
 
-          #########
-          ### exclude squad
-          ##   and .v2 or .v2603
-          ##
-          ##    - worldcup/more/1930_squads.txt   =>   squads
-          ##    - 2014--brazil/cup.v2.txt",
-          ##    - 2014--brazil/cup.v260318_164934.txt",
-
+         ## (ii) check for (default/built-in) ignore/excludes
           basename = File.basename( candidate, File.extname( candidate ))
-
-          next   if /squad/i.match( basename )
-          next   if /\.v[0-9][0-9_]*/i.match( basename )
-
-          #####
-          ### exclude dirs  w/ squad or wiki
           dirname  = File.dirname( candidate )
 
-          next   if /squad|wiki/i.match( dirname )
+          ### exclude basenames with:
+          ##   - squad
+          ##   - .v2 or .v2603
+          ##
+          ##    - worldcup/more/1930_squads.txt   =>   squads
+          ##    - 2014--brazil/cup.v2.txt
+          ##    - 2014--brazil/cup.v260318_164934.txt
+
+          next   if /squad/i.match?( basename )
+          next   if /\.v[0-9][0-9_]*/i.match?( basename )
+
+          #####
+          ### exclude dirs  with:
+          ##    - squad or wiki
+          next   if /squad|wiki/i.match?( dirname )
 
 
           datafiles << candidate
-       end
     end
 
     ## pp datafiles
@@ -143,13 +152,19 @@ end
 
 
 
-
+##
+## rename/change to read_csv - why? why not?
 def self.read( src )
-    recs = read_csv( src )
+    ## note: normalize scr - use File.expand_path ??
+    ##    change all backslash to slash for now
+    ## scr = scr.gsub( "\\", '/' )
+    fullsrc =  File.expand_path( scr )
+
+    recs = read_csv( fullsrc )
     pp recs     if debug?
 
     ##  note - make pathspecs relative to passed in file arg!!!
-    basedir = File.dirname( src )
+    basedir = File.dirname( fullsrc )
 
     recs.each do |rec|
         path = rec['path']
@@ -165,50 +180,51 @@ end
 
 
 
+def self.build( args, filepack: nil )
+  recs = []
 
-end  # class Pathspec
+  ## check fo no args case  (and filepack present with default)
+  if args.empty?
+    if filepack && filepack.has_key?('default')
+               recs << { 'path'      => '<default>',
+                         'datafiles' => filepack['default'] }
+    end
+  else
+
+    ## note - collect all "loose/standalone" files (NOT directories)
+    ##             in single default pathspec node
+    more = []
 
 
+    args.each do |arg|
+      if filepack && filepack.has_key?( arg.downcase )
+           recs << { 'path'      => "<#{arg.downcase}>",
+                     'datafiles' => filepack[arg.downcase] }
+      ## check if directory
+      elsif Dir.exist?( arg )
+          recs << { 'path'       => arg,
+                    'datafiles'  => _find( arg ) }
+      elsif File.file?( arg )  ## assume it's a file
+        ## make sure path exists; raise error if not
+        ##   (auto-)expand path to normalize - yes why? why not?
+          more << File.expand_path( arg )
+      else
+        raise Errno::ENOENT, "No such file or directory - #{arg}"
+      end
+    end
 
-##
-#  PathspecReport (aka/formerly BatchReport)
-
-class PathspecReport
-  def initialize( specs, title: )
-     @specs = specs
-     @title = title
+    if more.size > 0
+      recs << { 'path'      => '<input>',
+                'datafiles' =>  more }
+    end
   end
 
-  def build
-     buf = String.new
-     buf << "# #{@title} - #{@specs.size} dataset(s)\n\n"
+  recs
+end
 
-     @specs.each_with_index do |rec,i|
-       datafiles  = rec['datafiles']
-       errors     = rec['errors']
-
-       if errors.size > 0
-         buf << "!! #{errors.size} ERROR(S)  "
-       else
-         buf << "   OK          "
-       end
-       buf << "%-20s" % rec['path']
-       buf << " - #{datafiles.size} datafile(s)"
-       buf << "\n"
-
-       if errors.size > 0
-         buf << errors.pretty_inspect
-         buf << "\n"
-       end
-     end
-
-     buf
-  end   # method build
-end  # class BatchReport
-
-BatchReport = PathspecReport
-
+end  # class Pathspec
 end  # module Sportdb
+
 
 
 
@@ -216,39 +232,17 @@ end  # module Sportdb
 ##  keep helpers as global functions - why? why not?
 
 
-
-def build_pathspecs( args )    ### note:   was expand_args
-   specs = []
-
-   ## note - collect all "loose/standalone" files (NOT directories)
-   ##             in single default pathspec node
-   more = []
-
-   args.each do |arg|
-    ## check if directory
-    if Dir.exist?( arg )
-          datafiles = SportDb::Pathspec._find( arg )
-          specs << { 'path'       => arg,
-                     'datafiles'  => datafiles }
-    elsif File.file?( arg )  ## assume it's a file
-        ## make sure path exists; raise error if not
-        ##   (auto-)expand path to normalize - why? why not?
-          more << arg
-    else
-        raise Errno::ENOENT, "No such file or directory - #{arg}"
-    end
-  end
-
-   if more.size > 0
-      specs << { 'path'      => '<input>',
-                 'datafiles' =>  more }
-   end
-
-  specs
+##  build pathspecs via arguments
+##   - (i) every dir is a pathspec entry/record
+##   - (ii) all files get bundled together into <input> pathspec entry/record
+##
+##   note: was formerly known as expand_args
+def build_pathspecs( args, filepack: nil )
+   SportDb::Pathspec.build( args, filepack: filepack )
 end
 
-
-
+####
+## read pathspecs via csv file (using path column)
 def read_pathspecs( src )
     SportDb::Pathspec.read( src )
 end

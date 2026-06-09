@@ -54,10 +54,20 @@ end
 specs =  if opts[:file]
             read_pathspecs( opts[:file] )
          else
-           args =     ['/sports/openfootball/euro/2021--europe/euro.txt',
-                       '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+            ## check for filepack
+            ##
+            ## fix-fix-fix
+            ##  add tool specific filepack
+            ##       e.g. filepack.quik|quick.txt or such
+            ##   to match first??
+            ##   check a list of names!!
+            filepack =  if File.file?( './filepack.txt')
+                            read_filepack( './filepack.txt' )
+                        else
+                             nil
+                        end
 
-            build_pathspecs( args )
+            build_pathspecs( args, filepack: filepack )
          end
 
 pp specs

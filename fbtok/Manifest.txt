@@ -12,4 +12,6 @@ lib/fbtok/fbquick.rb
 lib/fbtok/fbtok.rb
 lib/fbtok/fbtree.rb
 lib/fbtok/fbx.rb
+lib/fbtok/filepack.rb
 lib/fbtok/pathspec.rb
+lib/fbtok/pathspec_report.rb

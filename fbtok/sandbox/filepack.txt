@@ -1,0 +1,290 @@
+
+
+
+PACK default
+  DIR /sports/sportdb/sport.db.v2/parser/fbtxt-specs
+
+   dates.txt
+   date_legs.txt
+
+   ## check score formats
+   score_full.txt
+   score_full2.txt
+   score_fuller.txt
+   score_fuller2.txt
+   score_legs.txt
+   score_status.txt
+
+   ### check goal formats
+   goals.txt
+   goals_alt.txt
+   goals_compat.txt
+
+   ### check more
+   headers.txt
+
+   home_away.txt
+   note.txt
+   notabene.txt
+   status.txt
+
+   penalties.txt
+   referees.txt
+   lineups.txt
+
+   round_adds.txt
+   geos_inline.txt
+
+   attendance.txt
+
+   group_defs.txt
+
+    ##  round_defs.txt  -- fix
+
+
+
+
+PACK more
+## more samples  (in fbtxt-samples)
+##  check main.txt  if has  blocks !!!
+##
+ DIR /sports/sportdb/sport.db.v2/parser/fbtxt-samples
+
+   main.txt
+   chat.txt
+   chat2.txt
+   chat3.txt
+   formats.txt
+
+   ord.txt
+   score.txt
+   country.txt
+   year.txt
+
+   todos_complete.txt
+
+   quick.txt
+
+   ##  todos.txt
+
+
+
+PACK worldcup|wc
+ DIR /sports/openfootball
+
+   worldcup/1930--uruguay/cup.txt
+   worldcup/1934--italy/cup.txt
+   worldcup/1938--france/cup.txt
+
+   worldcup/1950--brazil/cup.txt
+   worldcup/1954--switzerland/cup.txt
+   worldcup/1958--sweden/cup.txt
+   worldcup/1958--sweden/cup.txt
+   worldcup/1962--chile/cup.txt
+   worldcup/1966--england/cup.txt
+   worldcup/1970--mexico/cup.txt
+   worldcup/1974--west-germany/cup.txt
+   worldcup/1978--argentina/cup.txt
+   worldcup/1982--spain/cup.txt
+
+   worldcup/1986--mexico/cup.txt
+   worldcup/1986--mexico/cup_finals.txt
+
+   worldcup/1990--italy/cup.txt
+   worldcup/1990--italy/cup_finals.txt
+
+   worldcup/1994--usa/cup.txt
+   worldcup/1994--usa/cup_finals.txt
+
+   worldcup/1998--france/cup.txt
+   worldcup/1998--france/cup_finals.txt
+
+   worldcup/2002--south-korea-n-japan/cup.txt
+   worldcup/2002--south-korea-n-japan/cup_finals.txt
+
+   worldcup/2006--germany/cup.txt
+   worldcup/2006--germany/cup_finals.txt
+
+   worldcup/2010--south-africa/cup.txt
+   worldcup/2010--south-africa/cup_finals.txt
+
+   worldcup/2014--brazil/cup.txt
+   worldcup/2014--brazil/cup_finals.txt
+
+   worldcup/2018--russia/cup.txt
+   worldcup/2018--russia/cup_finals.txt
+
+   worldcup/2022--qatar/cup.txt
+   worldcup/2022--qatar/cup_finals.txt
+
+   worldcup/2026--usa/cup.txt
+   worldcup/2026--usa/cup_finals.txt
+
+   worldcup/2026--usa/quali_playoffs.txt
+
+
+
+PACK worldcup2|wc2
+  DIR /sports/openfootball
+
+   ###
+   ## check samples in /more
+   worldcup/more/1930.txt
+   worldcup/more/1934.txt
+   worldcup/more/1938.txt
+   worldcup/more/1950.txt
+   worldcup/more/1954.txt
+   worldcup/more/1958.txt
+   worldcup/more/1962.txt
+   worldcup/more/1966.txt
+   worldcup/more/1970.txt
+   worldcup/more/1974.txt
+   worldcup/more/1978.txt
+   worldcup/more/1982.txt
+   worldcup/more/1986.txt
+   worldcup/more/1990.txt
+   worldcup/more/1994.txt
+   worldcup/more/1998.txt
+   worldcup/more/2002.txt
+   worldcup/more/2006.txt
+   worldcup/more/2010.txt
+   worldcup/more/2014.txt
+   worldcup/more/2018.txt
+   worldcup/more/2022.txt
+
+###
+#  check full too
+   worldcup/more/1930_full.txt
+   worldcup/more/1934_full.txt
+   worldcup/more/1938_full.txt
+   worldcup/more/1950_full.txt
+   worldcup/more/1954_full.txt
+   worldcup/more/1958_full.txt
+   worldcup/more/1962_full.txt
+   worldcup/more/1966_full.txt
+   worldcup/more/1970_full.txt
+   worldcup/more/1974_full.txt
+   worldcup/more/1978_full.txt
+   worldcup/more/1982_full.txt
+   worldcup/more/1986_full.txt
+   worldcup/more/1990_full.txt
+   worldcup/more/1994_full.txt
+   worldcup/more/1998_full.txt
+   worldcup/more/2002_full.txt
+   worldcup/more/2006_full.txt
+   worldcup/more/2010_full.txt
+   worldcup/more/2014_full.txt
+   worldcup/more/2018_full.txt
+   worldcup/more/2022_full.txt
+
+
+
+PACK worldcup2min|wc2min|wcmin
+  DIR /sports/openfootball
+   ###
+   ## check samples in /min
+   worldcup/min/1930.txt
+   worldcup/min/1934.txt
+   worldcup/min/1938.txt
+   worldcup/min/1950.txt
+   worldcup/min/1954.txt
+   worldcup/min/1958.txt
+   worldcup/min/1962.txt
+   worldcup/min/1966.txt
+   worldcup/min/1970.txt
+   worldcup/min/1974.txt
+   worldcup/min/1978.txt
+   worldcup/min/1982.txt
+   worldcup/min/1986.txt
+   worldcup/min/1990.txt
+   worldcup/min/1994.txt
+   worldcup/min/1998.txt
+   worldcup/min/2002.txt
+   worldcup/min/2006.txt
+   worldcup/min/2010.txt
+   worldcup/min/2014.txt
+   worldcup/min/2018.txt
+   worldcup/min/2022.txt
+
+
+PACK worldcup3|wc3
+  DIR /sports/openfootball
+   ## check some planetworldcup samples
+   worldcup/planetworldcup/wc10.txt
+   worldcup/planetworldcup/wc14.txt
+   worldcup/planetworldcup/wc30.txt
+
+   worldcup/planetworldcup/wc94qualification.txt
+
+   ##############
+   ## check some rsssf samples
+   worldcup/rsssf/30full.txt
+   worldcup/rsssf/34f.txt
+   worldcup/rsssf/38f.txt
+   worldcup/rsssf/2014f.txt
+   worldcup/rsssf/2022f.txt
+   worldcup/rsssf/worldcup.txt
+
+   worldcup/rsssf/2022q.txt
+
+
+
+PACK euro
+  DIR /sports/openfootball
+    euro/rsssf/60e.txt
+    euro/rsssf/64e.txt
+    euro/rsssf/68e.txt
+    euro/rsssf/72e.txt
+    euro/rsssf/2024e.txt
+    euro/rsssf/eurochamp.txt
+
+
+PACK austria|at
+  DIR /sports/openfootball
+    ##############
+  #  austriascoccer.at
+  austria/austriasoccer.at/20240922rapiaust0.txt
+  austria/austriasoccer.at/20250330rapifc_r0.txt
+  austria/austriasoccer.at/aktuell.txt
+  austria/austriasoccer.at/cup_2025_26.txt
+  austria/austriasoccer.at/o1__bundesliga__2025_26.txt
+  austria/austriasoccer.at/vorschau.txt
+
+  ####
+  #  rapidarchiv.at
+  austria/rapidarchiv.at/2025-26.txt
+
+  #####
+  #  rsssf
+  austria/rsssf/oost01.txt
+  austria/rsssf/oost01_cup.txt
+  austria/rsssf/oost2025.txt
+  austria/rsssf/oost2025_cup.txt
+
+
+
+PACK england|eng
+  DIR /sports/openfootball
+  england/rsssf/eng2020-facup.txt
+  england/rsssf/eng2020-leaguecup.txt
+  england/rsssf/eng2024-playoffs.txt
+  england/rsssf/eng2024-playoffs_details.txt
+  england/rsssf/eng2024-playoffs_v2.txt
+  england/rsssf/eng2024-premierleague.txt
+  england/rsssf/eng2025-premierleague.txt
+  england/rsssf/engcup1872.txt
+  england/rsssf/engcup1873.txt
+
+
+
+PACK spec|specs
+  DIR /sports/openfootball
+    spec/samples/1960_euro_quali.txt
+    spec/samples/2024-25_austria.txt
+    spec/samples/2024_copa_libertadores.txt
+    spec/samples/2024_euro.txt
+    spec/samples/2025_club_worldcup.txt
+
+    spec/samples-l2/1917_southamerican_championship.txt
+    spec/samples-l2/1960_euro.txt
+    spec/samples-l2/1979_copa_america_v0.txt

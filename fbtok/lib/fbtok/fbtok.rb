@@ -58,10 +58,14 @@ end
 specs =  if opts[:file]
             read_pathspecs( opts[:file] )
          else
-           args = ['/sports/openfootball/euro/2021--europe/euro.txt',
-                   '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+            ## check for filepack
+            filepack =  if File.file?( './filepack.txt')
+                            read_filepack( './filepack.txt' )
+                        else
+                             nil
+                        end
 
-            build_pathspecs( args )
+            build_pathspecs( args, filepack: filepack )
          end
 
 
@@ -82,11 +86,20 @@ specs.each_with_index do |rec,i|
       tokens, more_errors = lexer.tokenize_with_errors
 
       ####
-      ## todo - report error on empty file (no tokens!!!)
+      ## todo - report error on empty file (no tokens!!!) - why? why not?
 
       puts "   #{tokens.size} token(s)"
 
-      errors += more_errors    if more_errors.size > 0
+      if more_errors.size > 0
+         ## note - auto-add filename to errors
+         more_errors.each do |msg|
+          ###
+          ###   errors << [ path, *msg ] # note: use splat (*) to add extra values (starting with msg)
+              errors << [path, msg]
+         end
+      end
+
+
    end
 
    if errors.size > 0

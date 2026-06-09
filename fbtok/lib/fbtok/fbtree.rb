@@ -58,10 +58,14 @@ end
 specs =  if opts[:file]
             read_pathspecs( opts[:file] )
          else
-           args = ['/sports/openfootball/euro/2021--europe/euro.txt',
-                   '/sports/openfootball/euro/2024--germany/euro.txt']  if args.empty?
+            ## check for filepack
+            filepack =  if File.file?( './filepack.txt')
+                            read_filepack( './filepack.txt' )
+                        else
+                             nil
+                        end
 
-            build_pathspecs( args )
+            build_pathspecs( args, filepack: filepack )
          end
 
 
@@ -81,7 +85,14 @@ specs.each_with_index do |rec,i|
 
       dump_tree_stats( tree )
 
-      errors += parser.errors    if parser.errors?
+      if parser.errors?
+         ## note - auto-add filename to errors
+         parser.errors.each do |msg|
+          ###
+          ###   errors << [ path, *msg ] # note: use splat (*) to add extra values (starting with msg)
+              errors << [path, msg]
+         end
+      end
    end
 
 

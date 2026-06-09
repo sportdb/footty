@@ -17,12 +17,16 @@ pp datafiles
 puts "  #{datafiles.size} datafile"
 puts
 
-datafiles = SportDb::Pathspec._find( path, seasons: ['2023/24','2024'] )
+seasons = ['2023/24','2024']
+pp seasons
+datafiles = SportDb::Pathspec._find( path, seasons: seasons )
 pp datafiles
 puts "  #{datafiles.size} datafile"
 puts
 
-datafiles = SportDb::Pathspec._find( path, seasons: ['2024/25','2025'] )
+seasons = ['2024/25','2025']
+pp seasons
+datafiles = SportDb::Pathspec._find( path, seasons: seasons )
 pp datafiles
 puts "  #{datafiles.size} datafile"
 
