@@ -67,7 +67,14 @@ specs =  if opts[:file]
                              nil
                         end
 
-            build_pathspecs( args, filepack: filepack )
+            path = SportDb::Pathspec.path(
+                          ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
+                           '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
+                           '/sports/openfootball'])
+
+
+            build_pathspecs( args, path: path,
+                                   filepack: filepack )
          end
 
 pp specs
@@ -101,6 +108,7 @@ pp specs
       pp errors
     else
       puts
+      pp datafiles
       puts "  OK - no parse errors in #{datafiles.size} datafile(s)"
     end
 

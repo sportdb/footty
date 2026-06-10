@@ -3,11 +3,6 @@
 module SportDb
 class Pathspec
 
-  def self.debug=(value) @@debug = value; end
-  def self.debug?()      @@debug ||= false; end  ## note: default is FALSE
-
-
-
     SEASON_RE = %r{ (?:
                           (?<season>\d{4}-\d{2})
                         | (?<season>\d{4})
@@ -71,7 +66,7 @@ class Pathspec
 ##                    that will use generic **/*.txt and only use ignore filter!!!
 
 
-def self._find( path, seasons: nil )
+def self.find( path, seasons: nil )
     ##
     ## note -  only if seasons filter is turn on
     ##                     MATCH_RE gets used!!!
@@ -85,11 +80,11 @@ def self._find( path, seasons: nil )
 
     ## note: normalize path - use File.expand_path ??
     ##    change all backslash to slash for now
-    ## path = path.gsub( "\\", '/' )
     fullpath =  File.expand_path( path )
 
     ####
     ## note - make sure path exists; raise error if not
+    ##   ENOENT => Error No Entity
     raise Errno::ENOENT, "No such directory - #{path})"  unless Dir.exist?( fullpath )
 
 
@@ -150,15 +145,33 @@ def self._find( path, seasons: nil )
 end
 
 
+def self.path( default=[])
+ ## check for  FBPATH
+ ##         or FBTXT_PATH
+      path = ENV['FBPATH'] || ENV['FBTXT_PATH']
+      if path
+          path.split( /[:;]/)
+      else
+         default
+      end
+end
+end # class Pathspec
 
 
-##
-## rename/change to read_csv - why? why not?
+
+
+
+class Pathspecs    ## change to a module - why? why not?
+
+
+def self.debug=(value) @@debug = value; end
+def self.debug?()      @@debug ||= false; end     ## note: default is FALSE
+
+
 def self.read( src )
-    ## note: normalize scr - use File.expand_path ??
-    ##    change all backslash to slash for now
-    ## scr = scr.gsub( "\\", '/' )
-    fullsrc =  File.expand_path( scr )
+    ## note: normalize src - use File.expand_path ??
+    ##    change all backslash to slash for now (\ to /)
+    fullsrc =  File.expand_path( src )
 
     recs = read_csv( fullsrc )
     pp recs     if debug?
@@ -167,11 +180,13 @@ def self.read( src )
     basedir = File.dirname( fullsrc )
 
     recs.each do |rec|
+        ##
+        ## todo/check - check for season/seasons column - why? why not?
         path = rec['path']
         fullpath = File.expand_path( path, basedir )
-        datafiles =   _find( fullpath )
+        datafiles =   Pathspec.find( fullpath )
 
-        ## add (new) datafiles column (from expanded pathspec)
+        ## auto-add (new) datafiles column (from expanded pathspec)
         rec['datafiles'] = datafiles
     end
 
@@ -180,7 +195,8 @@ end
 
 
 
-def self.build( args, filepack: nil )
+def self.build( args, path: [],
+                      filepack: nil )
   recs = []
 
   ## check fo no args case  (and filepack present with default)
@@ -195,22 +211,34 @@ def self.build( args, filepack: nil )
     ##             in single default pathspec node
     more = []
 
-
     args.each do |arg|
-      if filepack && filepack.has_key?( arg.downcase )
+       ## note - ALWAYS give priority to existing directory matches (over filepack)
+       ##             e.g. euro or such -  why? why not?
+       ##
+       ##  todo/check  if euro/ works too?
+       ## check if directory
+       if Dir.exist?( arg )
+          recs << { 'path'       => arg,
+                    'datafiles'  => Pathspec.find( arg ) }
+       elsif filepack && filepack.has_key?( arg.downcase )
            recs << { 'path'      => "<#{arg.downcase}>",
                      'datafiles' => filepack[arg.downcase] }
-      ## check if directory
-      elsif Dir.exist?( arg )
-          recs << { 'path'       => arg,
-                    'datafiles'  => _find( arg ) }
-      elsif File.file?( arg )  ## assume it's a file
-        ## make sure path exists; raise error if not
-        ##   (auto-)expand path to normalize - yes why? why not?
-          more << File.expand_path( arg )
-      else
-        raise Errno::ENOENT, "No such file or directory - #{arg}"
-      end
+       else   ## assume it's a file
+           file = find_file( arg, path: path )
+            ## check if file (exists) in any path lookup
+            if file
+              ## todo/fix:
+              ##   add File.expand_path upstream in find_file !!!
+              ##           and remove later here
+              ##       also fix upstream Errorno::ENOENT to Errno::ENOENT !!!
+              ##
+              ## make sure path exists; raise error if not
+               ## (auto-)expand path to normalize - yes why? why not?
+              more << File.expand_path(file)
+            else
+              raise Errno::ENOENT, "No such file or directory - #{arg}"
+            end
+       end
     end
 
     if more.size > 0
@@ -222,7 +250,7 @@ def self.build( args, filepack: nil )
   recs
 end
 
-end  # class Pathspec
+end  # class Pathspecs
 end  # module Sportdb
 
 
@@ -237,12 +265,12 @@ end  # module Sportdb
 ##   - (ii) all files get bundled together into <input> pathspec entry/record
 ##
 ##   note: was formerly known as expand_args
-def build_pathspecs( args, filepack: nil )
-   SportDb::Pathspec.build( args, filepack: filepack )
+def build_pathspecs( args, path: [], filepack: nil )
+   SportDb::Pathspecs.build( args, path: path, filepack: filepack )
 end
 
 ####
 ## read pathspecs via csv file (using path column)
 def read_pathspecs( src )
-    SportDb::Pathspec.read( src )
+    SportDb::Pathspecs.read( src )
 end

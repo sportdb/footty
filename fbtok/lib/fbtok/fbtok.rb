@@ -6,8 +6,8 @@ def self.main( args=ARGV )
 
 opts = {
     debug: true,
-    warn:  false,
     file:  nil,
+#    warn:  false,
 }
 
 
@@ -23,10 +23,10 @@ parser = OptionParser.new do |parser|
                "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
     opts[:debug] = true
   end
-  parser.on( "-w", "--warn",
-              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
-    opts[:warn] = true
-  end
+#  parser.on( "-w", "--warn",
+#              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
+#    opts[:warn] = true
+#  end
 
 
   parser.on( "-f FILE", "--file FILE",
@@ -65,7 +65,13 @@ specs =  if opts[:file]
                              nil
                         end
 
-            build_pathspecs( args, filepack: filepack )
+            path = SportDb::Pathspec.path(
+                          ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
+                           '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
+                           '/sports/openfootball'])
+
+            build_pathspecs( args, path: path,
+                                   filepack: filepack )
          end
 
 
@@ -109,6 +115,7 @@ specs.each_with_index do |rec,i|
       puts "!!   #{errors.size} tokenize error(s) in #{datafiles.size} datafiles(s)"
    else
       puts
+      pp datafiles
       puts "OK   no tokenize errors found in #{datafiles.size} datafile(s)"
    end
 

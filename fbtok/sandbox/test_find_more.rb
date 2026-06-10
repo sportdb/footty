@@ -13,14 +13,14 @@ datafiles = Dir.glob( "#{path}/**/*.txt" )
 pp datafiles
 
 
-datafiles = SportDb::Pathspec._find( path )
+datafiles = SportDb::Pathspec.find( path )
 pp datafiles
-puts "  #{datafiles.size} datafile"
+puts "  #{datafiles.size} datafile(s)"
 puts
 
-datafiles = SportDb::Pathspec._find( path, seasons: ['2023/24','2024'] )
+datafiles = SportDb::Pathspec.find( path, seasons: ['2023/24','2024'] )
 pp datafiles
-puts "  #{datafiles.size} datafile"
+puts "  #{datafiles.size} datafile(s)"
 puts
 
 

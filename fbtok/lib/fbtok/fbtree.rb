@@ -6,8 +6,8 @@ def self.main( args=ARGV )
 
 opts = {
     debug: true,
-    warn:  false,
     file:  nil,
+##    warn:  false,
 }
 
 parser = OptionParser.new do |parser|
@@ -22,10 +22,10 @@ parser = OptionParser.new do |parser|
                "turn on verbose / debug output (default: #{opts[:debug]})" ) do |debug|
     opts[:debug] = true
   end
-  parser.on( "-w", "--warn",
-              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
-    opts[:warn] = true
-  end
+#  parser.on( "-w", "--warn",
+#              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
+#    opts[:warn] = true
+#  end
 
 
   parser.on( "-f FILE", "--file FILE",
@@ -38,7 +38,6 @@ parser = OptionParser.new do |parser|
 end
 parser.parse!( args )
 
-
 if opts[:debug]
   puts "OPTS:"
   p opts
@@ -47,8 +46,6 @@ if opts[:debug]
 end
 
 
-# SportDb::Parser::Linter.debug = opts[:debug]
-# SportDb::Parser::Linter.warn  = opts[:warn]
 
 
 
@@ -65,8 +62,28 @@ specs =  if opts[:file]
                              nil
                         end
 
-            build_pathspecs( args, filepack: filepack )
+            path = SportDb::Pathspec.path(
+                          ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
+                           '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
+                           '/sports/openfootball'])
+
+            build_pathspecs( args, path: path,
+                                   filepack: filepack )
          end
+
+
+pp specs
+
+## if more than single datafile
+##     auto-switch into quite mode for now
+## if specs.size > 0  && specs[0]['datafiles'].size > 1
+##   opts[:debug] = false
+## end
+
+# SportDb::Parser::Linter.debug = opts[:debug]
+# SportDb::Parser::Linter.warn  = opts[:warn]
+
+
 
 
 
@@ -103,6 +120,7 @@ specs.each_with_index do |rec,i|
       puts "!!   #{errors.size} parse error(s) in #{datafiles.size} datafiles(s)"
    else
       puts
+      pp datafiles
       puts "OK   no parse errors found in #{datafiles.size} datafile(s)"
    end
 
