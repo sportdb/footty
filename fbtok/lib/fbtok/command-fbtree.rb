@@ -1,15 +1,15 @@
 
-module Fbtok
-
+module Fbtree
 
 def self.main( args=ARGV )
+
 
 opts = {
     debug: true,
     file:  nil,
-#    warn:  false,
+    seasons: [],
+##    warn:  false,
 }
-
 
 parser = OptionParser.new do |parser|
   parser.banner = "Usage: #{$PROGRAM_NAME} [options] DATAFILE or DIR"
@@ -29,16 +29,22 @@ parser = OptionParser.new do |parser|
 #  end
 
 
+  parser.on( "--seasons SEASONS",
+               "filter by seasons (default: #{opts[:seasons]})") do |seasons|
+    opts[:seasons] = seasons
+                        .split( /[,:]/ )
+                        .map { |season| Season.parse(season.strip) }
+  end
+
   parser.on( "-f FILE", "--file FILE",
                 "read datafiles (pathspecs) via .csv file") do |file|
     opts[:file] = file
     ## note: for batch (massive) processing auto-set debug (verbose output) to false (as default)
     opts[:debug] = false
   end
+
 end
 parser.parse!( args )
-
-
 
 if opts[:debug]
   puts "OPTS:"
@@ -48,8 +54,7 @@ if opts[:debug]
 end
 
 
-# SportDb::Parser::Linter.debug = opts[:debug]
-# SportDb::Parser::Linter.warn  = opts[:warn]
+
 
 
 
@@ -75,7 +80,21 @@ specs =  if opts[:file]
          end
 
 
-pp specs
+
+## if more than single datafile
+##     auto-switch into quite mode for now
+## if specs.size > 0  && specs[0]['datafiles'].size > 1
+##   opts[:debug] = false
+## end
+
+# SportDb::Parser::Linter.debug = opts[:debug]
+# SportDb::Parser::Linter.warn  = opts[:warn]
+
+
+
+if opts[:seasons].size > 0
+   specs = filter_pathspecs( specs, seasons: opts[:seasons] )
+end
 
 
 
@@ -83,40 +102,43 @@ specs.each_with_index do |rec,i|
     datafiles = rec['datafiles']
 
     errors = []
+    log    = []   ## quick one-line summary per datafile
 
-    datafiles.each_with_index do |path,j|
+   datafiles.each_with_index do |path,j|
       puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
 
       txt = read_text( path )
-      lexer = SportDb::Lexer.new( txt, debug: opts[:debug] )
-      tokens, more_errors = lexer.tokenize_with_errors
+      parser = RaccMatchParser.new( txt, debug: opts[:debug] )
+      tree = parser.parse
 
-      ####
-      ## todo - report error on empty file (no tokens!!!) - why? why not?
+      dump_tree_stats( tree )
 
-      puts "   #{tokens.size} token(s)"
-
-      if more_errors.size > 0
+      if parser.errors?
          ## note - auto-add filename to errors
-         more_errors.each do |msg|
+         parser.errors.each do |msg|
           ###
           ###   errors << [ path, *msg ] # note: use splat (*) to add extra values (starting with msg)
               errors << [path, msg]
          end
+
+         log << [:ERROR, path, "#{parser.errors.size} parse error(s), #{tree.size} tree node(s)"]
+      else
+         log << [:OK, path, "#{tree.size} tree node(s)"]
       end
-
-
    end
+
 
    if errors.size > 0
       puts
       pp errors
       puts
-      puts "!!   #{errors.size} tokenize error(s) in #{datafiles.size} datafiles(s)"
+      puts
+      pp log
+      puts "!!   #{errors.size} parse error(s) in #{datafiles.size} datafiles(s)"
    else
       puts
-      pp datafiles
-      puts "OK   no tokenize errors found in #{datafiles.size} datafile(s)"
+      pp log
+      puts "OK   no parse errors found in #{datafiles.size} datafile(s)"
    end
 
    ## add errors to rec via rec['errors'] to allow
@@ -128,9 +150,10 @@ end
 ###
 ## generate a report if --file option used
 if opts[:file]
+
   buf = SportDb::PathspecReport.new(
             specs,
-            title: 'fbtok summary report' ).build
+            title: 'fbtree summary report' ).build
 
   puts
   puts "SUMMARY:"
@@ -142,6 +165,23 @@ if opts[:file]
 end
 
 puts "bye"
+end
 
-end  # self.main
-end  # module Fbtok
+
+def self.dump_tree_stats( tree )
+  stats = Hash.new(0)  ## track counts only for now
+  tree.each do |node|
+     stats[ node.class ] += 1
+  end
+
+  match_count  = stats[ RaccMatchParser::MatchLine ]
+  goal_count   = stats[ RaccMatchParser::GoalLine ]
+  lineup_count = stats[ RaccMatchParser::LineupLine ]
+
+  puts "   #{match_count} MatchLine(s)"     if match_count > 0
+  puts "   #{goal_count} GoalLine(s)"       if goal_count > 0
+  puts "   #{lineup_count} LineupLine(s)"   if lineup_count > 0
+end
+
+
+end # module Fbtree

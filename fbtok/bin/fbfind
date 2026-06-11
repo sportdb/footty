@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+## tip: to test run:
+##   $ ruby -I ./lib bin/fbfind
+
+
+require 'fbtok'
+
+
+Fbfind.main

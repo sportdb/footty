@@ -1,5 +1,35 @@
 
 
+##
+## note - add find_dir( name, path: )  helper
+##    move upstream into cocos - why? why not?
+def find_dir( name, path: [] )
+    return File.expand_path( name )     if Dir.exist?( name )
+
+##  note - if name starts with / or \ assume it's absolute!!
+##    do NOT search!!!
+##     note - search still works for
+##               ./austria  or ../austria or such
+##
+##  todo/check/fix-fix-fix
+##     is there a File.absolute? or such method for reuse??
+##
+##  todo/fix-fix-fix add absolute check upstream to find_file too!!!
+    return nil    if name.start_with?( %r{[/\\]} )
+
+    path.each do |basedir|
+        ## todo/check -  always make sure basedir is an absolute/expanded path - why? why not?
+        dirpath = File.expand_path( name, basedir )
+        return dirpath   if Dir.exist?( dirpath )
+    end
+
+    nil   ## return nil if not found
+end
+
+
+
+
+
 module SportDb
 class Pathspec
 
@@ -194,6 +224,20 @@ def self.read( src )
 end
 
 
+## quick (internal) helper to
+##    expand names (directories)  ending with /*
+##                 with Pathspec.find
+def self._expand_pathspecs( names )
+   datafiles = []
+   names.each do |name|
+      if name.end_with?('/*')
+         datafiles += Pathspec.find( name[0..-3] )
+      else
+         datafiles << name
+      end
+   end
+   datafiles
+end
 
 def self.build( args, path: [],
                       filepack: nil )
@@ -203,7 +247,7 @@ def self.build( args, path: [],
   if args.empty?
     if filepack && filepack.has_key?('default')
                recs << { 'path'      => '<default>',
-                         'datafiles' => filepack['default'] }
+                         'datafiles' => _expand_pathspecs(filepack['default']) }
     end
   else
 
@@ -217,12 +261,16 @@ def self.build( args, path: [],
        ##
        ##  todo/check  if euro/ works too?
        ## check if directory
-       if Dir.exist?( arg )
+       ##     note - make find_dir/path lookup an env variable
+       ##               e.g. FBTXT_ROOTDIR, FBTXT_SOURCE, FBSOURCE,
+       ##                    FBTXT_REPOS/PACKS/etc. or such!!!
+       ##     add dir_path/dirs or such to build - why? why not?
+       if dir=find_dir( arg, path: ['/sports/openfootball']  )
           recs << { 'path'       => arg,
-                    'datafiles'  => Pathspec.find( arg ) }
+                    'datafiles'  => Pathspec.find( dir ) }
        elsif filepack && filepack.has_key?( arg.downcase )
            recs << { 'path'      => "<#{arg.downcase}>",
-                     'datafiles' => filepack[arg.downcase] }
+                     'datafiles' => _expand_pathspecs(filepack[arg.downcase]) }
        else   ## assume it's a file
            file = find_file( arg, path: path )
             ## check if file (exists) in any path lookup
@@ -273,4 +321,28 @@ end
 ## read pathspecs via csv file (using path column)
 def read_pathspecs( src )
     SportDb::Pathspecs.read( src )
+end
+
+
+
+def filter_pathspecs( specs, seasons: )
+    ## norm seasons
+    seasons =  seasons.map {|season| Season(season) }
+
+    ##  todo/fix: auto-add/update  rec['seasons'] column - why? why not?
+
+    ## note - filter datafiles inplace!!!
+    specs.each do |rec|
+       rec['datafiles'] =
+       rec['datafiles'].select do |candidate|
+             m=SportDb::Pathspec::MATCH_RE.match( candidate )
+             if m && seasons.include?( Season.parse( m[:season] ))
+                true
+             else
+                false
+             end
+        end
+    end
+
+    specs
 end
