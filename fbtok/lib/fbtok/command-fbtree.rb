@@ -7,6 +7,7 @@ def self.main( args=ARGV )
 opts = {
     debug: true,
     file:  nil,
+    tty:   false,
     seasons: [],
 ##    warn:  false,
 }
@@ -27,6 +28,13 @@ parser = OptionParser.new do |parser|
 #              "turn warnings into errors (default: #{opts[:warn]})" ) do |warn|
 #    opts[:warn] = true
 #  end
+
+
+  parser.on( "-t", "--terminal", "--tty",
+             "force terminal/tty input (default: #{opts[:tty]})" ) do |tty|
+    opts[:tty] = tty
+  end
+
 
 
   parser.on( "--seasons SEASONS",
@@ -51,6 +59,38 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
+end
+
+
+
+## special case for typed input via terminal/tty
+if opts[:tty]
+
+   puts "type your football.TXT lines here (exit with ctrl-z and return):"
+   lines = STDIN.readlines   ## note - readlines incl. trailing newline!
+
+   txt = lines.join  ## note - join with no space (already incl. trailing newline!)
+
+   puts "--- parsing #{lines.size} line(s) ---"
+   puts txt
+   puts "--- results ---"
+
+   parser = RaccMatchParser.new( txt, debug: opts[:debug] )
+   tree = parser.parse
+
+   dump_tree_stats( tree )
+
+   if parser.errors?
+      puts
+      pp parser.errors
+      puts
+      puts "!!   #{parser.errors.size} parse error(s)"
+      exit 1
+   else
+      puts
+      puts "OK   no parse errors found"
+      exit 0
+   end
 end
 
 

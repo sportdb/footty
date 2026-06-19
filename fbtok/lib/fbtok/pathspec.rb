@@ -1,33 +1,5 @@
 
 
-##
-## note - add find_dir( name, path: )  helper
-##    move upstream into cocos - why? why not?
-def find_dir( name, path: [] )
-    return File.expand_path( name )     if Dir.exist?( name )
-
-##  note - if name starts with / or \ assume it's absolute!!
-##    do NOT search!!!
-##     note - search still works for
-##               ./austria  or ../austria or such
-##
-##  todo/check/fix-fix-fix
-##     is there a File.absolute? or such method for reuse??
-##
-##  todo/fix-fix-fix add absolute check upstream to find_file too!!!
-    return nil    if name.start_with?( %r{[/\\]} )
-
-    path.each do |basedir|
-        ## todo/check -  always make sure basedir is an absolute/expanded path - why? why not?
-        dirpath = File.expand_path( name, basedir )
-        return dirpath   if Dir.exist?( dirpath )
-    end
-
-    nil   ## return nil if not found
-end
-
-
-
 
 
 module SportDb
