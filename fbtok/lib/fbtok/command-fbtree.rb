@@ -4,12 +4,18 @@ module Fbtree
 def self.main( args=ARGV )
 
 
+
 opts = {
     debug: true,
+##    warn:  false,
+
+    json:  false,
+    yaml:  false,
+
     file:  nil,
     tty:   false,
+
     seasons: [],
-##    warn:  false,
 }
 
 parser = OptionParser.new do |parser|
@@ -30,12 +36,12 @@ parser = OptionParser.new do |parser|
 #  end
 
 
-  parser.on( "-t", "--terminal", "--tty",
-             "force terminal/tty input (default: #{opts[:tty]})" ) do |tty|
-    opts[:tty] = tty
+  parser.on( "-f FILE", "--file FILE",
+                "read datafiles (pathspecs) via .csv file") do |file|
+    opts[:file] = file
+    ## note: for batch (massive) processing auto-set debug (verbose output) to false (as default)
+    opts[:debug] = false
   end
-
-
 
   parser.on( "--seasons SEASONS",
                "filter by seasons (default: #{opts[:seasons]})") do |seasons|
@@ -44,13 +50,20 @@ parser = OptionParser.new do |parser|
                         .map { |season| Season.parse(season.strip) }
   end
 
-  parser.on( "-f FILE", "--file FILE",
-                "read datafiles (pathspecs) via .csv file") do |file|
-    opts[:file] = file
-    ## note: for batch (massive) processing auto-set debug (verbose output) to false (as default)
-    opts[:debug] = false
+
+  parser.on( "-j", "--json",
+                "turn on output in json (default: #{opts[:json]})" ) do |json|
+    opts[:json] = true
+  end
+  parser.on( "-y", "--yaml",
+                "turn on output in yaml (default: #{opts[:yaml]})" ) do |yaml|
+    opts[:yaml] = true
   end
 
+  parser.on( "-t", "--terminal", "--tty",
+             "force terminal/tty input (default: #{opts[:tty]})" ) do |tty|
+    opts[:tty] = tty
+  end
 end
 parser.parse!( args )
 
@@ -75,16 +88,13 @@ if opts[:tty]
    puts txt
    puts "--- results ---"
 
-   parser = RaccMatchParser.new( txt, debug: opts[:debug] )
-   tree = parser.parse
+   tree, errors = parse_with_errors( txt, opts )
 
-   dump_tree_stats( tree )
-
-   if parser.errors?
+   if errors.size > 0
       puts
-      pp parser.errors
+      pp errors
       puts
-      puts "!!   #{parser.errors.size} parse error(s)"
+      puts "!!   #{errors.size} parse error(s)"
       exit 1
    else
       puts
@@ -94,6 +104,30 @@ if opts[:tty]
 end
 
 
+
+## check for piped input  e.g.  $ curl | fbtree
+if !STDIN.tty?   ## input NOT via tty (teletype terminal)
+
+   txt = STDIN.read
+
+   puts "--- parsing ---"
+   puts txt
+   puts "--- results ---"
+
+   tree, errors = parse_with_errors( txt, opts )
+
+   if errors.size > 0
+      puts
+      pp errors
+      puts
+      puts "!!   #{errors.size} parse error(s)"
+      exit 1
+   else
+      puts
+      puts "OK   no parse errors found"
+      exit 0
+   end
+end
 
 
 
@@ -148,20 +182,17 @@ specs.each_with_index do |rec,i|
       puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
 
       txt = read_text( path )
-      parser = RaccMatchParser.new( txt, debug: opts[:debug] )
-      tree = parser.parse
+      tree, more_errors = parse_with_errors( txt, opts )
 
-      dump_tree_stats( tree )
-
-      if parser.errors?
+      if more_errors.size > 0
          ## note - auto-add filename to errors
-         parser.errors.each do |msg|
+         more_errors.each do |msg|
           ###
           ###   errors << [ path, *msg ] # note: use splat (*) to add extra values (starting with msg)
               errors << [path, msg]
          end
 
-         log << [:ERROR, path, "#{parser.errors.size} parse error(s), #{tree.size} tree node(s)"]
+         log << [:ERROR, path, "#{more_errors.size} parse error(s), #{tree.size} tree node(s)"]
       else
          log << [:OK, path, "#{tree.size} tree node(s)"]
       end
@@ -221,6 +252,33 @@ def self.dump_tree_stats( tree )
   puts "   #{match_count} MatchLine(s)"     if match_count > 0
   puts "   #{goal_count} GoalLine(s)"       if goal_count > 0
   puts "   #{lineup_count} LineupLine(s)"   if lineup_count > 0
+end
+
+
+
+def self.parse_with_errors( txt, opts={} )
+   parser = RaccMatchParser.new( txt, debug: opts[:debug] )
+   tree = parser.parse
+
+   dump_tree_stats( tree )
+
+   if opts[:yaml]
+         puts "--- yaml ---"
+         puts  YAML.dump( tree )
+   end
+
+   if opts[:json]
+         puts "--- json ---"
+         ## puts  JSON.pretty_generate( tree )
+         ##
+         ##   note - use hacky but more beautiful pretty_print
+         txtjson =  tree.as_json.pretty_inspect
+         txtjson =  txtjson.gsub( '=>', ': ' )
+         puts txtjson
+   end
+
+
+   [tree, parser.errors]
 end
 
 

@@ -133,6 +133,15 @@ def self.find( path, seasons: nil )
           next   if /squad/i.match?( basename )
           next   if /\.v[0-9][0-9_]*/i.match?( basename )
 
+          ### exclude
+          ##     logs.txt  or logs.xxx.txt etc
+          ##     log.txt  or log.xxx.txt etc
+          ##     -or-
+          ##     errors.txt  or errors.xxx.txt etc
+          next   if /^logs?($|\.)/i.match?( basename )
+          next   if /^errors?($|\.)/i.match?( basename )
+
+
           #####
           ### exclude dirs  with:
           ##    - squad or wiki
