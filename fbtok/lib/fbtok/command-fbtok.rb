@@ -6,9 +6,10 @@ def self.main( args=ARGV )
 
 opts = {
     debug: true,
+#    warn:  false,
+
     file:  nil,
     seasons: [],
-#    warn:  false,
 }
 
 
@@ -53,11 +54,9 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
+
+  SportDb::Lexer.debug = true
 end
-
-
-# SportDb::Parser::Linter.debug = opts[:debug]
-# SportDb::Parser::Linter.warn  = opts[:warn]
 
 
 
@@ -99,7 +98,7 @@ specs.each_with_index do |rec,i|
       puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
 
       txt = read_text( path )
-      lexer = SportDb::Lexer.new( txt, debug: opts[:debug] )
+      lexer = SportDb::Lexer.new( txt )
       tokens, more_errors = lexer.tokenize_with_errors
 
       ####

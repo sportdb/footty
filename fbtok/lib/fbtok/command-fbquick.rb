@@ -40,8 +40,10 @@ if opts[:debug]
   puts "ARGV:"
   p args
 
+  SportDb::Lexer.debug = true
+  RaccMatchParser.debug = true
+  SportDb::MatchParser.debug = true
   SportDb::QuickMatchReader.debug = true
-  SportDb::MatchParser.debug      = true
 else
   SportDb::QuickMatchReader.debug = false
   SportDb::MatchParser.debug      = false

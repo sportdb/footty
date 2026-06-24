@@ -72,6 +72,9 @@ if opts[:debug]
   p opts
   puts "ARGV:"
   p args
+
+  SportDb::Lexer.debug = true
+  RaccMatchParser.debug = true
 end
 
 
@@ -144,6 +147,11 @@ specs =  if opts[:file]
                              nil
                         end
 
+            ##
+            ## maybe change to:
+            ##   Env.fbpath( default)
+            ##   or  fb_path          or such - why? why not?
+
             path = SportDb::Pathspec.path(
                           ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
                            '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
@@ -160,9 +168,6 @@ specs =  if opts[:file]
 ## if specs.size > 0  && specs[0]['datafiles'].size > 1
 ##   opts[:debug] = false
 ## end
-
-# SportDb::Parser::Linter.debug = opts[:debug]
-# SportDb::Parser::Linter.warn  = opts[:warn]
 
 
 
@@ -257,7 +262,7 @@ end
 
 
 def self.parse_with_errors( txt, opts={} )
-   parser = RaccMatchParser.new( txt, debug: opts[:debug] )
+   parser = RaccMatchParser.new( txt )
    tree = parser.parse
 
    dump_tree_stats( tree )
