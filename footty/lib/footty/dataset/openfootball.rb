@@ -110,11 +110,19 @@ module Footty
       matches = []
       urls.each do |url|
                     txt = get!( url )    ## use "memoized" / cached result
-                    parser = SportDb::QuickMatchReader.new( txt )
-                    matches += parser.parse
+                    doc = Fbtxt::Document.new( txt )
+                    matches += doc.matches
                     ###  for multiple source file use latest name as "definitive"
-                    @league_name = parser.league_name
-                    ###  todo/fix - report errors
+                    @league_name = doc.title || '??'
+
+                    ###  todo/fix - imrove report errors formula
+                    if doc.errors?
+                      puts "!! HTTP ERROR - #{response.status.code} #{response.status.message}"
+                      exit 1
+                      puts "!! PARSE - #{doc.errors.size} parse error(s) in >#{url}<:"
+                      pp doc.errors
+                      exit 1
+                    end
                   end
 
       matches = matches.map {|match| match.as_json }  # convert to json

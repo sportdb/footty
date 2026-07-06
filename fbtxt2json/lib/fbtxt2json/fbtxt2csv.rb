@@ -57,14 +57,16 @@ paths = if args.empty?
         end
 
 
+
 if opts[:debug]
-   SportDb::QuickMatchReader.debug = true
-   SportDb::MatchParser.debug      = true
+   Fbtxt::Document.debug    = true
+   SportDb::MatchTree.debug = true
 else
-   SportDb::QuickMatchReader.debug = false
-   SportDb::MatchParser.debug      = false
-   LogUtils::Logger.root.level = :info
+   # note - assume debug = false is default !!
+   # Fbtxt::Document.debug    = false
+   # SportDb::MatchTree.debug = false
 end
+
 
 
 
@@ -182,9 +184,9 @@ end
 
 
 def self.parse( txt )   ### check - name parse_txt or txt_to_csv or such - why? why not?
-   quick = SportDb::QuickMatchReader.new( txt )
-   matches = quick.parse
-   name    = quick.league_name   ## quick hack - get league+season via league_name
+   doc = Fbtxt::Document.new( txt )
+   matches = doc.matches
+   name    = doc.title || '??'
 
    recs = []
 
@@ -238,9 +240,9 @@ def self.parse( txt )   ### check - name parse_txt or txt_to_csv or such - why? 
 
    puts "  #{recs.size} record(s)"
 
-   if quick.errors?
-      puts "!! #{quick.errors.size} parse error(s):"
-      pp quick.errors
+   if doc.errors?
+      puts "!! #{doc.errors.size} parse error(s):"
+      pp doc.errors
       exit 1
    end
 

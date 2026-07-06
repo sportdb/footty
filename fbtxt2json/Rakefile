@@ -2,7 +2,7 @@ require 'hoe'
 
 
 Hoe.spec 'fbtxt2json' do
-  self.version = '0.4.0'
+  self.version = '0.8.0'
 
   self.summary = "fbtxt2json (& fbtxt2csv) - convert football.txt match schedules & more to (structured) json or (tabular) csv"
   self.description = summary
@@ -20,8 +20,8 @@ Hoe.spec 'fbtxt2json' do
 
 
   self.extra_deps = [
-       ['sportdb-quick',  '>= 0.7.0'],
-       ['sportdb-parser', '>= 0.7.1'],
+       ['sportdb-quick',  '>= 0.8.0'],
+       ['sportdb-parser', '>= 0.8.0'],
        ### note - include fbtok gem for (shared) command-line helpers/machinery!!!
        ['fbtok', '>= 0.4.1'],
   ]
