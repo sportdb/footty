@@ -133,6 +133,10 @@ def self.find( path, seasons: nil )
           next   if /squad/i.match?( basename )
           next   if /\.v[0-9][0-9_]*/i.match?( basename )
 
+          ## exclude
+          ##    .meta.txt   used in (wget) cache for meta data
+          next   if /\.meta$/i.match?( basename )
+
           ### exclude
           ##     logs.txt  or logs.xxx.txt etc
           ##     log.txt  or log.xxx.txt etc
