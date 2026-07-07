@@ -46,12 +46,11 @@ if opts[:debug]
   puts "ARGV:"
   p args
 
-  SportDb::Lexer.debug = true
-  RaccMatchParser.debug = true
-  SportDb::MatchParser.debug = true
+  Fbtxt::Lexer.debug = true
+  Fbtxt::Parser.debug = true
+  Fbtxt::Document.debug = true
 else
-  SportDb::MatchParser.debug = false
-  LogUtils::Logger.root.level = :info
+  ## note - assume no debug is default
 end
 
 
@@ -76,19 +75,18 @@ paths.each_with_index do |path,i|
 
     ##
     ## note - use start: nil => requires that first date incl. a year!!!
-    parser = SportDb::MatchParser.new( txt, start: nil )
+    doc = Fbtxt::Document.new( txt, start: nil )
 
-    auto_conf_teams, matches, rounds, groups = parser.parse
 
-      puts ">>> #{auto_conf_teams.size} teams:"
-      pp auto_conf_teams
-      puts ">>> #{matches.size} matches:"
-      pp matches[0,2]   ## print first two matches
+      puts ">>> #{doc.teams.size} teams:"
+      pp doc.teams
+      puts ">>> #{doc.matches.size} matches:"
+      pp doc.matches[0,2]   ## print first two matches
       puts "..."
-      puts ">>> #{rounds.size} rounds:"
-      pp rounds
-      puts ">>> #{groups.size} groups:"
-      pp groups
+      puts ">>> #{doc.rounds.size} rounds:"
+      pp doc.rounds
+      puts ">>> #{doc.groups.size} groups:"
+      pp doc.groups
 end  # each paths
 
 =begin

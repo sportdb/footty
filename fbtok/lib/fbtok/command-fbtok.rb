@@ -55,7 +55,7 @@ if opts[:debug]
   puts "ARGV:"
   p args
 
-  SportDb::Lexer.debug = true
+  Fbtxt::Lexer.debug = true
 end
 
 
@@ -72,7 +72,7 @@ specs =  if opts[:file]
                              nil
                         end
 
-            path = SportDb::Pathspec.path(
+            path = Fbtxt::Pathspec.path(
                           ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
                            '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
                            '/sports/openfootball'])
@@ -98,7 +98,7 @@ specs.each_with_index do |rec,i|
       puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
 
       txt = read_text( path )
-      lexer = SportDb::Lexer.new( txt )
+      lexer = Fbtxt::Lexer.new( txt )
       tokens, more_errors = lexer.tokenize_with_errors
 
       ####
@@ -143,7 +143,7 @@ end
 ###
 ## generate a report if --file option used
 if opts[:file]
-  buf = SportDb::PathspecReport.new(
+  buf = Fbtxt::PathspecReport.new(
             specs,
             title: 'fbtok summary report' ).build
 

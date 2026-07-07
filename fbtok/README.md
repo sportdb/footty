@@ -22,7 +22,7 @@ $ gem install fbtok
 
 ### fbtok & fbtree -  use tokenizer (lexer) & parser
 
-- depends on sportdb-parser
+- depends on fbtxt-parser
 
 get help
 
@@ -54,7 +54,7 @@ $ fbtree worldcup
 
 ### fbquick/fbquik & fbx   -  use quick match reader & dump match schedule
 
-- depends on sportdb-quick (& sportdb-parser)
+- depends on fbtxt-document (& fbtxt-parser)
 
 get help
 

@@ -40,14 +40,11 @@ if opts[:debug]
   puts "ARGV:"
   p args
 
-  SportDb::Lexer.debug = true
-  RaccMatchParser.debug = true
-  SportDb::MatchParser.debug = true
-  SportDb::QuickMatchReader.debug = true
+  Fbtxt::Lexer.debug = true
+  Fbtxt::Parser.debug = true
+  Fbtxt::Document.debug = true
 else
-  SportDb::QuickMatchReader.debug = false
-  SportDb::MatchParser.debug      = false
-  LogUtils::Logger.root.level = :info
+  ## note - assume no debug is default
 end
 
 
@@ -69,7 +66,7 @@ specs =  if opts[:file]
                              nil
                         end
 
-            path = SportDb::Pathspec.path(
+            path = Fbtxt::Pathspec.path(
                           ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
                            '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
                            '/sports/openfootball'])
@@ -90,14 +87,14 @@ pp specs
     datafiles.each_with_index do |path,j|
       puts "==> [#{i+1}/#{specs.size}, #{j+1}/#{datafiles.size}] reading >#{path}<..."
       txt = read_text( path )
-      quick = SportDb::QuickMatchReader.new( txt )
-      matches = quick.parse
+      doc = Fbtxt::Document.new( txt )
+      matches = doc.matches
 
-      if quick.errors?
-        puts "!! #{quick.errors.size} error(s):"
-        pp quick.errors
+      if doc.errors?
+        puts "!! #{doc.errors.size} error(s):"
+        pp doc.errors
 
-        quick.errors.each do |err|
+        doc.errors.each do |err|
           errors << [ path, *err ]   # note: use splat (*) to add extra values (starting with msg)
         end
       end
@@ -124,7 +121,7 @@ pp specs
 ###
 ## generate a report if --file option used
 if opts[:file]
-  buf = SportDb::PathspecReport.new(
+  buf = Fbtxt::PathspecReport.new(
             specs,
             title: 'fbquick summary report' ).build
 

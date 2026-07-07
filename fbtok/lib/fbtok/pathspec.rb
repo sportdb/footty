@@ -2,7 +2,7 @@
 
 
 
-module SportDb
+module Fbtxt
 class Pathspec
 
     SEASON_RE = %r{ (?:
@@ -280,7 +280,7 @@ def self.build( args, path: [],
 end
 
 end  # class Pathspecs
-end  # module Sportdb
+end  # module Fbtxt
 
 
 
@@ -295,14 +295,15 @@ end  # module Sportdb
 ##
 ##   note: was formerly known as expand_args
 def build_pathspecs( args, path: [], filepack: nil )
-   SportDb::Pathspecs.build( args, path: path, filepack: filepack )
+   Fbtxt::Pathspecs.build( args, path: path, filepack: filepack )
 end
 
 ####
 ## read pathspecs via csv file (using path column)
 def read_pathspecs( src )
-    SportDb::Pathspecs.read( src )
+    Fbtxt::Pathspecs.read( src )
 end
+
 
 
 
@@ -316,7 +317,7 @@ def filter_pathspecs( specs, seasons: )
     specs.each do |rec|
        rec['datafiles'] =
        rec['datafiles'].select do |candidate|
-             m=SportDb::Pathspec::MATCH_RE.match( candidate )
+             m=Fbtxt::Pathspec::MATCH_RE.match( candidate )
              if m && seasons.include?( Season.parse( m[:season] ))
                 true
              else

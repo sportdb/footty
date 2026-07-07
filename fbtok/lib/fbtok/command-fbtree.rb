@@ -73,8 +73,8 @@ if opts[:debug]
   puts "ARGV:"
   p args
 
-  SportDb::Lexer.debug = true
-  RaccMatchParser.debug = true
+  Fbtxt::Lexer.debug = true
+  Fbtxt::Parser.debug = true
 end
 
 
@@ -152,7 +152,7 @@ specs =  if opts[:file]
             ##   Env.fbpath( default)
             ##   or  fb_path          or such - why? why not?
 
-            path = SportDb::Pathspec.path(
+            path = Fbtxt::Pathspec.path(
                           ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
                            '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
                            '/sports/openfootball'])
@@ -227,7 +227,7 @@ end
 ## generate a report if --file option used
 if opts[:file]
 
-  buf = SportDb::PathspecReport.new(
+  buf = Fbtxt::PathspecReport.new(
             specs,
             title: 'fbtree summary report' ).build
 

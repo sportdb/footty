@@ -1,5 +1,5 @@
 
-require 'sportdb/quick'
+require 'fbtxt/document'
 
 
 ## our own code

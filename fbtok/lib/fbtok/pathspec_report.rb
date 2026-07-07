@@ -1,4 +1,4 @@
-module SportDb
+module Fbtxt
 
 ##
 #  PathspecReport (aka/formerly BatchReport)
@@ -39,4 +39,4 @@ end  # class BatchReport
 BatchReport = PathspecReport
 
 
-end  # module Sportdb
+end  # module Fbtxt

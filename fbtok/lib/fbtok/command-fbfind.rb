@@ -49,10 +49,6 @@ if opts[:debug]
 end
 
 
-# SportDb::Parser::Linter.debug = opts[:debug]
-# SportDb::Parser::Linter.warn  = opts[:warn]
-
-
 
 ## todo/check - use packs or projects or such
 ##                instead of specs - why? why not?
@@ -66,7 +62,7 @@ specs =  if opts[:file]
                              nil
                         end
 
-            path = SportDb::Pathspec.path(
+            path = Fbtxt::Pathspec.path(
                           ['/sports/sportdb/sport.db.v2/parser/fbtxt-specs',
                            '/sports/sportdb/sport.db.v2/parser/fbtxt-samples',
                            '/sports/openfootball'])
