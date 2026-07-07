@@ -18,10 +18,10 @@ Hoe.spec 'footty' do
 
   self.extra_deps = [
     ['webget'],
-    ['sportdb-parser', '>= 0.8.0'],
-    ['sportdb-quick',  '>= 0.8.0'],
-    ['fbtok'],
-    ['fbtxt2json']
+    ['fbtxt-parser',   '>= 0.9.0'],
+    ['fbtxt-document', '>= 0.9.0'],
+    ['fbtok',          '>= 0.9.0'],
+    ['fbtxt2json',     '>= 0.9.0']
   ]
 
   self.licenses = ['Public Domain']

@@ -1,4 +1,4 @@
-require 'sportdb/quick'   ## note - pulls in cocos et al
+require 'fbtxt/document'   ## note - pulls in cocos et al
 require 'webget'          ## add webcache support
 
 

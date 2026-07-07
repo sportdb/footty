@@ -60,11 +60,9 @@ paths = if args.empty?
 
 if opts[:debug]
    Fbtxt::Document.debug    = true
-   SportDb::MatchTree.debug = true
+   Fbtxt::MatchTree.debug   = true
 else
    # note - assume debug = false is default !!
-   # Fbtxt::Document.debug    = false
-   # SportDb::MatchTree.debug = false
 end
 
 
@@ -76,7 +74,7 @@ paths.each do |path|
    if Dir.exist?( path )
       puts "==> reading dir >#{path}<..."
 
-      datafiles = SportDb::Pathspec._find( path, seasons: opts[:seasons] )
+      datafiles = Fbtxt::Pathspec.find( path, seasons: opts[:seasons] )
       pp datafiles
       puts "   #{datafiles.size} datafile(s)"
       datafiles.each_with_index do |datafile,j|

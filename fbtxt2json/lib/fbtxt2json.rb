@@ -1,7 +1,7 @@
 
-require 'sportdb/quick'
+require 'fbtxt/document'
 
-require 'fbtok'  ### check if requires sportdb/quick  (no need to duplicate)
+require 'fbtok'  ### check if requires fbtxt/document  (no need to duplicate)
 
 
 

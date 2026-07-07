@@ -68,12 +68,10 @@ paths = if args.empty?
 
 
 if opts[:debug]
-   Fbtxt::Document.debug    = true
-   SportDb::MatchTree.debug = true
+   Fbtxt::Document.debug  = true
+   Fbtxt::MatchTree.debug = true
 else
    # note - assume debug = false is default !!
-   # Fbtxt::Document.debug    = false
-   # SportDb::MatchTree.debug = false
 end
 
 
@@ -163,7 +161,7 @@ def self.do_dirs( paths, outdir: nil,
       puts "==> reading dir [#{i+1}/#{paths.size}] >#{path}<..."
       summary << "==> [#{i+1}/#{paths.size}] dir #{path}\n"
 
-      datafiles = SportDb::Pathspec._find( path, seasons: seasons )
+      datafiles = Fbtxt::Pathspec.find( path, seasons: seasons )
       pp datafiles
       puts "   #{datafiles.size} datafile(s)"
       summary << "    #{datafiles.size} datafile(s)\n\n"
