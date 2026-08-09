@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+
+##
+##  fix-fix-fix
+##    replaced by fbdoc  (remvoe fbx) - why? why not?
+
+
 ## tip: to test run:
 ##   $ ruby -I ./lib  bin/fbx
 
