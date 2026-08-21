@@ -9,8 +9,6 @@ Gem Family:
 - [**fbtxt**](fbtxt) - fbtxt, fbgen, & more - convert football match schedules & more in tabular comma-separated values (csv) format to (future-proof & evergreen) football.txt and much more
 
 
- o o o
-
 
 @ sport.db.v2
 
